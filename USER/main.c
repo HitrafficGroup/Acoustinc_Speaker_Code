@@ -1,3 +1,4 @@
+/* Modulo principal de coordinacion del firmware. */
 #include "stm32f10x.h" 
 
 #include "usb_hw.h"
@@ -12,12 +13,12 @@ uint8_t StartFlag = 1;
 
 static void SysTick_Init(void);
 void Delay(__IO uint32_t nTime);
-void SocketProcess(void);//��ѯ����˿�
+void SocketProcess(void);
     int contador = 0;
     int i = 0;
 
 int main(void){
-    //�������� 
+    
 //    if(FLASH_GetReadOutProtectionStatus() != SET)
 //    {
 //        FLASH_Unlock();
@@ -27,29 +28,29 @@ int main(void){
     
     SysTick_Init();
     bsp_GpioInit();
-    vs1053_IO_Init();//encargado de el audio record
+    vs1053_IO_Init();//encargado de el audio sonido
     
     bsp_InitUart();
     
     ADC_Inits();
     bsp_InitI2C();
     bsp_InitSpi1Bus();
-    bsp_InitSpiFlash();		//��ʼ��SPI_Flash
+    bsp_InitSpiFlash();		
     W5500_GPIO_Config(); //Puerto de comunicacion 
     
     bsp_InitSpi2Bus();
     mp3_par_init(); 
-    vs1053_HardInit();      //��ʼ��VS1053b
+    vs1053_HardInit();      
     
     Config();
     CheckVolume();
     
-    W5500_Hardware_Reset(); //Eth
+    W5500_Hardware_Reset(); //Ethernet
 	W5500_Initialization();
 
     bsp_InitIwdg(3000);
     
-	nRF24L01ioConfig();		//�������� Radiofreq
+	nRF24L01ioConfig();		
 	SPI_RW_Reg(FLUSH_RX,0xff);
 	SPI_RW_Reg(FLUSH_TX,0xff);
 	RX_Mode(); //configurado para enviar datos
@@ -92,11 +93,11 @@ int main(void){
             {
                 //printf("MP3.writeParFlag\r\n");
                 MP3.writeParFlag = 0;
-                RtcWrite((RtcType*)Par);//дʱ��
+                RtcWrite((RtcType*)Par);
 				
-                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
+                WriteConfigFile(&Par[7], 12, 40);
                 //Config();
-                if(ReadConfigFile())//�������ļ��ɹ�
+                if(ReadConfigFile())
                     Load_Period_Parameters(&FileBuf[12]); 
                 system_temp.timeUpdate = 1;
                 MP3.fileChangeFlag = 1;
@@ -132,7 +133,7 @@ int main(void){
 				{
                     printf("\r\n==BLACK STATE ==LCF#%d ==LS#%d\r\n", lamp_chge_flag, lamp_status);
 					MP3.stopFlag = 1;
-					//MP3.dir = 3;//����
+					
 				}
                 memset(MP3.filename,0x00,13);
                 get_filename(MP3.dir);
@@ -204,15 +205,6 @@ int main(void){
 }
 
 /*******************************************************************************
-* ������  : Process_Socket_Data
-* ����    : W5500���ղ����ͽ��յ�������
-* ����    : s:�˿ں�
-* ���    : ��
-* ����ֵ  : ��
-* ˵��    : �������ȵ���S_rx_process()��W5500�Ķ˿ڽ������ݻ�������ȡ����,
-*			Ȼ�󽫶�ȡ�����ݴ�Rx_Buffer������Temp_Buffer���������д�����
-*			������ϣ������ݴ�Temp_Buffer������Tx_Buffer������������S_tx_process()
-*			�������ݡ�
 *******************************************************************************/
 void Process_Socket_Data(SOCKET s)
 {
@@ -248,17 +240,17 @@ void Process_Socket_Data(SOCKET s)
             Tx_Buffer[4] = Net.IP_Addr[2];
             Tx_Buffer[5] = Net.IP_Addr[3];
             
-            Tx_Buffer[6] = Net.Gateway_IP[0];    //�������ز���
+            Tx_Buffer[6] = Net.Gateway_IP[0];    
             Tx_Buffer[7] = Net.Gateway_IP[1];
             Tx_Buffer[8] = Net.Gateway_IP[2];
             Tx_Buffer[9] = Net.Gateway_IP[3];
             
-            Tx_Buffer[10] = Net.Sub_Mask[0];      //������������
+            Tx_Buffer[10] = Net.Sub_Mask[0];      
             Tx_Buffer[11] = Net.Sub_Mask[1];
             Tx_Buffer[12] = Net.Sub_Mask[2];
             Tx_Buffer[13] = Net.Sub_Mask[3];
             
-            get_cpuid(&Tx_Buffer[14]);//���ض˿�1����Ϊ�ͻ���ģʽ,��Ҫ���÷�������ַ�Ͷ˿�
+            get_cpuid(&Tx_Buffer[14]);
             
             Tx_Buffer[18] = 0x00;
             for(i=2;i<18;i++)
@@ -274,12 +266,12 @@ void Process_Socket_Data(SOCKET s)
                 WriteConfigFile(&Rx_Buffer[10], 0, 12);
                 Config();
                 
-                Tx_Buffer[0] = 0x55;//�������óɹ�ָ��
+                Tx_Buffer[0] = 0x55;
                 Tx_Buffer[1] = 0xEE;
                 Socket[s].UdpDestPort = 7788;
                 Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
                 
-                W5500_Initialization();//��������
+                W5500_Initialization();
                 //printf("new ip = %d.%d.%d.%d\r",Net.IP_Addr[0],Net.IP_Addr[1],Net.IP_Addr[2],Net.IP_Addr[3]);
             }
         }
@@ -299,7 +291,7 @@ void Process_Socket_Data(SOCKET s)
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
             LED_Toggle();
         }
-        else if(result == 2)//д����
+        else if(result == 2)
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -316,7 +308,7 @@ void Process_Socket_Data(SOCKET s)
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 24);
             LED_Toggle();
         }
-        else if(result == 3)//������
+        else if(result == 3)
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -341,27 +333,27 @@ void Process_Socket_Data(SOCKET s)
 	}
 }
 
-void SocketProcess(void)//��ѯ����˿� funcion de conexion por ethernet con la computadora
+void SocketProcess(void)
 {
     SOCKET n;
-    W5500_Socket_Set(0);//W5500�˿ڳ�ʼ������
+    W5500_Socket_Set(0);
     W5500_Socket_Set(1);
     //W5500_Socket_Set(2);
-    W5500_Interrupt_Process();//W5500�жϴ���������
+    W5500_Interrupt_Process();
     for(n=0;n<8;n++)
     {
-        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)//���Socket���յ�����
+        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)
         {
             Socket[n].DataState &= ~S_RECEIVE;
-            Process_Socket_Data(n);//W5500���ղ����ͽ��յ�������
+            Process_Socket_Data(n);
         }
-        else if(W5500_Send_Delay_Counter[n] >= 5000)//��ʱ�����ַ���
+        else if(W5500_Send_Delay_Counter[n] >= 5000)
         {
             if(Socket[n].State == (S_INIT|S_CONN))
             {
                 Socket[n].DataState &= ~S_TRANSMITOK;
                 //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-                //Write_SOCK_Data_Buffer(n, Tx_Buffer, strlen(netaddr));//ָ��Socket(0~7)�������ݴ���,�˿�0����23�ֽ�����
+                
             }
             W5500_Send_Delay_Counter[n] = 0;
         }

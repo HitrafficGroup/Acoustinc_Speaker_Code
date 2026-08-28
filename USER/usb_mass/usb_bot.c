@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Description        : BOT State Machine management
+* Descripcion        : Gestion de la maquina de estados BOT
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -41,8 +41,8 @@ uint32_t SCSI_LBA , SCSI_BlkLen;
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : Mass_Storage_In
-* Description    : Mass Storage IN transfer.
+* Nombre de la funcion  : Mass_Storage_In
+* Descripcion    : Transferencia IN de almacenamiento masivo.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -89,8 +89,8 @@ void Mass_Storage_In (void)
 }
 
 /*******************************************************************************
-* Function Name  : Mass_Storage_Out
-* Description    : Mass Storage OUT transfer.
+* Nombre de la funcion  : Mass_Storage_Out
+* Descripcion    : Transferencia OUT de almacenamiento masivo.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -126,8 +126,8 @@ void Mass_Storage_Out (void)
 }
 
 /*******************************************************************************
-* Function Name  : CBW_Decode
-* Description    : Decode the received CBW and call the related SCSI command
+* Nombre de la funcion  : CBW_Decode
+* Descripcion    : Decode the received CBW and call the related SCSI command
 *                 routine.
 * Input          : None.
 * Output         : None.
@@ -273,8 +273,8 @@ void CBW_Decode(void)
 }
 
 /*******************************************************************************
-* Function Name  : Transfer_Data_Request
-* Description    : Send the request response to the PC HOST.
+* Nombre de la funcion  : Transfer_Data_Request
+* Descripcion    : Send the request response to the PC HOST.
 * Input          : uint8_t* Data_Address : point to the data to transfer.
 *                  uint16_t Data_Length : the number of Bytes to transfer.
 * Output         : None.
@@ -293,8 +293,8 @@ void Transfer_Data_Request(uint8_t* Data_Pointer, uint16_t Data_Len)
 }
 
 /*******************************************************************************
-* Function Name  : Set_CSW
-* Description    : Set the SCW with the needed fields.
+* Nombre de la funcion  : Set_CSW
+* Descripcion    : Set the SCW with the needed fields.
 * Input          : uint8_t CSW_Status this filed can be CSW_CMD_PASSED,CSW_CMD_FAILED,
 *                  or CSW_PHASE_ERROR.
 * Output         : None.
@@ -319,8 +319,8 @@ void Set_CSW (uint8_t CSW_Status, uint8_t Send_Permission)
 }
 
 /*******************************************************************************
-* Function Name  : Bot_Abort
-* Description    : Stall the needed Endpoint according to the selected direction.
+* Nombre de la funcion  : Bot_Abort
+* Descripcion    : Stall the needed Endpoint according to the selected direction.
 * Input          : Endpoint direction IN, OUT or both directions
 * Output         : None.
 * Return         : None.

@@ -30585,7 +30585,6 @@ N#ifndef __BSP_24L01_H
 N#define __BSP_24L01_H
 N					 					   	 
 N//-------------------------------------------------------------------------------------
-N//24L01�˿ڶ���
 N#define uchar unsigned char 
 N#define uint unsigned int
 N
@@ -30596,18 +30595,6 @@ N#define	nRF24L01_CSN_H	    GPIO_SetBits(GPIOB, GPIO_Pin_11)
 N#define	nRF24L01_CSN_L	    GPIO_ResetBits(GPIOB, GPIO_Pin_11)
 N
 N/*
-N#define IRQ					RC0				//�ж�
-N#define IRQ_T				TRISC0			//�жϷ�������
-N#define nRF24L01_CE			RC5				//ʹ�ܿ���
-N#define nRF24L01_CE_T		TRISC5			//ʹ�ܿ��Ʒ�������
-N#define nRF24L01_CSN		RC4 			//Ƭѡ����
-N#define nRF24L01_CSN_T		TRISC4			//Ƭѡ���Ʒ�������
-N#define nRF24L01_MISO		RA2				//����1׼����
-N#define nRF24L01_MISO_T		TRISA2			//����1׼���÷�������
-N#define nRF24L01_SCK		RA0				//ʱ�����
-N#define nRF24L01_SCK_T		TRISA0			//ʱ�ӷ������
-N#define nRF24L01_MOSI		RA1				//�������
-N#define nRF24L01_MOSI_T		TRISA1			//���ݷ�������
 N*/
 N//*********************************************NRF24L01*************************************
 N#define TX_ADR_WIDTH    5   	// 5 uints TX address width
@@ -30615,44 +30602,8 @@ N#define RX_ADR_WIDTH    5   	// 5 uints RX address width
 N#define TX_PLOAD_WIDTH  32  	// 20 uints TX payload
 N#define RX_PLOAD_WIDTH  32  	// 20 uints TX payload
 N
-N#define MAX_TX  	0x10  //�ﵽ����ʹ����ж�
-N#define TX_OK   	0x20  //TX��������ж�
-N#define RX_OK   	0x40  //���յ������ж�
 N//****************************************************************//
 N// SPI(nRF24L01) commands
-N//***************************************NRF24L01�Ĵ���ָ��*******************************************************
-N#define RFREAD_REG      0x00  	// ���Ĵ���ָ��
-N#define RFWRITE_REG     0x20 	// д�Ĵ���ָ��
-N#define RD_RX_PLOAD     0x61  	// ��ȡ��������ָ��
-N#define WR_TX_PLOAD     0xA0  	// д��������ָ��
-N#define FLUSH_TX        0xE1 	// ��ϴ���� FIFOָ��
-N#define FLUSH_RX        0xE2  	// ��ϴ���� FIFOָ��
-N#define REUSE_TX_PL     0xE3  	// �����ظ�װ������ָ��
-N//*************************************SPI(nRF24L01)�Ĵ�����ַ****************************************************
-N#define CONFIG          0x00  // �����շ�״̬��CRCУ��ģʽ�Լ��շ�״̬��Ӧ��ʽ
-N#define EN_AA           0x01  // �Զ�Ӧ��������
-N#define EN_RXADDR       0x02  // �����ŵ�����
-N#define SETUP_AW        0x03  // �շ���ַ��������
-N#define SETUP_RETR      0x04  // �Զ��ط���������
-N#define RF_CH           0x05  // ����Ƶ������
-N#define RF_SETUP        0x06  // �������ʡ����Ĺ�������
-N#define STATUS          0x07  // ״̬�Ĵ���
-N#define OBSERVE_TX      0x08  // ���ͼ�⹦��
-N#define CD              0x09  // ��ַ���           
-N#define RX_ADDR_P0      0x0A  // Ƶ��0�������ݵ�ַ
-N#define RX_ADDR_P1      0x0B  // Ƶ��1�������ݵ�ַ
-N#define RX_ADDR_P2      0x0C  // Ƶ��2�������ݵ�ַ
-N#define RX_ADDR_P3      0x0D  // Ƶ��3�������ݵ�ַ
-N#define RX_ADDR_P4      0x0E  // Ƶ��4�������ݵ�ַ
-N#define RX_ADDR_P5      0x0F  // Ƶ��5�������ݵ�ַ
-N#define TX_ADDR         0x10  // ���͵�ַ�Ĵ���
-N#define RX_PW_P0        0x11  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P1        0x12  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P2        0x13  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P3        0x14  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P4        0x15  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P5        0x16  // ����Ƶ��0�������ݳ���
-N#define FIFO_STATUS     0x17  // FIFOջ��ջ��״̬�Ĵ�������
 N
 Nextern void RX_Mode(void);
 Nextern void TX_Mode(void);
@@ -30677,10 +30628,6 @@ L 1 ".\USER\demo_spi_flash_fatfs.h" 1
 N/*
 N*********************************************************************************************************
 N*
-N*	ģ������ : SPI Flash��FatFS ��ʾģ�顣
-N*	�ļ����� : demo_spi_flash_fatfs.h
-N*	��    �� : V1.0
-N*	˵    �� : ͷ�ļ�
 N*
 N*********************************************************************************************************
 N*/
@@ -30688,7 +30635,6 @@ N
 N#ifndef _DEMO_SPI_FLASH_FATFS_H
 N#define _DEMO_SPI_FLASH_FATFS_H
 N
-N#define BUF_SIZE				  (4096*4)		/* ÿ�ζ�дSD����������ݳ��� */
 N
 N
 Nenum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
@@ -30697,14 +30643,9 @@ N
 N
 Ntypedef struct
 N{
-N    char filename[13];          /* �ļ��� */
-N	uint8_t ucMuteOn;			/* 1 : ������ 0: ���� */
-N	uint8_t ucVolume;			/* ��ǰ���� */
 N    uint8_t VolumeEnviron;
 N    uint8_t VolumePeriod;
 N    uint8_t VolumeChangeFlag;
-N	uint32_t uiProgress;		/* ��ǰ����(�Ѷ�ȡ���ֽ���) */
-N	uint8_t ucPauseEn;			/* ��ͣʹ�� */
 N    uint8_t fileOpenFlag;
 N    uint8_t fileChangeFlag;
 N    uint8_t cycleFlag;
@@ -30728,23 +30669,13 @@ N}MP3_T;
 N
 Ntypedef struct
 N{
-N    uint8_t cardType;           /* �����ͣ�0x32ä���� */
-N	uint8_t packType;			/* �����ͣ�0x68 */
 N	char filename[13];
-N	uint8_t operaType;		    /* �������� */
-N	uint16_t total;			    /* �ְ��� */
-N    uint16_t now;               /* ����� */
-N    uint16_t len;               /* ������ */
 N    uint8_t data;
 N}PACK_T;
 N
 Ntypedef struct
 N{
-N    char filename[13];          /* �ļ��� */
-N	uint16_t total;			    /* �ְ��� */
-N	uint16_t get;			    /* ��ǰ���� */
 N    uint16_t filebufbytes;
-N	uint32_t bytes;		        /* ��ǰ����(�Ѷ�ȡ���ֽ���) */
 N    uint8_t* Pdata;
 N    uint32_t timeCount;
 N}FIle_TRANS_T;
@@ -30757,7 +30688,6 @@ Nextern uint8_t Par[64];
 Nextern uint8_t FileBuf[BUF_SIZE];
 Xextern uint8_t FileBuf[(4096*4)];
 N
-N/* ���ⲿ���õĺ������� */
 Nvoid FileFormat(void);
 Nvoid ViewRootDir(void);
 N
@@ -30831,7 +30761,6 @@ N#define FILTER_ON_TIME          6
 N#define FILTER_OFF_TIME         21
 N#define DEVIATION_TIME          300 //锟斤拷锟斤拷学习时锟斤拷2锟斤拷  锟斤拷位10MS
 N#define AHEAD_END_TIME          2 
-N#define LOST_DELAY_TIME         3   //锟斤拷每锟诫发锟酵碉拷前锟斤拷示时锟斤拷时锟斤拷锟�3锟斤拷没锟斤拷锟秸碉拷锟斤拷一锟斤拷锟斤拷锟斤拷氐锟�
 N/***********************************************************************************/
 N
 N
@@ -33445,12 +33374,10 @@ N
 Nstatic void SysTick_Init(void);
 Nvoid Delay(__IO uint32_t nTime);
 Xvoid Delay(volatile uint32_t nTime);
-Nvoid SocketProcess(void);//��ѯ����˿�
 N    int contador = 0;
 N    int i = 0;
 N
 Nint main(void){
-N    //�������� 
 N//    if(FLASH_GetReadOutProtectionStatus() != SET)
 N//    {
 N//        FLASH_Unlock();
@@ -33467,12 +33394,10 @@ N
 N    ADC_Inits();
 N    bsp_InitI2C();
 N    bsp_InitSpi1Bus();
-N    bsp_InitSpiFlash();		//��ʼ��SPI_Flash
 N    W5500_GPIO_Config(); //Puerto de comunicacion 
 N    
 N    bsp_InitSpi2Bus();
 N    mp3_par_init(); 
-N    vs1053_HardInit();      //��ʼ��VS1053b
 N    
 N    Config();
 N    CheckVolume();
@@ -33482,7 +33407,6 @@ N	W5500_Initialization();
 N
 N    bsp_InitIwdg(3000);
 N    
-N	nRF24L01ioConfig();		//�������� Radiofreq
 N	SPI_RW_Reg(FLUSH_RX,0xff);
 X	SPI_RW_Reg(0xE2,0xff);
 N	SPI_RW_Reg(FLUSH_TX,0xff);
@@ -33529,11 +33453,8 @@ N            if(MP3.writeParFlag)
 N            {
 N                //printf("MP3.writeParFlag\r\n");
 N                MP3.writeParFlag = 0;
-N                RtcWrite((RtcType*)Par);//дʱ��
 N				
-N                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
 N                //Config();
-N                if(ReadConfigFile())//�������ļ��ɹ�
 N                    Load_Period_Parameters(&FileBuf[12]); 
 N                system_temp.timeUpdate = 1;
 N                MP3.fileChangeFlag = 1;
@@ -33572,7 +33493,6 @@ X				else if(lamp_status == 0)
 N				{
 N                    printf("\r\n==BLACK STATE ==LCF#%d ==LS#%d\r\n", lamp_chge_flag, lamp_status);
 N					MP3.stopFlag = 1;
-N					//MP3.dir = 3;//����
 N				}
 N                memset(MP3.filename,0x00,13);
 N                get_filename(MP3.dir);
@@ -33646,15 +33566,6 @@ N    }
 N}
 N
 N/*******************************************************************************
-N* ������  : Process_Socket_Data
-N* ����    : W5500���ղ����ͽ��յ�������
-N* ����    : s:�˿ں�
-N* ���    : ��
-N* ����ֵ  : ��
-N* ˵��    : �������ȵ���S_rx_process()��W5500�Ķ˿ڽ������ݻ�������ȡ����,
-N*			Ȼ�󽫶�ȡ�����ݴ�Rx_Buffer������Temp_Buffer���������д�����
-N*			������ϣ������ݴ�Temp_Buffer������Tx_Buffer������������S_tx_process()
-N*			�������ݡ�
 N*******************************************************************************/
 Nvoid Process_Socket_Data(SOCKET s)
 N{
@@ -33690,17 +33601,14 @@ N            Tx_Buffer[3] = Net.IP_Addr[1];
 N            Tx_Buffer[4] = Net.IP_Addr[2];
 N            Tx_Buffer[5] = Net.IP_Addr[3];
 N            
-N            Tx_Buffer[6] = Net.Gateway_IP[0];    //�������ز���
 N            Tx_Buffer[7] = Net.Gateway_IP[1];
 N            Tx_Buffer[8] = Net.Gateway_IP[2];
 N            Tx_Buffer[9] = Net.Gateway_IP[3];
 N            
-N            Tx_Buffer[10] = Net.Sub_Mask[0];      //������������
 N            Tx_Buffer[11] = Net.Sub_Mask[1];
 N            Tx_Buffer[12] = Net.Sub_Mask[2];
 N            Tx_Buffer[13] = Net.Sub_Mask[3];
 N            
-N            get_cpuid(&Tx_Buffer[14]);//���ض˿�1����Ϊ�ͻ���ģʽ,��Ҫ���÷�������ַ�Ͷ˿�
 N            
 N            Tx_Buffer[18] = 0x00;
 N            for(i=2;i<18;i++)
@@ -33716,12 +33624,10 @@ N            {
 N                WriteConfigFile(&Rx_Buffer[10], 0, 12);
 N                Config();
 N                
-N                Tx_Buffer[0] = 0x55;//�������óɹ�ָ��
 N                Tx_Buffer[1] = 0xEE;
 N                Socket[s].UdpDestPort = 7788;
 N                Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
 N                
-N                W5500_Initialization();//��������
 N                //printf("new ip = %d.%d.%d.%d\r",Net.IP_Addr[0],Net.IP_Addr[1],Net.IP_Addr[2],Net.IP_Addr[3]);
 N            }
 N        }
@@ -33743,7 +33649,6 @@ N            Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
 N            LED_Toggle();
 X            ((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800))->ODR ^= ((uint16_t)0x8000);
 N        }
-N        else if(result == 2)//д����
 N        {
 N            Tx_Buffer[0] = 0x32;
 N            Tx_Buffer[1] = 0x60;
@@ -33761,7 +33666,6 @@ N            Write_SOCK_Data_Buffer(s, Tx_Buffer, 24);
 N            LED_Toggle();
 X            ((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800))->ODR ^= ((uint16_t)0x8000);
 N        }
-N        else if(result == 3)//������
 N        {
 N            Tx_Buffer[0] = 0x32;
 N            Tx_Buffer[1] = 0x60;
@@ -33787,23 +33691,17 @@ N        }
 N	}
 N}
 N
-Nvoid SocketProcess(void)//��ѯ����˿� funcion de conexion por ethernet con la computadora
 N{
 N    SOCKET n;
-N    W5500_Socket_Set(0);//W5500�˿ڳ�ʼ������
 N    W5500_Socket_Set(1);
 N    //W5500_Socket_Set(2);
-N    W5500_Interrupt_Process();//W5500�жϴ���������
 N    for(n=0;n<8;n++)
 N    {
-N        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)//���Socket���յ�����
 X        if((Socket[n].DataState & 0x01) == 0x01)
 N        {
 N            Socket[n].DataState &= ~S_RECEIVE;
 X            Socket[n].DataState &= ~0x01;
-N            Process_Socket_Data(n);//W5500���ղ����ͽ��յ�������
 N        }
-N        else if(W5500_Send_Delay_Counter[n] >= 5000)//��ʱ�����ַ���
 N        {
 N            if(Socket[n].State == (S_INIT|S_CONN))
 X            if(Socket[n].State == (0x01|0x02))
@@ -33811,7 +33709,6 @@ N            {
 N                Socket[n].DataState &= ~S_TRANSMITOK;
 X                Socket[n].DataState &= ~0x02;
 N                //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-N                //Write_SOCK_Data_Buffer(n, Tx_Buffer, strlen(netaddr));//ָ��Socket(0~7)�������ݴ���,�˿�0����23�ֽ�����
 N            }
 N            W5500_Send_Delay_Counter[n] = 0;
 N        }

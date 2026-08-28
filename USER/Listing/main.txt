@@ -139,7 +139,6 @@
 0000ec  78c0              LDRB     r0,[r0,#3]  ; Net
 0000ee  7148              STRB     r0,[r1,#5]
 ;;;250                
-;;;251                Tx_Buffer[6] = Net.Gateway_IP[0];    //�������ز���
 0000f0  487f              LDR      r0,|L1.752|
 0000f2  7900              LDRB     r0,[r0,#4]  ; Net
 0000f4  7188              STRB     r0,[r1,#6]
@@ -156,7 +155,6 @@
 000104  79c0              LDRB     r0,[r0,#7]
 000106  7248              STRB     r0,[r1,#9]
 ;;;255                
-;;;256                Tx_Buffer[10] = Net.Sub_Mask[0];      //������������
 000108  4879              LDR      r0,|L1.752|
 00010a  7a00              LDRB     r0,[r0,#8]  ; Net
 00010c  7288              STRB     r0,[r1,#0xa]
@@ -179,7 +177,6 @@
 000122  7ac0              LDRB     r0,[r0,#0xb]
 000124  7348              STRB     r0,[r1,#0xd]
 ;;;260                
-;;;261                get_cpuid(&Tx_Buffer[14]);//���ض˿�1����Ϊ�ͻ���ģʽ,��Ҫ���÷�������ַ�Ͷ˿�
 000126  f101000e          ADD      r0,r1,#0xe
 00012a  f7fffffe          BL       get_cpuid
 ;;;262                
@@ -253,7 +250,6 @@
 ;;;275                    Config();
 000194  f7fffffe          BL       Config
 ;;;276                    
-;;;277                    Tx_Buffer[0] = 0x55;//�������óɹ�ָ��
 000198  2055              MOVS     r0,#0x55
 00019a  4957              LDR      r1,|L1.760|
 00019c  7008              STRB     r0,[r1,#0]
@@ -272,7 +268,6 @@
 0001b6  4620              MOV      r0,r4
 0001b8  f7fffffe          BL       Write_SOCK_Data_Buffer
 ;;;281                    
-;;;282                    W5500_Initialization();//��������
 0001bc  f7fffffe          BL       W5500_Initialization
 0001c0  e091              B        |L1.742|
                   |L1.450|
@@ -323,7 +318,6 @@
 000200  e071              B        |L1.742|
                   |L1.514|
 ;;;301            }
-;;;302            else if(result == 2)//д����
 000202  2e02              CMP      r6,#2
 000204  d125              BNE      |L1.594|
 ;;;303            {
@@ -378,7 +372,6 @@
 000250  e049              B        |L1.742|
                   |L1.594|
 ;;;318            }
-;;;319            else if(result == 3)//������
 000252  2e03              CMP      r6,#3
 000254  d147              BNE      |L1.742|
 ;;;320            {
@@ -494,25 +487,21 @@
 
                   SocketProcess PROC
 ;;;343    
-;;;344    void SocketProcess(void)//��ѯ����˿� funcion de conexion por ethernet con la computadora
 000000  b510              PUSH     {r4,lr}
 ;;;345    {
 ;;;346        SOCKET n;
-;;;347        W5500_Socket_Set(0);//W5500�˿ڳ�ʼ������
 000002  2000              MOVS     r0,#0
 000004  f7fffffe          BL       W5500_Socket_Set
 ;;;348        W5500_Socket_Set(1);
 000008  2001              MOVS     r0,#1
 00000a  f7fffffe          BL       W5500_Socket_Set
 ;;;349        //W5500_Socket_Set(2);
-;;;350        W5500_Interrupt_Process();//W5500�жϴ���������
 00000e  f7fffffe          BL       W5500_Interrupt_Process
 ;;;351        for(n=0;n<8;n++)
 000012  2400              MOVS     r4,#0
 000014  e03b              B        |L2.142|
                   |L2.22|
 ;;;352        {
-;;;353            if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)//���Socket���յ�����
 000016  eb0400c4          ADD      r0,r4,r4,LSL #3
 00001a  491e              LDR      r1,|L2.148|
 00001c  eb010040          ADD      r0,r1,r0,LSL #1
@@ -529,13 +518,11 @@
 00003a  4a16              LDR      r2,|L2.148|
 00003c  eb020141          ADD      r1,r2,r1,LSL #1
 000040  7088              STRB     r0,[r1,#2]
-;;;356                Process_Socket_Data(n);//W5500���ղ����ͽ��յ�������
 000042  4620              MOV      r0,r4
 000044  f7fffffe          BL       Process_Socket_Data
 000048  e01f              B        |L2.138|
                   |L2.74|
 ;;;357            }
-;;;358            else if(W5500_Send_Delay_Counter[n] >= 5000)//��ʱ�����ַ���
 00004a  4813              LDR      r0,|L2.152|
 00004c  f8500024          LDR      r0,[r0,r4,LSL #2]
 000050  f2413188          MOV      r1,#0x1388
@@ -561,7 +548,6 @@
 000080  7088              STRB     r0,[r1,#2]
                   |L2.130|
 ;;;363                    //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-;;;364                    //Write_SOCK_Data_Buffer(n, Tx_Buffer, strlen(netaddr));//ָ��Socket(0~7)�������ݴ���,�˿�0����23�ֽ�����
 ;;;365                }
 ;;;366                W5500_Send_Delay_Counter[n] = 0;
 000082  2000              MOVS     r0,#0
@@ -657,7 +643,6 @@
 ;;;18     
 ;;;19     int main(void){
 000000  f7fffffe          BL       SysTick_Init
-;;;20         //�������� 
 ;;;21     //    if(FLASH_GetReadOutProtectionStatus() != SET)
 ;;;22     //    {
 ;;;23     //        FLASH_Unlock();
@@ -680,7 +665,6 @@
 000014  f7fffffe          BL       bsp_InitI2C
 ;;;36         bsp_InitSpi1Bus();
 000018  f7fffffe          BL       bsp_InitSpi1Bus
-;;;37         bsp_InitSpiFlash();		//��ʼ��SPI_Flash
 00001c  f7fffffe          BL       bsp_InitSpiFlash
 ;;;38         W5500_GPIO_Config(); //Puerto de comunicacion 
 000020  f7fffffe          BL       W5500_GPIO_Config
@@ -689,7 +673,6 @@
 000024  f7fffffe          BL       bsp_InitSpi2Bus
 ;;;41         mp3_par_init(); 
 000028  f7fffffe          BL       mp3_par_init
-;;;42         vs1053_HardInit();      //��ʼ��VS1053b
 00002c  f7fffffe          BL       vs1053_HardInit
 ;;;43         
 ;;;44         Config();
@@ -706,7 +689,6 @@
 000040  f64030b8          MOV      r0,#0xbb8
 000044  f7fffffe          BL       bsp_InitIwdg
 ;;;51         
-;;;52     	nRF24L01ioConfig();		//�������� Radiofreq
 000048  f7fffffe          BL       nRF24L01ioConfig
 ;;;53     	SPI_RW_Reg(FLUSH_RX,0xff);
 00004c  21ff              MOVS     r1,#0xff
@@ -813,18 +795,15 @@
 0000e0  2000              MOVS     r0,#0
 0000e2  496f              LDR      r1,|L4.672|
 0000e4  7748              STRB     r0,[r1,#0x1d]
-;;;95                     RtcWrite((RtcType*)Par);//дʱ��
 0000e6  4871              LDR      r0,|L4.684|
 0000e8  f7fffffe          BL       RtcWrite
 ;;;96     				
-;;;97                     WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
 0000ec  2228              MOVS     r2,#0x28
 0000ee  210c              MOVS     r1,#0xc
 0000f0  486e              LDR      r0,|L4.684|
 0000f2  1dc0              ADDS     r0,r0,#7
 0000f4  f7fffffe          BL       WriteConfigFile
 ;;;98                     //Config();
-;;;99                     if(ReadConfigFile())//�������ļ��ɹ�
 0000f8  f7fffffe          BL       ReadConfigFile
 0000fc  b110              CBZ      r0,|L4.260|
 ;;;100                        Load_Period_Parameters(&FileBuf[12]); 
@@ -932,7 +911,6 @@
 00018c  4944              LDR      r1,|L4.672|
 00018e  7708              STRB     r0,[r1,#0x1c]
                   |L4.400|
-;;;135    					//MP3.dir = 3;//����
 ;;;136    				}
 ;;;137                    memset(MP3.filename,0x00,13);
 000190  210d              MOVS     r1,#0xd

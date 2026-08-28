@@ -1,10 +1,6 @@
 L 1 "USER\BSP\bsp_uart_fifo.c"
 N/*
 N*********************************************************************************************************
-N*	ģ������ : �����ж�+FIFO����ģ��
-N*	�ļ����� : bsp_uart_fifo.c
-N*	��    �� : V1.0
-N*	˵    �� : ���ô����ж�+FIFOģʽʵ�ֶ�����ڵ�ͬʱ����
 N*********************************************************************************************************
 N*/
 N
@@ -30595,7 +30591,6 @@ N#ifndef __BSP_24L01_H
 N#define __BSP_24L01_H
 N					 					   	 
 N//-------------------------------------------------------------------------------------
-N//24L01�˿ڶ���
 N#define uchar unsigned char 
 N#define uint unsigned int
 N
@@ -30606,18 +30601,6 @@ N#define	nRF24L01_CSN_H	    GPIO_SetBits(GPIOB, GPIO_Pin_11)
 N#define	nRF24L01_CSN_L	    GPIO_ResetBits(GPIOB, GPIO_Pin_11)
 N
 N/*
-N#define IRQ					RC0				//�ж�
-N#define IRQ_T				TRISC0			//�жϷ�������
-N#define nRF24L01_CE			RC5				//ʹ�ܿ���
-N#define nRF24L01_CE_T		TRISC5			//ʹ�ܿ��Ʒ�������
-N#define nRF24L01_CSN		RC4 			//Ƭѡ����
-N#define nRF24L01_CSN_T		TRISC4			//Ƭѡ���Ʒ�������
-N#define nRF24L01_MISO		RA2				//����1׼����
-N#define nRF24L01_MISO_T		TRISA2			//����1׼���÷�������
-N#define nRF24L01_SCK		RA0				//ʱ�����
-N#define nRF24L01_SCK_T		TRISA0			//ʱ�ӷ������
-N#define nRF24L01_MOSI		RA1				//�������
-N#define nRF24L01_MOSI_T		TRISA1			//���ݷ�������
 N*/
 N//*********************************************NRF24L01*************************************
 N#define TX_ADR_WIDTH    5   	// 5 uints TX address width
@@ -30625,44 +30608,8 @@ N#define RX_ADR_WIDTH    5   	// 5 uints RX address width
 N#define TX_PLOAD_WIDTH  32  	// 20 uints TX payload
 N#define RX_PLOAD_WIDTH  32  	// 20 uints TX payload
 N
-N#define MAX_TX  	0x10  //�ﵽ����ʹ����ж�
-N#define TX_OK   	0x20  //TX��������ж�
-N#define RX_OK   	0x40  //���յ������ж�
 N//****************************************************************//
 N// SPI(nRF24L01) commands
-N//***************************************NRF24L01�Ĵ���ָ��*******************************************************
-N#define RFREAD_REG      0x00  	// ���Ĵ���ָ��
-N#define RFWRITE_REG     0x20 	// д�Ĵ���ָ��
-N#define RD_RX_PLOAD     0x61  	// ��ȡ��������ָ��
-N#define WR_TX_PLOAD     0xA0  	// д��������ָ��
-N#define FLUSH_TX        0xE1 	// ��ϴ���� FIFOָ��
-N#define FLUSH_RX        0xE2  	// ��ϴ���� FIFOָ��
-N#define REUSE_TX_PL     0xE3  	// �����ظ�װ������ָ��
-N//*************************************SPI(nRF24L01)�Ĵ�����ַ****************************************************
-N#define CONFIG          0x00  // �����շ�״̬��CRCУ��ģʽ�Լ��շ�״̬��Ӧ��ʽ
-N#define EN_AA           0x01  // �Զ�Ӧ��������
-N#define EN_RXADDR       0x02  // �����ŵ�����
-N#define SETUP_AW        0x03  // �շ���ַ��������
-N#define SETUP_RETR      0x04  // �Զ��ط���������
-N#define RF_CH           0x05  // ����Ƶ������
-N#define RF_SETUP        0x06  // �������ʡ����Ĺ�������
-N#define STATUS          0x07  // ״̬�Ĵ���
-N#define OBSERVE_TX      0x08  // ���ͼ�⹦��
-N#define CD              0x09  // ��ַ���           
-N#define RX_ADDR_P0      0x0A  // Ƶ��0�������ݵ�ַ
-N#define RX_ADDR_P1      0x0B  // Ƶ��1�������ݵ�ַ
-N#define RX_ADDR_P2      0x0C  // Ƶ��2�������ݵ�ַ
-N#define RX_ADDR_P3      0x0D  // Ƶ��3�������ݵ�ַ
-N#define RX_ADDR_P4      0x0E  // Ƶ��4�������ݵ�ַ
-N#define RX_ADDR_P5      0x0F  // Ƶ��5�������ݵ�ַ
-N#define TX_ADDR         0x10  // ���͵�ַ�Ĵ���
-N#define RX_PW_P0        0x11  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P1        0x12  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P2        0x13  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P3        0x14  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P4        0x15  // ����Ƶ��0�������ݳ���
-N#define RX_PW_P5        0x16  // ����Ƶ��0�������ݳ���
-N#define FIFO_STATUS     0x17  // FIFOջ��ջ��״̬�Ĵ�������
 N
 Nextern void RX_Mode(void);
 Nextern void TX_Mode(void);
@@ -30687,10 +30634,6 @@ L 1 ".\USER\demo_spi_flash_fatfs.h" 1
 N/*
 N*********************************************************************************************************
 N*
-N*	ģ������ : SPI Flash��FatFS ��ʾģ�顣
-N*	�ļ����� : demo_spi_flash_fatfs.h
-N*	��    �� : V1.0
-N*	˵    �� : ͷ�ļ�
 N*
 N*********************************************************************************************************
 N*/
@@ -30698,7 +30641,6 @@ N
 N#ifndef _DEMO_SPI_FLASH_FATFS_H
 N#define _DEMO_SPI_FLASH_FATFS_H
 N
-N#define BUF_SIZE				  (4096*4)		/* ÿ�ζ�дSD����������ݳ��� */
 N
 N
 Nenum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
@@ -30707,14 +30649,9 @@ N
 N
 Ntypedef struct
 N{
-N    char filename[13];          /* �ļ��� */
-N	uint8_t ucMuteOn;			/* 1 : ������ 0: ���� */
-N	uint8_t ucVolume;			/* ��ǰ���� */
 N    uint8_t VolumeEnviron;
 N    uint8_t VolumePeriod;
 N    uint8_t VolumeChangeFlag;
-N	uint32_t uiProgress;		/* ��ǰ����(�Ѷ�ȡ���ֽ���) */
-N	uint8_t ucPauseEn;			/* ��ͣʹ�� */
 N    uint8_t fileOpenFlag;
 N    uint8_t fileChangeFlag;
 N    uint8_t cycleFlag;
@@ -30738,23 +30675,13 @@ N}MP3_T;
 N
 Ntypedef struct
 N{
-N    uint8_t cardType;           /* �����ͣ�0x32ä���� */
-N	uint8_t packType;			/* �����ͣ�0x68 */
 N	char filename[13];
-N	uint8_t operaType;		    /* �������� */
-N	uint16_t total;			    /* �ְ��� */
-N    uint16_t now;               /* ����� */
-N    uint16_t len;               /* ������ */
 N    uint8_t data;
 N}PACK_T;
 N
 Ntypedef struct
 N{
-N    char filename[13];          /* �ļ��� */
-N	uint16_t total;			    /* �ְ��� */
-N	uint16_t get;			    /* ��ǰ���� */
 N    uint16_t filebufbytes;
-N	uint32_t bytes;		        /* ��ǰ����(�Ѷ�ȡ���ֽ���) */
 N    uint8_t* Pdata;
 N    uint32_t timeCount;
 N}FIle_TRANS_T;
@@ -30767,7 +30694,6 @@ Nextern uint8_t Par[64];
 Nextern uint8_t FileBuf[BUF_SIZE];
 Xextern uint8_t FileBuf[(4096*4)];
 N
-N/* ���ⲿ���õĺ������� */
 Nvoid FileFormat(void);
 Nvoid ViewRootDir(void);
 N
@@ -30841,7 +30767,6 @@ N#define FILTER_ON_TIME          6
 N#define FILTER_OFF_TIME         21
 N#define DEVIATION_TIME          300 //锟斤拷锟斤拷学习时锟斤拷2锟斤拷  锟斤拷位10MS
 N#define AHEAD_END_TIME          2 
-N#define LOST_DELAY_TIME         3   //锟斤拷每锟诫发锟酵碉拷前锟斤拷示时锟斤拷时锟斤拷锟�3锟斤拷没锟斤拷锟秸碉拷锟斤拷一锟斤拷锟斤拷锟斤拷氐锟�
 N/***********************************************************************************/
 N
 N
@@ -32824,17 +32749,12 @@ N/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****
 L 12 "USER\BSP\bsp_uart_fifo.c" 2
 N
 N
-N/* ����ÿ�����ڽṹ����� */
-Nstatic uint8_t g_TxBuf1[UART1_TX_BUF_SIZE];		/* ���ͻ����� */
 Xstatic uint8_t g_TxBuf1[256];		 
-Nstatic uint8_t g_RxBuf1[UART1_RX_BUF_SIZE];		/* ���ջ����� */
 Xstatic uint8_t g_RxBuf1[256];		 
 N
 NUART_T g_tUart1;
 NUART_T Uart2Gps;
-Nstatic uint8_t g_TxBuf2[UART2_TX_BUF_SIZE];		/* ���ͻ����� */
 Xstatic uint8_t g_TxBuf2[128];		 
-Nstatic uint8_t g_RxBuf2[UART2_RX_BUF_SIZE];		/* ���ջ����� */
 Xstatic uint8_t g_RxBuf2[2048];		 
 N
 Nstatic void UartVarInit(void);
@@ -32857,8 +32777,6 @@ N	DMA_InitTypeDef DMA_InitStructure;
 N	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 X	RCC_AHBPeriphClockCmd(((uint32_t)0x00000001), ENABLE);
 N	
-N    // ����DMA1ͨ��3��USART3_RX��
-N	// ����DMA1ͨ��6��USART2_RX��
 N    DMA_DeInit(DMA1_Channel6);
 X    DMA_DeInit(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)));
 N    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
@@ -32885,33 +32803,21 @@ X    DMA_InitStructure.DMA_M2M = ((uint32_t)0x00000000);
 N    DMA_Init(DMA1_Channel6, &DMA_InitStructure);
 X    DMA_Init(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)), &DMA_InitStructure);
 N	
-N	DMA_Cmd(DMA1_Channel6, ENABLE);// ����DMA����
 X	DMA_Cmd(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)), ENABLE);
 N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: bsp_InitUart
-N*	����˵��: ��ʼ������Ӳ��������ȫ�ֱ�������ֵ.
-N*	��    ��:  ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nvoid bsp_InitUart(void)
 N{
-N	UartVarInit();		/* �����ȳ�ʼ��ȫ�ֱ���,������Ӳ�� */
-N	InitHardUart();		/* ���ô��ڵ�Ӳ������(�����ʵ�) */
 N	DMA_Configuration();
-N	ConfigUartNVIC();	/* ���ô����ж� */
 N}
 N
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: UartClearTxFifo
-N*	����˵��: ���㴮�ڷ��ͻ�����
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nvoid UartClearTxFifo(void)
@@ -32923,10 +32829,6 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: UartClearRxFifo
-N*	����˵��: ���㴮�ڽ��ջ�����
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nvoid UartClearRxFifo(void)
@@ -32953,7 +32855,6 @@ N    local->year = utc->year;
 N    local->month = utc->month;
 N    local->day = utc->day;
 N    
-N    if(TimeZone[0])//����
 N    {
 N        if(seconds + timezone < 86400)
 N        {
@@ -32975,7 +32876,6 @@ N                }
 N            }
 N        }
 N    }
-N    else //����
 N    {
 N        if(seconds >= timezone)
 N        {
@@ -33021,15 +32921,11 @@ N
 N//                             0   1   2   3   4   5   6   7   8   9  10  11  12
 Nconst uint8_t DayMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 N
-N//����:���
-N//���:������ǲ������� 1�� 0����
 Nuint8_t Is_Leap_Year(uint16_t year)
 N{
-N	if(year%4==0)//�����ܱ�4����
 N	{
 N		if(year%100==0)
 N		{
-N			if(year%400==0)return 1;//�����00��β,��Ҫ�ܱ�400���� 	   
 N			else return 0;
 N		}else return 1;
 N	}else return 0;
@@ -33038,7 +32934,6 @@ N
 Nvoid calc_week(RtcType* rtc)
 N{
 N    uint16_t y,m,d,a,b,c;
-N    //��������
 N    y = rtc->year;
 N    m = rtc->month;
 N    d = rtc->day;
@@ -33089,7 +32984,6 @@ N    local->year = utc->year;
 N    local->month = utc->month;
 N    local->day = utc->day;
 N    
-N    if(TimeZone[0])//����
 N    {
 N        if(seconds + timezone < 86400)
 N        {
@@ -33111,7 +33005,6 @@ N                }
 N            }
 N        }
 N    }
-N    else //����
 N    {
 N        if(seconds >= timezone)
 N        {
@@ -33265,56 +33158,23 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: UartVarInit
-N*	����˵��: ��ʼ��������صı���
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nstatic void UartVarInit(void)
 N{
-N	g_tUart1.uart = USART1;						/* STM32 �����豸 */
 X	g_tUart1.uart = ((USART_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x3800));						 
-N	g_tUart1.pTxBuf = g_TxBuf1;					/* ���ͻ�����ָ�� */
-N	g_tUart1.pRxBuf = g_RxBuf1;					/* ���ջ�����ָ�� */
-N	g_tUart1.usTxBufSize = UART1_TX_BUF_SIZE;	/* ���ͻ�������С */
 X	g_tUart1.usTxBufSize = 256;	 
-N	g_tUart1.usRxBufSize = UART1_RX_BUF_SIZE;	/* ���ջ�������С */
 X	g_tUart1.usRxBufSize = 256;	 
-N	g_tUart1.usTxWrite = 0;						/* ����FIFOд���� */
-N	g_tUart1.usTxRead = 0;						/* ����FIFO������ */
-N	g_tUart1.usRxWrite = 0;						/* ����FIFOд���� */
-N	g_tUart1.usRxRead = 0;						/* ����FIFO������ */
-N	g_tUart1.usRxCount = 0;						/* ���յ��������ݸ��� */
-N	g_tUart1.usTxCount = 0;						/* �����͵����ݸ��� */
-N	g_tUart1.SendBefor = 0;						/* ��������ǰ�Ļص����� */
-N	g_tUart1.SendOver = 0;						/* ������Ϻ�Ļص����� */
-N	g_tUart1.ReciveNew = 0;						/* ���յ������ݺ�Ļص����� */
 N	
-N	Uart2Gps.uart = USART2;						/* STM32 �����豸 */
 X	Uart2Gps.uart = ((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400));						 
-N	Uart2Gps.pTxBuf = g_TxBuf2;					/* ���ͻ�����ָ�� */
-N	Uart2Gps.pRxBuf = g_RxBuf2;					/* ���ջ�����ָ�� */
-N	Uart2Gps.usTxBufSize = UART2_TX_BUF_SIZE;	/* ���ͻ�������С */
 X	Uart2Gps.usTxBufSize = 128;	 
-N	Uart2Gps.usRxBufSize = UART2_RX_BUF_SIZE;	/* ���ջ�������С */
 X	Uart2Gps.usRxBufSize = 2048;	 
-N	Uart2Gps.usTxWrite = 0;						/* ����FIFOд���� */
-N	Uart2Gps.usTxRead = 0;						/* ����FIFO������ */
-N	Uart2Gps.usRxWrite = 0;						/* ����FIFOд���� */
-N	Uart2Gps.usRxRead = 0;						/* ����FIFO������ */
-N	Uart2Gps.usRxCount = 0;						/* ���յ��������ݸ��� */
-N	Uart2Gps.usTxCount = 0;						/* �����͵����ݸ��� */
-N	Uart2Gps.SendBefor = 0;						/* ��������ǰ�Ļص����� */
-N	Uart2Gps.SendOver = 0;						/* ������Ϻ�Ļص����� */
-N	Uart2Gps.ReciveNew = Gps_ReciveNew;			/* ���յ������ݺ�Ļص����� */
 N}
 Nvoid Init_Uart1(void)
 N{
 N	GPIO_InitTypeDef GPIO_InitStructure;
 N	USART_InitTypeDef USART_InitStructure;
 N
-N	/* ����1 TX = PA9   RX = PA10 �� TX = PB6   RX = PB7*/
 N	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 X	RCC_APB2PeriphClockCmd(((uint32_t)0x00000004) | ((uint32_t)0x00000001), ENABLE);
 N	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
@@ -33333,7 +33193,6 @@ N	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 N	GPIO_Init(GPIOA, &GPIO_InitStructure);
 X	GPIO_Init(((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800)), &GPIO_InitStructure);
 N
-N	USART_InitStructure.USART_BaudRate = UART1_BAUD;	/* ������ */
 X	USART_InitStructure.USART_BaudRate = 115200;	 
 N	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 X	USART_InitStructure.USART_WordLength = ((uint16_t)0x0000);
@@ -33348,29 +33207,22 @@ X	USART_InitStructure.USART_Mode = ((uint16_t)0x0004) | ((uint16_t)0x0008);
 N	USART_Init(USART1, &USART_InitStructure);
 X	USART_Init(((USART_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x3800)), &USART_InitStructure);
 N
-N	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);	/* ʹ�ܽ����ж� */
 X	USART_ITConfig(((USART_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x3800)), ((uint16_t)0x0525), ENABLE);	 
 N	/*
 N		USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-N		ע��: ��Ҫ�ڴ˴��򿪷����ж�
-N		�����ж�ʹ����SendUart()������
 N	*/
-N	USART_Cmd(USART1, ENABLE);		/* ʹ�ܴ��� */
 X	USART_Cmd(((USART_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x3800)), ENABLE);		 
-N	USART_ClearFlag(USART1, USART_FLAG_TC);     /* �巢����ɱ�־��Transmission Complete flag */
 X	USART_ClearFlag(((USART_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x3800)), ((uint16_t)0x0040));      
 N}
 Nvoid Init_Uart2(void)
 N{
 N	GPIO_InitTypeDef GPIO_InitStructure;
 N	USART_InitTypeDef USART_InitStructure;
-N	/* ��1������GPIO��USART������ʱ�� */
 N	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 X	RCC_APB2PeriphClockCmd(((uint32_t)0x00000004) | ((uint32_t)0x00000001), ENABLE);
 N	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 X	RCC_APB1PeriphClockCmd(((uint32_t)0x00020000), ENABLE);
 N
-N	/* ��2������USART Tx��GPIO����Ϊ���츴��ģʽ */
 N	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 X	GPIO_InitStructure.GPIO_Pin = ((uint16_t)0x0004);
 N	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -33378,23 +33230,17 @@ N	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 N	GPIO_Init(GPIOA, &GPIO_InitStructure);
 X	GPIO_Init(((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800)), &GPIO_InitStructure);
 N
-N	/* ��3������USART Rx��GPIO����Ϊ��������ģʽ
-N		����CPU��λ��GPIOȱʡ���Ǹ�������ģʽ���������������費�Ǳ����
-N		���ǣ��һ��ǽ�����ϱ����Ķ������ҷ�ֹ�����ط��޸���������ߵ����ò���
 N	*/
 N	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 X	GPIO_InitStructure.GPIO_Pin = ((uint16_t)0x0008);
 N	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 N	GPIO_Init(GPIOA, &GPIO_InitStructure);
 X	GPIO_Init(((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800)), &GPIO_InitStructure);
-N	/*  ��3���Ѿ����ˣ�����ⲽ���Բ���
 N		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 N	*/
 N	GPIO_Init(GPIOA, &GPIO_InitStructure);
 X	GPIO_Init(((GPIO_TypeDef *) ((((uint32_t)0x40000000) + 0x10000) + 0x0800)), &GPIO_InitStructure);
 N
-N	/* ��4���� ���ô���Ӳ������ */
-N	USART_InitStructure.USART_BaudRate = UART2_BAUD;	/* ������ */
 X	USART_InitStructure.USART_BaudRate = 9600;	 
 N	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 X	USART_InitStructure.USART_WordLength = ((uint16_t)0x0000);
@@ -33404,37 +33250,23 @@ N	USART_InitStructure.USART_Parity = USART_Parity_No ;
 X	USART_InitStructure.USART_Parity = ((uint16_t)0x0000) ;
 N	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 X	USART_InitStructure.USART_HardwareFlowControl = ((uint16_t)0x0000);
-N	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;		/* ��ѡ�����ģʽ */
 X	USART_InitStructure.USART_Mode = ((uint16_t)0x0008) | ((uint16_t)0x0004);		 
 N	USART_Init(USART2, &USART_InitStructure);
 X	USART_Init(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), &USART_InitStructure);
 N
-N	//USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);	/* ʹ�ܽ����ж� */
-N	USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);	// ʹ��USART3��DMA����
 X	USART_DMACmd(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), ((uint16_t)0x0040), ENABLE);	
-N	USART_ITConfig(USART2, USART_IT_IDLE, ENABLE);	// ʹ��USART3�Ŀ����ж�
 X	USART_ITConfig(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), ((uint16_t)0x0424), ENABLE);	
 N	/*
 N		USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-N		ע��: ��Ҫ�ڴ˴��򿪷����ж�
-N		�����ж�ʹ����SendUart()������
 N	*/
-N	USART_Cmd(USART2, ENABLE);		/* ʹ�ܴ��� */
 X	USART_Cmd(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), ENABLE);		 
 N
-N	/* CPU��Сȱ�ݣ��������úã����ֱ��Send�����1���ֽڷ��Ͳ���ȥ
-N		�����������1���ֽ��޷���ȷ���ͳ�ȥ������ */
-N	USART_ClearFlag(USART2, USART_FLAG_TC);     /* �巢����ɱ�־��Transmission Complete flag */
 X	USART_ClearFlag(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), ((uint16_t)0x0040));      
 N}
 N
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: InitHardUart
-N*	����˵��: ���ô��ڵ�Ӳ�������������ʣ�����λ��ֹͣλ����ʼλ��У��λ���ж�ʹ�ܣ��ʺ���STM32-F4������
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nstatic void InitHardUart(void)
@@ -33445,10 +33277,6 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: ConfigUartNVIC
-N*	����˵��: ���ô���Ӳ���ж�.
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nstatic void ConfigUartNVIC(void)
@@ -33457,14 +33285,12 @@ N	NVIC_InitTypeDef NVIC_InitStructure;
 N
 N    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 X    NVIC_PriorityGroupConfig(((uint32_t)0x300));
-N	/* ʹ�ܴ���1�ж� */
 N	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 N    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 N	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 N	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 N	NVIC_Init(&NVIC_InitStructure);
 N	
-N	/* ʹ�ܴ���2�ж� */
 N	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 N	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 N	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -33473,10 +33299,6 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: UartSend
-N*	����˵��: ��д���ݵ�UART���ͻ�����,�����������жϡ��жϴ�������������Ϻ��Զ��رշ����ж�
-N*	��    ��:  ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nvoid UartSendBuf(uint8_t *_ucaBuf, uint16_t _usLen)
@@ -33485,7 +33307,6 @@ N	uint16_t i;
 N    
 N	if(g_tUart1.SendBefor != 0)
 N	{
-N		g_tUart1.SendBefor();		/* �����RS485ͨ�ţ���������������н�RS485����Ϊ����ģʽ */
 N	}
 N    
 N	for(i = 0; i < _usLen; i++)
@@ -33506,7 +33327,6 @@ N			{
 N				break;
 N			}
 N		}
-N		/* �����������뷢�ͻ����� */
 N		g_tUart1.pTxBuf[g_tUart1.usTxWrite] = _ucaBuf[i];
 N
 N		DISABLE_INT();
@@ -33520,7 +33340,6 @@ N		ENABLE_INT();
 X		__set_PRIMASK(0);
 N	}
 N
-N	USART_ITConfig(g_tUart1.uart, USART_IT_TXE, ENABLE);//���������ж� 
 X	USART_ITConfig(g_tUart1.uart, ((uint16_t)0x0727), ENABLE);
 N}
 N
@@ -33531,38 +33350,27 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: UartGetChar
-N*	����˵��: �Ӵ��ڽ��ջ�������ȡ1�ֽ����� ��������������ã�
-N*	��    ��: _pUart : �����豸
-N*			  _pByte : ��Ŷ�ȡ���ݵ�ָ��
-N*	�� �� ֵ: 0 ��ʾ������  1��ʾ��ȡ������
 N*********************************************************************************************************
 N*/
 Nuint8_t UartGetChar(uint8_t *_pByte)
 N{
 N	uint16_t usCount;
 N
-N	/* usRxWrite �������жϺ����б���д���������ȡ�ñ���ʱ����������ٽ������� */
 N	DISABLE_INT();
 X	__set_PRIMASK(1);
 N	usCount = g_tUart1.usRxCount;
 N	ENABLE_INT();
 X	__set_PRIMASK(0);
 N
-N	/* �������д������ͬ���򷵻�0 */
 N	//if (_g_tUart1.usRxRead == usRxWrite)
-N	if (usCount == 0)	/* �Ѿ�û������ */
 N	{
 N		return 0;
 N	}
 N	else
 N	{
-N		*_pByte = g_tUart1.pRxBuf[g_tUart1.usRxRead];		/* �Ӵ��ڽ���FIFOȡ1������ */
 N
-N		/* ��дFIFO������ */
 N		DISABLE_INT();
 X		__set_PRIMASK(1);
-N		if (++g_tUart1.usRxRead >= g_tUart1.usRxBufSize)//������������β��
 N		{
 N			g_tUart1.usRxRead = 0;
 N		}
@@ -33645,10 +33453,8 @@ N}
 N
 Nstatic void GpsIRQ(void)
 N{
-N	/* ���������ж�  */
 N//	if(USART_GetITStatus(Uart2Gps.uart, USART_IT_RXNE) != RESET)
 N//	{
-N//		/* �Ӵ��ڽ������ݼĴ�����ȡ���ݴ�ŵ�����FIFO */
 N//		uint8_t ch;
 N//		
 N//		ch = USART_ReceiveData(Uart2Gps.uart);
@@ -33678,20 +33484,15 @@ N    if (USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)
 X    if (USART_GetITStatus(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400)), ((uint16_t)0x0424)) != RESET) 
 N	{
 N		uint16_t i;
-N        // ��������жϱ�־
-N        USART_ReceiveData(USART2); // ��ȡDR�Ĵ����������־
 X        USART_ReceiveData(((USART_TypeDef *) (((uint32_t)0x40000000) + 0x4400))); 
-N        // �����ѽ��յ����ݳ���
 N        rx_length = DMA_BUFFER_SIZE - DMA_GetCurrDataCounter(DMA1_Channel6);
 X        rx_length = 2048 - DMA_GetCurrDataCounter(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)));
 N		/*
 N		printf("USART3_IT_IDLE rx_length = %d\n",rx_length);
 N		printf_fifo_hex(rx_buffer, rx_length);
-N        // �������յ�������
 N		*/
 N        for (i = 0; i < rx_length; i++) 
 N		{
-N            // ����rx_buffer�е�����
 N			uint8_t ch = dma_usart2_rx_buffer[i];
 N			
 N			if(Uart2Gps.usRxWrite == 0)
@@ -33712,7 +33513,6 @@ N				}
 N
 N				if(ch == '\n')//֡β
 N				{
-N					// �ص�����,֪ͨӦ�ó����յ�������,һ���Ƿ���1����Ϣ��������һ����� 
 N					if (Uart2Gps.ReciveNew)
 N					{
 N						Uart2Gps.ReciveNew(Uart2Gps.usRxWrite);
@@ -33722,7 +33522,6 @@ N				}
 N			}
 N        }
 N		
-N        // ��������DMA����
 N        DMA_Cmd(DMA1_Channel6, DISABLE);
 X        DMA_Cmd(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)), DISABLE);
 N        DMA_SetCurrDataCounter(DMA1_Channel6, DMA_BUFFER_SIZE);
@@ -33731,23 +33530,19 @@ N        DMA_Cmd(DMA1_Channel6, ENABLE);
 X        DMA_Cmd(((DMA_Channel_TypeDef *) ((((uint32_t)0x40000000) + 0x20000) + 0x006C)), ENABLE);
 N    }
 N	
-N	/* �������ͻ��������ж� */
 N	if(USART_GetITStatus(Uart2Gps.uart, USART_IT_TXE) != RESET)
 X	if(USART_GetITStatus(Uart2Gps.uart, ((uint16_t)0x0727)) != RESET)
 N	{
 N		if (Uart2Gps.usTxCount == 0)
 N		{
-N			/* ���ͻ�������������ȡ��ʱ�� ��ֹ���ͻ��������ж� ��ע�⣺��ʱ���1�����ݻ�δ����������ϣ�*/
 N			USART_ITConfig(Uart2Gps.uart, USART_IT_TXE, DISABLE);
 X			USART_ITConfig(Uart2Gps.uart, ((uint16_t)0x0727), DISABLE);
 N
-N			/* ʹ�����ݷ�������ж� */
 N			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, ENABLE);
 X			USART_ITConfig(Uart2Gps.uart, ((uint16_t)0x0626), ENABLE);
 N		}
 N		else
 N		{
-N			/* �ӷ���FIFOȡ1���ֽ�д�봮�ڷ������ݼĴ��� */
 N			USART_SendData(Uart2Gps.uart, Uart2Gps.pTxBuf[Uart2Gps.usTxRead]);
 N			if (++Uart2Gps.usTxRead >= Uart2Gps.usTxBufSize)
 N			{
@@ -33756,17 +33551,14 @@ N			}
 N			Uart2Gps.usTxCount--;
 N		}
 N	}
-N	/* ����bitλȫ��������ϵ��ж� */
 N	else if (USART_GetITStatus(Uart2Gps.uart, USART_IT_TC) != RESET)
 X	else if (USART_GetITStatus(Uart2Gps.uart, ((uint16_t)0x0626)) != RESET)
 N	{
 N		if (Uart2Gps.usTxCount == 0)
 N		{
-N			/* �������FIFO������ȫ��������ϣ���ֹ���ݷ�������ж� */
 N			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, DISABLE);
 X			USART_ITConfig(Uart2Gps.uart, ((uint16_t)0x0626), DISABLE);
 N
-N			/* �ص�����, һ����������RS485ͨ�ţ���RS485оƬ����Ϊ����ģʽ��������ռ���� */
 N			if (Uart2Gps.SendOver)
 N			{
 N				Uart2Gps.SendOver();
@@ -33774,8 +33566,6 @@ N			}
 N		}
 N		else
 N		{
-N			/* ��������£��������˷�֧ */
-N			/* �������FIFO�����ݻ�δ��ϣ���ӷ���FIFOȡ1������д�뷢�����ݼĴ��� */
 N			USART_SendData(Uart2Gps.uart, Uart2Gps.pTxBuf[Uart2Gps.usTxRead]);
 N			if (++Uart2Gps.usTxRead >= Uart2Gps.usTxBufSize)
 N			{
@@ -33790,12 +33580,6 @@ N//	{
 N//		USART_ReceiveData(Uart2Gps.uart);
 N//		//USART_ClearFlag(Uart2Gps.uart, USART_FLAG_ORE);
 N//	}
-N	//USART_IT_FE	 ֡���� (Framing error)
-N	//USART_FLAG_ORE ������� ���ش��� (Overrun error)
-N	//USART_FLAG_PE	 ��ż����� У����� (Parity error)
-N	//USART_FLAG_NE	 ���������־ (Noise error flag)
-N	//NE��ORT��FE	 ������־���໺��ͨ���е���������֡����
-N	if ((Uart2Gps.uart->SR & (USART_FLAG_PE|USART_FLAG_NE|USART_IT_FE|USART_FLAG_ORE)) != (uint16_t)RESET)//�����������
 X	if ((Uart2Gps.uart->SR & (((uint16_t)0x0001)|((uint16_t)0x0004)|((uint16_t)0x0160)|((uint16_t)0x0008))) != (uint16_t)RESET)
 N	{
 N		//USART_ClearFlag(_pUart->uart, USART_FLAG_ORE);
@@ -33805,10 +33589,6 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: USART1_IRQHandler
-N*	����˵��: USART�жϷ������
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nvoid USART1_IRQHandler(void)
@@ -33833,10 +33613,6 @@ N
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: fputc
-N*	����˵��: �ض���putc��������������ʹ��printf�����Ӵ���1��ӡ���
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nint fputc(int ch, FILE *f)
@@ -33847,10 +33623,6 @@ N}
 N
 N/*
 N*********************************************************************************************************
-N*	�� �� ��: fgetc
-N*	����˵��: �ض���getc��������������ʹ��getchar�����Ӵ���1��������
-N*	��    ��: ��
-N*	�� �� ֵ: ��
 N*********************************************************************************************************
 N*/
 Nint fgetc(FILE *f)

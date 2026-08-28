@@ -263,7 +263,6 @@
 000032  f7fffffe          BL       GPIO_Init
 ;;;34         
 ;;;35     	//PA0_GPS_ON/OFF	PA15_LED	PA11_PA
-;;;36         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //LED�˿��������
 000036  2010              MOVS     r0,#0x10
 000038  f88d0003          STRB     r0,[sp,#3]
 ;;;37     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
@@ -291,7 +290,6 @@
 00006a  f7fffffe          BL       GPIO_SetBits
 ;;;44         
 ;;;45     	
-;;;46         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 00006e  2010              MOVS     r0,#0x10
 000070  f88d0003          STRB     r0,[sp,#3]
 ;;;47     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
@@ -309,8 +307,6 @@
 00008e  482a              LDR      r0,|L4.312|
 000090  f7fffffe          BL       GPIO_SetBits
 ;;;51         
-;;;52     	//MOS������
-;;;53         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 000094  2010              MOVS     r0,#0x10
 000096  f88d0003          STRB     r0,[sp,#3]
 ;;;54     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
@@ -334,8 +330,6 @@
 0000c8  481a              LDR      r0,|L4.308|
 0000ca  f7fffffe          BL       GPIO_ResetBits
 ;;;58         /****************************************************/
-;;;59     	//RELAY_PB9ɾ��  RF_CE_PB10ʹ�ܿ���  RF_CSN_PB11Ƭѡ
-;;;60         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 0000ce  2010              MOVS     r0,#0x10
 0000d0  f88d0003          STRB     r0,[sp,#3]
 ;;;61     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
@@ -352,14 +346,12 @@
 0000ea  f44f7100          MOV      r1,#0x200
 0000ee  4813              LDR      r0,|L4.316|
 0000f0  f7fffffe          BL       GPIO_ResetBits
-;;;65         //IN-PB8ɾ��    XIN-PB4ɾ�� 
 ;;;66     //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 ;;;67     //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 ;;;68     //    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_8;
 ;;;69     //    GPIO_Init(GPIOB, &GPIO_InitStructure);
 ;;;70         
 ;;;71         /****************************************************/
-;;;72         //SW5-SW8 PA0-PA3 ��ΪGPS���� PA0_ON/OFF PA1_1PPS 
 ;;;73         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 0000f4  2004              MOVS     r0,#4
 0000f6  f88d0003          STRB     r0,[sp,#3]
@@ -374,11 +366,9 @@
 000108  480b              LDR      r0,|L4.312|
 00010a  f7fffffe          BL       GPIO_Init
 ;;;77         /****************************************************/
-;;;78     	//IRQ_PB12�ж� // Pin de Radio frecuencia 
 ;;;79     	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 00010e  f44f5080          MOV      r0,#0x1000
 000112  f8ad0000          STRH     r0,[sp,#0]
-;;;80     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;     //��������
 000116  2048              MOVS     r0,#0x48
 000118  f88d0003          STRB     r0,[sp,#3]
 ;;;81     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -419,7 +409,6 @@
 000004  8800              LDRH     r0,[r0,#0]  ; display_data
 000006  b198              CBZ      r0,|L5.48|
 ;;;157    	{
-;;;158    		if(red_displaying_flag == 0)//��ʼ����ʱ
 000008  484f              LDR      r0,|L5.328|
 00000a  7800              LDRB     r0,[r0,#0]  ; red_displaying_flag
 00000c  b980              CBNZ     r0,|L5.48|
@@ -454,7 +443,6 @@
 000032  8840              LDRH     r0,[r0,#2]  ; display_data
 000034  b1b0              CBZ      r0,|L5.100|
 ;;;169    	{
-;;;170    		if(gre_displaying_flag == 0)//��ʼ����ʱ
 000036  4845              LDR      r0,|L5.332|
 000038  7800              LDRB     r0,[r0,#0]  ; gre_displaying_flag
 00003a  b998              CBNZ     r0,|L5.100|
@@ -940,7 +928,6 @@
                   |L6.328|
 ;;;377                }
 ;;;378            }
-;;;379            else//����-���ź�����
 ;;;380            {
 ;;;381                if(gre_off == 1)
 000148  4b33              LDR      r3,|L6.536|
@@ -1109,7 +1096,6 @@
 000002  f890007f          LDRB     r0,[r0,#0x7f]  ; system_temp
 000006  b1f8              CBZ      r0,|L7.72|
 ;;;586    	{
-;;;587    		if(++system_temp.pps_1ms >= 1000) //3Sû���յ�PPS�źţ���0 pps_flag
 000008  4815              LDR      r0,|L7.96|
 00000a  f8b00080          LDRH     r0,[r0,#0x80]  ; system_temp
 00000e  1c40              ADDS     r0,r0,#1
@@ -1125,7 +1111,6 @@
                   |L7.36|
 ;;;590    		}
 ;;;591    		
-;;;592    		if(++system_temp.pps_count >= 3000) //3Sû���յ�PPS�źţ���0 pps_flag
 000024  480e              LDR      r0,|L7.96|
 000026  f8b00082          LDRH     r0,[r0,#0x82]  ; system_temp
 00002a  1c40              ADDS     r0,r0,#1
@@ -1145,8 +1130,6 @@
                   |L7.72|
 ;;;596    		}
 ;;;597    	}
-;;;598    	//if(system_temp.VolumePeriod == 0)//�����ʱ�ο���
-;;;599    	if(system_temp.gps_flag)//GPSʱ����Ч
 000048  4805              LDR      r0,|L7.96|
 00004a  f890007c          LDRB     r0,[r0,#0x7c]  ; system_temp
 00004e  b128              CBZ      r0,|L7.92|
@@ -1276,12 +1259,10 @@
 ;;;638        EXTI_InitTypeDef EXTI_InitStructure;
 ;;;639        NVIC_InitTypeDef NVIC_InitStructure;
 ;;;640        
-;;;641        /* PC9 �ж������� IRQ0 */
 ;;;642      	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
 000002  2101              MOVS     r1,#1
 000004  2000              MOVS     r0,#0
 000006  f7fffffe          BL       GPIO_EXTILineConfig
-;;;643        /* PC9 �жϳ�ʼ������ */
 ;;;644      	EXTI_InitStructure.EXTI_Line = EXTI_Line1;
 00000a  2002              MOVS     r0,#2
 00000c  9001              STR      r0,[sp,#4]
@@ -1294,28 +1275,22 @@
 ;;;647      	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 00001a  2001              MOVS     r0,#1
 00001c  f88d000a          STRB     r0,[sp,#0xa]
-;;;648        /*����EXTI_InitStruct��ָ���Ĳ�����ʼ������EXTI�Ĵ�*/
 ;;;649      	EXTI_Init(&EXTI_InitStructure);
 000020  a801              ADD      r0,sp,#4
 000022  f7fffffe          BL       EXTI_Init
 ;;;650    	
-;;;651        /*ʹ�ܰ������ڵ��ⲿ�ж�ͨ��*/
 ;;;652      	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
 000026  2007              MOVS     r0,#7
 000028  f88d0000          STRB     r0,[sp,#0]
-;;;653        /*������ռ���ȼ�����ռ���ȼ���Ϊ2*/	
 ;;;654      	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
 00002c  2000              MOVS     r0,#0
 00002e  f88d0001          STRB     r0,[sp,#1]
-;;;655        /*���������ȼ��������ȼ���Ϊ2*/
 ;;;656      	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		
 000032  2002              MOVS     r0,#2
 000034  f88d0002          STRB     r0,[sp,#2]
-;;;657        /*ʹ���ⲿ�ж�ͨ*/
 ;;;658      	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
 000038  2001              MOVS     r0,#1
 00003a  f88d0003          STRB     r0,[sp,#3]
-;;;659        /*����NVIC_InitStruct��ָ���Ĳ�����ʼ������NVIC�Ĵ���*/	
 ;;;660      	NVIC_Init(&NVIC_InitStructure);
 00003e  4668              MOV      r0,sp
 000040  f7fffffe          BL       NVIC_Init
@@ -1329,7 +1304,6 @@
 
                   study_mode_filterAC_DC PROC
 ;;;420    
-;;;421    void study_mode_filterAC_DC(void)//10�������һ��calculation
 000000  b530              PUSH     {r4,r5,lr}
 ;;;422    {
 ;;;423    	unsigned char i;
@@ -1513,7 +1487,6 @@
 000012  e08b              B        |L11.300|
                   |L11.20|
 ;;;487    	{
-;;;488    		if(study_lamp_stab_state==((~temp_var1)&0x03))//�еƻ� ��Ϊ�����������ѧϰģʽ�½�����ʾ
 000014  2303              MOVS     r3,#3
 000016  438b              BICS     r3,r3,r1
 000018  4c46              LDR      r4,|L11.308|
@@ -1521,7 +1494,6 @@
 00001c  42a3              CMP      r3,r4
 00001e  d142              BNE      |L11.166|
 ;;;489    		{
-;;;490    			if((study_time_flag&temp_var1)==0)//û ����ѧϰ���� �Ƹյ���
 000020  4b45              LDR      r3,|L11.312|
 000022  781b              LDRB     r3,[r3,#0]  ; study_time_flag
 000024  400b              ANDS     r3,r3,r1
@@ -1537,7 +1509,6 @@
 000032  2300              MOVS     r3,#0
 000034  4c41              LDR      r4,|L11.316|
 000036  f8243010          STRH     r3,[r4,r0,LSL #1]
-;;;494                    if((study_time_valid_flag&temp_var1)==temp_var1)//ѧϰ������OK
 00003a  4b41              LDR      r3,|L11.320|
 00003c  781b              LDRB     r3,[r3,#0]  ; study_time_valid_flag
 00003e  400b              ANDS     r3,r3,r1
@@ -1557,7 +1528,6 @@
                   |L11.92|
 ;;;497                        else 
 ;;;498                        {
-;;;499                            display_data[i] = (previous_study_counter[i]+18)/100;   //��ƺ��̵Ƶ�ѧϰʱ�䴥��
 00005c  4b39              LDR      r3,|L11.324|
 00005e  f8333010          LDRH     r3,[r3,r0,LSL #1]
 000062  3312              ADDS     r3,r3,#0x12
@@ -1565,7 +1535,6 @@
 000066  fb93f3f4          SDIV     r3,r3,r4
 00006a  4c37              LDR      r4,|L11.328|
 00006c  f8243010          STRH     r3,[r4,r0,LSL #1]
-;;;500                            if(i==0)red_displaying_flag = 0;//���¿�ʼ����ʱ
 000070  b910              CBNZ     r0,|L11.120|
 000072  2300              MOVS     r3,#0
 000074  4c35              LDR      r4,|L11.332|
@@ -1601,9 +1570,7 @@
                   |L11.166|
 ;;;508    			}
 ;;;509    		}
-;;;510    		else//����10 01 11������״̬ʱ
 ;;;511    		{
-;;;512    			if((study_time_flag&temp_var1)==temp_var1)// һ��״̬����,����״̬��Ч
 0000a6  4b24              LDR      r3,|L11.312|
 0000a8  781b              LDRB     r3,[r3,#0]  ; study_time_flag
 0000aa  400b              ANDS     r3,r3,r1
@@ -1651,7 +1618,6 @@
 0000ee  428b              CMP      r3,r1
 0000f0  d10a              BNE      |L11.264|
 ;;;525    				{
-;;;526    					if(STUDY_MODE == 0)//���Ϊ������ģʽ
 ;;;527    					{
 ;;;528    //						if(temp_var2 > DEVIATION_TIME)
 ;;;529    //						{
@@ -1681,7 +1647,6 @@
 ;;;543    //                            study_time_valid_flag &= (~temp_var1);	
 ;;;544    //                        }
 ;;;545    					}
-;;;546    					else//Ϊ˫����ģʽ
 ;;;547    					{
 ;;;548    						if(temp_var2 <= DEVIATION_TIME)
 ;;;549    						{
@@ -1719,7 +1684,6 @@
 000116  2b03              CMP      r3,#3
 000118  d004              BEQ      |L11.292|
 ;;;574    		{
-;;;575    			lamp_counter_valid_flag |= temp_var1;//��ƺ��̵Ƶ���Ч״̬ //��ǰ״̬��һ��������״̬,����״̬�л����״̬����һ��������״̬,������Ϊ���ϵ�ʱ״̬�Ĳ�����
 00011a  4b0e              LDR      r3,|L11.340|
 00011c  781b              LDRB     r3,[r3,#0]  ; lamp_counter_valid_flag
 00011e  430b              ORRS     r3,r3,r1

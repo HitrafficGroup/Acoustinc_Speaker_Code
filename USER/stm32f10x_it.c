@@ -6,7 +6,7 @@
   * @date    08-April-2011
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
+  *          rutina de servicio de interrupciones de perifericos.
   ******************************************************************************
   * @attention
   *
@@ -21,7 +21,7 @@
   ******************************************************************************
   */
 
-/* Includes ------------------------------------------------------------------*/
+/* Inclusiones ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "usb_istr.h"
 #include "usb_lib.h"
@@ -31,12 +31,12 @@
   * @{
   */
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+/* Tipos privados -----------------------------------------------------------*/
+/* Definiciones privadas ------------------------------------------------------------*/
+/* Macros privadas -------------------------------------------------------------*/
+/* Variables privadas ---------------------------------------------------------*/
+/* Prototipos de funciones privadas -----------------------------------------------*/
+/* Funciones privadas ---------------------------------------------------------*/
 static __IO uint32_t TimingDelay;
 
 void Delay(__IO uint32_t nTime)
@@ -54,7 +54,7 @@ void TimingDelay_Decrement(void)
 }
 
 /******************************************************************************/
-/*            Cortex-M3 Processor Exceptions Handlers                         */
+/*            Manejadores de excepciones del procesador Cortex-M3                         */
 /******************************************************************************/
 
 /**
@@ -73,7 +73,7 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-  /* Go to infinite loop when Hard Fault exception occurs */
+  /* Entra en un bucle infinito cuando ocurre una excepcion HardFault */
   while (1)
   {
   }
@@ -86,7 +86,7 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
-  /* Go to infinite loop when Memory Manage exception occurs */
+  /* Entra en un bucle infinito cuando ocurre una excepcion de gestion de memoria */
   while (1)
   {
   }
@@ -99,7 +99,7 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-  /* Go to infinite loop when Bus Fault exception occurs */
+  /* Entra en un bucle infinito cuando ocurre una excepcion de bus */
   while (1)
   {
   }
@@ -112,7 +112,7 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
+  /* Entra en un bucle infinito cuando ocurre una excepcion de uso */
   while (1)
   {
   }
@@ -159,23 +159,17 @@ void SysTick_Handler(void)
 }
 /*
 *********************************************************************************************************
-*	STM32F10x内部外设中断服务程序
-*	用户在此添加用到外设中断服务函数。有效的中断服务函数名请参考启动文件(startup_stm32f10x_xx.s)
 *********************************************************************************************************
 */
 /******************************************************************************/
-/*                 STM32F10x Peripherals Interrupt Handlers                   */
-/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
-/*  available peripheral interrupt handler's name please refer to the startup */
+/*                 Manejadores de interrupciones de perifericos STM32F10x                   */
+/*  Anade aqui el manejador de interrupcion del periferico utilizado(s) (PPP), for the  */
+/*  consulta los nombres en el archivo de arranque's name please refer to the startup */
 /*  file (startup_stm32f10x_xx.s).                                            */
 /******************************************************************************/
 
 /*
 *********************************************************************************************************
-*	函 数 名: USB_HP_CAN1_TX_IRQHandler
-*	功能说明: USB高优先级中断或者CAN TX中断服务程序
-*	形    参：无
-*	返 回 值: 无
 *********************************************************************************************************
 */ 
 void USB_HP_CAN1_TX_IRQHandler(void)
@@ -185,10 +179,6 @@ void USB_HP_CAN1_TX_IRQHandler(void)
 
 /*
 *********************************************************************************************************
-*	函 数 名: USB_LP_CAN1_RX0_IRQHandler
-*	功能说明: USB低优先级中断或CAN RX0中断
-*	形    参：无
-*	返 回 值: 无
 *********************************************************************************************************
 */ 
 void USB_LP_CAN1_RX0_IRQHandler(void)

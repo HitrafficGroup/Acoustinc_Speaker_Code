@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Description        : All processing related to the SCSI commands
+* Descripcion        : Procesamiento relacionado con the SCSI commands
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -41,8 +41,8 @@ extern uint32_t Mass_Block_Count;
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : SCSI_Inquiry_Cmd
-* Description    : SCSI Inquiry Command routine.
+* Nombre de la funcion  : SCSI_Inquiry_Cmd
+* Descripcion    : SCSI Inquiry Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -71,8 +71,8 @@ void SCSI_Inquiry_Cmd(uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_ReadFormatCapacity_Cmd
-* Description    : SCSI ReadFormatCapacity Command routine.
+* Nombre de la funcion  : SCSI_ReadFormatCapacity_Cmd
+* Descripcion    : SCSI ReadFormatCapacity Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -102,8 +102,8 @@ void SCSI_ReadFormatCapacity_Cmd(uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_ReadCapacity10_Cmd
-* Description    : SCSI ReadCapacity10 Command routine.
+* Nombre de la funcion  : SCSI_ReadCapacity10_Cmd
+* Descripcion    : SCSI ReadCapacity10 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -133,8 +133,8 @@ void SCSI_ReadCapacity10_Cmd(uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_ModeSense6_Cmd
-* Description    : SCSI ModeSense6 Command routine.
+* Nombre de la funcion  : SCSI_ModeSense6_Cmd
+* Descripcion    : SCSI ModeSense6 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -146,8 +146,8 @@ void SCSI_ModeSense6_Cmd (uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_ModeSense10_Cmd
-* Description    : SCSI ModeSense10 Command routine.
+* Nombre de la funcion  : SCSI_ModeSense10_Cmd
+* Descripcion    : SCSI ModeSense10 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -159,8 +159,8 @@ void SCSI_ModeSense10_Cmd (uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_RequestSense_Cmd
-* Description    : SCSI RequestSense Command routine.
+* Nombre de la funcion  : SCSI_RequestSense_Cmd
+* Descripcion    : SCSI RequestSense Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -183,8 +183,8 @@ void SCSI_RequestSense_Cmd (uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : Set_Scsi_Sense_Data
-* Description    : Set Scsi Sense Data routine.
+* Nombre de la funcion  : Set_Scsi_Sense_Data
+* Descripcion    : Set Scsi Sense Data routine.
 * Input          : uint8_t Sens_Key
                    uint8_t Asc.
 * Output         : None.
@@ -198,8 +198,8 @@ void Set_Scsi_Sense_Data(uint8_t lun, uint8_t Sens_Key, uint8_t Asc)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_Start_Stop_Unit_Cmd
-* Description    : SCSI Start_Stop_Unit Command routine.
+* Nombre de la funcion  : SCSI_Start_Stop_Unit_Cmd
+* Descripcion    : SCSI Start_Stop_Unit Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -211,8 +211,8 @@ void SCSI_Start_Stop_Unit_Cmd(uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_Read10_Cmd
-* Description    : SCSI Read10 Command routine.
+* Nombre de la funcion  : SCSI_Read10_Cmd
+* Descripcion    : SCSI Read10 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -222,7 +222,7 @@ void SCSI_Read10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr)
   scsi_printf("SCSI_Read10_Cmd(%d)\r\n",lun);
   if (Bot_State == BOT_IDLE)
   {
-    if (!(SCSI_Address_Management(CBW.bLUN, SCSI_READ10, LBA, BlockNbr)))/*address out of range*/
+    if (!(SCSI_Address_Management(CBW.bLUN, SCSI_READ10, LBA, BlockNbr)))/* direccion fuera de rango */
     {
 	  scsi_printf("SCSI_Address_Management(), address out of range\r\n");
 	  return;
@@ -249,8 +249,8 @@ void SCSI_Read10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_Write10_Cmd
-* Description    : SCSI Write10 Command routine.
+* Nombre de la funcion  : SCSI_Write10_Cmd
+* Descripcion    : SCSI Write10 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -260,7 +260,7 @@ void SCSI_Write10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr)
   scsi_printf("SCSI_Write10_Cmd(%d)\r\n",lun);
   if (Bot_State == BOT_IDLE)
   {
-    if (!(SCSI_Address_Management(CBW.bLUN, SCSI_WRITE10 , LBA, BlockNbr)))/*address out of range*/
+    if (!(SCSI_Address_Management(CBW.bLUN, SCSI_WRITE10 , LBA, BlockNbr)))/* direccion fuera de rango */
     {
 	  scsi_printf("SCSI_Address_Management(), address out of range\r\n");
 	  return;
@@ -289,8 +289,8 @@ void SCSI_Write10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_Verify10_Cmd
-* Description    : SCSI Verify10 Command routine.
+* Nombre de la funcion  : SCSI_Verify10_Cmd
+* Descripcion    : SCSI Verify10 Command routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -311,8 +311,8 @@ void SCSI_Verify10_Cmd(uint8_t lun)
   }
 }
 /*******************************************************************************
-* Function Name  : SCSI_Valid_Cmd
-* Description    : Valid Commands routine.
+* Nombre de la funcion  : SCSI_Valid_Cmd
+* Descripcion    : Valid Commands routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -331,8 +331,8 @@ void SCSI_Valid_Cmd(uint8_t lun)
     Set_CSW (CSW_CMD_PASSED, SEND_CSW_ENABLE);
 }
 /*******************************************************************************
-* Function Name  : SCSI_Valid_Cmd
-* Description    : Valid Commands routine.
+* Nombre de la funcion  : SCSI_Valid_Cmd
+* Descripcion    : Valid Commands routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -354,8 +354,8 @@ void SCSI_TestUnitReady_Cmd(uint8_t lun)
   }
 }
 /*******************************************************************************
-* Function Name  : SCSI_Format_Cmd
-* Description    : Format Commands routine.
+* Nombre de la funcion  : SCSI_Format_Cmd
+* Descripcion    : Format Commands routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -377,8 +377,8 @@ void SCSI_Format_Cmd(uint8_t lun)
   }
 }
 /*******************************************************************************
-* Function Name  : SCSI_Invalid_Cmd
-* Description    : Invalid Commands routine
+* Nombre de la funcion  : SCSI_Invalid_Cmd
+* Descripcion    : Invalid Commands routine
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -406,8 +406,8 @@ void SCSI_Invalid_Cmd(uint8_t lun)
 }
 
 /*******************************************************************************
-* Function Name  : SCSI_Address_Management
-* Description    : Test the received address.
+* Nombre de la funcion  : SCSI_Address_Management
+* Descripcion    : Test the received address.
 * Input          : uint8_t Cmd : the command can be SCSI_READ10 or SCSI_WRITE10.
 * Output         : None.
 * Return         : Read\Write status (bool).

@@ -73,7 +73,6 @@
                           AREA ||i.SPI_RW_Reg||, CODE, READONLY, ALIGN=2
 
                   SPI_RW_Reg PROC
-;;;40     //reg �Ĵ�����ַ  value Ҫд�������
 ;;;41     u8 SPI_RW_Reg(u8 reg, u8 value)
 000000  b570              PUSH     {r4-r6,lr}
 ;;;42     {
@@ -108,28 +107,23 @@
                           AREA ||i.SPI_Read||, CODE, READONLY, ALIGN=2
 
                   SPI_Read PROC
-;;;26     //reg �Ĵ�����ַ
 ;;;27     u8 SPI_Read(u8 reg)
 000000  b570              PUSH     {r4-r6,lr}
 ;;;28     {
 000002  4604              MOV      r4,r0
 ;;;29     	u8 reg_val;	
-;;;30     	nRF24L01_CSN_L;                //Ƭѡʹ��  
 000004  f44f6100          MOV      r1,#0x800
 000008  4808              LDR      r0,|L4.44|
 00000a  f7fffffe          BL       GPIO_ResetBits
 ;;;31         Spi2_SendByte(reg);
 00000e  4620              MOV      r0,r4
 000010  f7fffffe          BL       Spi2_SendByte
-;;;32     	reg_val = Spi2_SendByte(0);    // ��ȡ���ݵ�reg_val
 000014  2000              MOVS     r0,#0
 000016  f7fffffe          BL       Spi2_SendByte
 00001a  4605              MOV      r5,r0
-;;;33     	nRF24L01_CSN_H;               // ȡ��Ƭѡ	
 00001c  f44f6100          MOV      r1,#0x800
 000020  4802              LDR      r0,|L4.44|
 000022  f7fffffe          BL       GPIO_SetBits
-;;;34     	return(reg_val);        // ���ض�ȡ������
 000026  4628              MOV      r0,r5
 ;;;35     }
 000028  bd70              POP      {r4-r6,pc}
@@ -143,7 +137,6 @@
                           AREA ||i.SPI_Read_Buf||, CODE, READONLY, ALIGN=2
 
                   SPI_Read_Buf PROC
-;;;54     //reg �Ĵ�����ַ  *pBuf ��ȡ���ݴ洢ָ��  nchars ��ȡ���ֽڸ���
 ;;;55     u8 SPI_Read_Buf(u8 reg, u8 *pBuf,u8 nchars)
 000000  e92d41f0          PUSH     {r4-r8,lr}
 ;;;56     {
@@ -159,11 +152,9 @@
 000014  4638              MOV      r0,r7
 000016  f7fffffe          BL       Spi2_SendByte
 00001a  4680              MOV      r8,r0
-;;;60     	for(uchar_ctr=0;uchar_ctr<nchars;uchar_ctr++)		  //ѭ�� uchars��
 00001c  2400              MOVS     r4,#0
 00001e  e005              B        |L5.44|
                   |L5.32|
-;;;61         pBuf[uchar_ctr] = Spi2_SendByte(0); 				  //�ֱ�	 Spi2_SendByte(0)���������ݵ�ַ ����������	
 000020  2000              MOVS     r0,#0
 000022  f7fffffe          BL       Spi2_SendByte
 000026  5528              STRB     r0,[r5,r4]
@@ -189,7 +180,6 @@
                           AREA ||i.SPI_Write_Buf||, CODE, READONLY, ALIGN=2
 
                   SPI_Write_Buf PROC
-;;;68     //reg �Ĵ�����ַ  *pBuf Ҫд�������  nchars д����ֽڸ���
 ;;;69     u8 SPI_Write_Buf(u8 reg, u8 *pBuf, u8 nchars)
 000000  e92d41f0          PUSH     {r4-r8,lr}
 ;;;70     {
@@ -197,7 +187,6 @@
 000006  460c              MOV      r4,r1
 000008  4615              MOV      r5,r2
 ;;;71     	u8 status,uchar_ctr;	
-;;;72     	nRF24L01_CSN_L;            //SPIʹ��       
 00000a  f44f6100          MOV      r1,#0x800
 00000e  480c              LDR      r0,|L6.64|
 000010  f7fffffe          BL       GPIO_ResetBits
@@ -205,11 +194,9 @@
 000014  4638              MOV      r0,r7
 000016  f7fffffe          BL       Spi2_SendByte
 00001a  4680              MOV      r8,r0
-;;;74     	for(uchar_ctr=0; uchar_ctr<nchars; uchar_ctr++) //	 �������ݸ���ѭ��							 
 00001c  2600              MOVS     r6,#0
 00001e  e005              B        |L6.44|
                   |L6.32|
-;;;75     		Spi2_SendByte(*pBuf++);						//����������� ����д��
 000020  f8140b01          LDRB     r0,[r4],#1
 000024  f7fffffe          BL       Spi2_SendByte
 000028  1c70              ADDS     r0,r6,#1              ;74
@@ -217,7 +204,6 @@
                   |L6.44|
 00002c  42ae              CMP      r6,r5                 ;74
 00002e  dbf7              BLT      |L6.32|
-;;;76     	nRF24L01_CSN_H;           //�ر�SPI
 000030  f44f6100          MOV      r1,#0x800
 000034  4802              LDR      r0,|L6.64|
 000036  f7fffffe          BL       GPIO_SetBits
@@ -225,7 +211,6 @@
 00003a  4640              MOV      r0,r8
 ;;;78     }
 00003c  e8bd81f0          POP      {r4-r8,pc}
-;;;79     //NRF�������ݺ���
                           ENDP
 
                   |L6.64|
@@ -261,21 +246,17 @@
                           AREA ||i.nRF24L01_RxPacket||, CODE, READONLY, ALIGN=1
 
                   nRF24L01_RxPacket PROC
-;;;81     //�ú������NRF״̬�Ĵ���״̬ �����ж������������ݵ�rx_buf������
 ;;;82     u8 nRF24L01_RxPacket(u8* rx_buf)
 000000  b570              PUSH     {r4-r6,lr}
 ;;;83     {	 
 000002  4604              MOV      r4,r0
 ;;;84     	u8 sta;
-;;;85     	sta=SPI_Read(STATUS);	    // ��ȡ״̬�Ĵ������ж����ݽ���״��
 000004  2007              MOVS     r0,#7
 000006  f7fffffe          BL       SPI_Read
 00000a  4605              MOV      r5,r0
-;;;86     	SPI_RW_Reg(RFWRITE_REG+STATUS,sta);   //���ж� �����յ����ݺ�RX_DR,TX_DS,MAX_PT���ø�Ϊ1��ͨ��д1������жϱ�־��
 00000c  4629              MOV      r1,r5
 00000e  2027              MOVS     r0,#0x27
 000010  f7fffffe          BL       SPI_RW_Reg
-;;;87     	if(sta&RX_OK)				// �ж��Ƿ���յ�����
 000014  f0050040          AND      r0,r5,#0x40
 000018  b150              CBZ      r0,|L8.48|
 ;;;88     	{
@@ -305,7 +286,6 @@
                           AREA ||i.nRF24L01_TxPacket||, CODE, READONLY, ALIGN=2
 
                   nRF24L01_TxPacket PROC
-;;;98     //tx_buf  Ҫ���͵����ݻ�����
 ;;;99     u8 nRF24L01_TxPacket(u8 * tx_buf)
 000000  b570              PUSH     {r4-r6,lr}
 ;;;100    {	 
@@ -315,7 +295,6 @@
 000004  f44f6180          MOV      r1,#0x400
 000008  4817              LDR      r0,|L9.104|
 00000a  f7fffffe          BL       GPIO_ResetBits
-;;;103    	SPI_Write_Buf(WR_TX_PLOAD, tx_buf, TX_PLOAD_WIDTH); 			 // װ������	
 00000e  2220              MOVS     r2,#0x20
 000010  4629              MOV      r1,r5
 000012  20a0              MOVS     r0,#0xa0
@@ -325,7 +304,6 @@
 000018  f44f6180          MOV      r1,#0x400
 00001c  4812              LDR      r0,|L9.104|
 00001e  f7fffffe          BL       GPIO_SetBits
-;;;106    	while(RF_IRQ()!=0) IWDG_Feed();//ι��			   //�ȴ��������
 000022  e001              B        |L9.40|
                   |L9.36|
 000024  f7fffffe          BL       IWDG_Feed
@@ -336,20 +314,16 @@
 00002e  f4005080          AND      r0,r0,#0x1000
 000032  2800              CMP      r0,#0
 000034  d1f6              BNE      |L9.36|
-;;;107    	st=	SPI_Read(STATUS);			  //��NRF�Ĵ���״̬
 000036  2007              MOVS     r0,#7
 000038  f7fffffe          BL       SPI_Read
 00003c  4604              MOV      r4,r0
-;;;108    	SPI_RW_Reg(RFWRITE_REG+STATUS,st);  //���ж�
 00003e  4621              MOV      r1,r4
 000040  2027              MOVS     r0,#0x27
 000042  f7fffffe          BL       SPI_RW_Reg
 ;;;109    	
-;;;110    	if(st&MAX_TX)//�ﵽ����ط�����
 000046  f0040010          AND      r0,r4,#0x10
 00004a  b128              CBZ      r0,|L9.88|
 ;;;111    	{
-;;;112    		SPI_RW_Reg(FLUSH_TX,0xff);//���TX FIFO�Ĵ��� 
 00004c  21ff              MOVS     r1,#0xff
 00004e  20e1              MOVS     r0,#0xe1
 000050  f7fffffe          BL       SPI_RW_Reg
@@ -358,7 +332,6 @@
                   |L9.86|
 ;;;114    	}
 ;;;115    	
-;;;116    	if(st&TX_OK)				 //���ͳɹ�
 ;;;117    	{
 ;;;118    		return TX_OK;
 ;;;119    	}
@@ -387,11 +360,9 @@
 ;;;7      void nRF24L01ioConfig(void)//LCD initial IO.
 000000  b510              PUSH     {r4,lr}
 ;;;8      {
-;;;9       	nRF24L01_CE_L;	//ʹ�ܿ���
 000002  f44f6180          MOV      r1,#0x400
 000006  4818              LDR      r0,|L10.104|
 000008  f7fffffe          BL       GPIO_ResetBits
-;;;10     	nRF24L01_CSN_H;	//Ƭѡ����
 00000c  f44f6100          MOV      r1,#0x800
 000010  4815              LDR      r0,|L10.104|
 000012  f7fffffe          BL       GPIO_SetBits
@@ -400,34 +371,27 @@
 000016  f44f6180          MOV      r1,#0x400
 00001a  4813              LDR      r0,|L10.104|
 00001c  f7fffffe          BL       GPIO_ResetBits
-;;;13     	SPI_Write_Buf(RFWRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);    // д���ص�ַ	
 000020  2205              MOVS     r2,#5
 000022  4912              LDR      r1,|L10.108|
 000024  2030              MOVS     r0,#0x30
 000026  f7fffffe          BL       SPI_Write_Buf
-;;;14     	SPI_Write_Buf(RFWRITE_REG + RX_ADDR_P0, RX_ADDRESS, RX_ADR_WIDTH); // д���ն˵�ַ
 00002a  2205              MOVS     r2,#5
 00002c  4910              LDR      r1,|L10.112|
 00002e  202a              MOVS     r0,#0x2a
 000030  f7fffffe          BL       SPI_Write_Buf
 ;;;15     
-;;;16     	SPI_RW_Reg(RFWRITE_REG + EN_AA, 0x01);      //  Ƶ��0�Զ�	ACKӦ������	
 000034  2101              MOVS     r1,#1
 000036  2021              MOVS     r0,#0x21
 000038  f7fffffe          BL       SPI_RW_Reg
-;;;17     	SPI_RW_Reg(RFWRITE_REG + EN_RXADDR, 0x01);  //  �������յ�ַֻ��Ƶ��0�������Ҫ��Ƶ�����Բο�Page21  
 00003c  2101              MOVS     r1,#1
 00003e  2022              MOVS     r0,#0x22
 000040  f7fffffe          BL       SPI_RW_Reg
-;;;18     	SPI_RW_Reg(RFWRITE_REG + RF_CH, 40);        //  �����ŵ�����Ϊ2.4GHZ���շ�����һ��
 000044  2128              MOVS     r1,#0x28
 000046  2025              MOVS     r0,#0x25
 000048  f7fffffe          BL       SPI_RW_Reg
-;;;19     	SPI_RW_Reg(RFWRITE_REG + RX_PW_P0, RX_PLOAD_WIDTH); //���ý������ݳ��ȣ���������Ϊ32�ֽ�
 00004c  2120              MOVS     r1,#0x20
 00004e  2031              MOVS     r0,#0x31
 000050  f7fffffe          BL       SPI_RW_Reg
-;;;20     	SPI_RW_Reg(RFWRITE_REG + RF_SETUP, 0x07);   //���÷�������Ϊ1MHZ�����书��Ϊ���ֵ0dB	
 000054  2107              MOVS     r1,#7
 000056  2026              MOVS     r0,#0x26
 000058  f7fffffe          BL       SPI_RW_Reg
@@ -458,12 +422,10 @@
 ;;;139        EXTI_InitTypeDef EXTI_InitStructure;
 ;;;140        NVIC_InitTypeDef NVIC_InitStructure;
 ;;;141        
-;;;142        /* PC9 �ж������� IRQ0 */
 ;;;143      	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource12);
 000002  210c              MOVS     r1,#0xc
 000004  2001              MOVS     r0,#1
 000006  f7fffffe          BL       GPIO_EXTILineConfig
-;;;144        /* PC9 �жϳ�ʼ������ */
 ;;;145      	EXTI_InitStructure.EXTI_Line = EXTI_Line12;
 00000a  f44f5080          MOV      r0,#0x1000
 00000e  9001              STR      r0,[sp,#4]
@@ -476,27 +438,21 @@
 ;;;148      	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 00001c  2001              MOVS     r0,#1
 00001e  f88d000a          STRB     r0,[sp,#0xa]
-;;;149        /*����EXTI_InitStruct��ָ���Ĳ�����ʼ������EXTI�Ĵ�*/
 ;;;150      	EXTI_Init(&EXTI_InitStructure);
 000022  a801              ADD      r0,sp,#4
 000024  f7fffffe          BL       EXTI_Init
 ;;;151    	
-;;;152        /*ʹ�ܰ������ڵ��ⲿ�ж�ͨ��*/
 ;;;153      	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 000028  2028              MOVS     r0,#0x28
 00002a  f88d0000          STRB     r0,[sp,#0]
-;;;154        /*������ռ���ȼ�����ռ���ȼ���Ϊ2*/	
 ;;;155      	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
 00002e  2000              MOVS     r0,#0
 000030  f88d0001          STRB     r0,[sp,#1]
-;;;156        /*���������ȼ��������ȼ���Ϊ2*/
 ;;;157      	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;		
 000034  2001              MOVS     r0,#1
 000036  f88d0002          STRB     r0,[sp,#2]
-;;;158        /*ʹ���ⲿ�ж�ͨ*/
 ;;;159      	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
 00003a  f88d0003          STRB     r0,[sp,#3]
-;;;160        /*����NVIC_InitStruct��ָ���Ĳ�����ʼ������NVIC�Ĵ���*/	
 ;;;161      	NVIC_Init(&NVIC_InitStructure);
 00003e  4668              MOV      r0,sp
 000040  f7fffffe          BL       NVIC_Init

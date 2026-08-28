@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Description        : Connection/disconnection & power management
+* Descripcion        : Connection/disconnection & power management
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -45,8 +45,8 @@ ResumeS;
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : PowerOn
-* Description    :
+* Nombre de la funcion  : PowerOn
+* Descripcion    :
 * Input          : None.
 * Output         : None.
 * Return         : USB_SUCCESS.
@@ -78,8 +78,8 @@ RESULT PowerOn(void)
 }
 
 /*******************************************************************************
-* Function Name  : PowerOff
-* Description    : handles switch-off conditions
+* Nombre de la funcion  : PowerOff
+* Descripcion    : handles switch-off conditions
 * Input          : None.
 * Output         : None.
 * Return         : USB_SUCCESS.
@@ -103,8 +103,8 @@ RESULT PowerOff()
 }
 
 /*******************************************************************************
-* Function Name  : Suspend
-* Description    : sets suspend mode operating conditions
+* Nombre de la funcion  : Suspend
+* Descripcion    : sets suspend mode operating conditions
 * Input          : None.
 * Output         : None.
 * Return         : USB_SUCCESS.
@@ -141,8 +141,8 @@ void Suspend(void)
 }
 
 /*******************************************************************************
-* Function Name  : Resume_Init
-* Description    : Handles wake-up restoring normal operations
+* Nombre de la funcion  : Resume_Init
+* Descripcion    : Handles wake-up restoring normal operations
 * Input          : None.
 * Output         : None.
 * Return         : USB_SUCCESS.
@@ -175,8 +175,8 @@ void Resume_Init(void)
 }
 
 /*******************************************************************************
-* Function Name  : Resume
-* Description    : This is the state machine handling resume operations and
+* Nombre de la funcion  : Resume
+* Descripcion    : This is the state machine handling resume operations and
 *                 timing sequence. The control is based on the Resume structure
 *                 variables and on the ESOF interrupt calling this subroutine
 *                 without changing machine state.

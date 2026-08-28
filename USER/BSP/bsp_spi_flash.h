@@ -8,7 +8,7 @@
 #define FLASH_SECTOR_COUNT  1024    //4096-16M  1024-4M
 
 
-/* 定义串行Flash ID */
+
 enum
 {
 	SST25VF016B_ID = 0xBF2541,
@@ -23,10 +23,6 @@ enum
 
 typedef struct
 {
-	uint32_t ChipID;		/* 芯片ID */
-	char ChipName[16];		/* 芯片型号字符串，主要用于显示 */
-	uint32_t TotalSize;		/* 总容量 */
-	uint16_t PageSize;		/* 页面大小 */
 }SFLASH_T;
 
 

@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Description        : Endpoint routines
+* Descripcion        : Endpoint routines
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -26,8 +26,8 @@
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : EP1_IN_Callback
-* Description    : EP1 IN Callback Routine
+* Nombre de la funcion  : EP1_IN_Callback
+* Descripcion    : EP1 IN Callback Routine
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -38,8 +38,8 @@ void EP1_IN_Callback(void)
 }
 
 /*******************************************************************************
-* Function Name  : EP2_OUT_Callback.
-* Description    : EP2 OUT Callback Routine.
+* Nombre de la funcion  : EP2_OUT_Callback.
+* Descripcion    : EP2 OUT Callback Routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.

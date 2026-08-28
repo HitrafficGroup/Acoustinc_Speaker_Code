@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Description        : All processing related to Mass Storage Demo
+* Descripcion        : Procesamiento relacionado con Mass Storage Demo
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -93,8 +93,8 @@ extern Bulk_Only_CBW CBW;
 /* Extern function prototypes ------------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /*******************************************************************************
-* Function Name  : MASS_init
-* Description    : Mass Storage init routine.
+* Nombre de la funcion  : MASS_init
+* Descripcion    : Mass Storage init routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -117,8 +117,8 @@ void MASS_init()
 }
 
 /*******************************************************************************
-* Function Name  : MASS_Reset
-* Description    : Mass Storage reset routine.
+* Nombre de la funcion  : MASS_Reset
+* Descripcion    : Mass Storage reset routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -184,8 +184,8 @@ void MASS_Reset()
 }
 
 /*******************************************************************************
-* Function Name  : Mass_Storage_SetConfiguration
-* Description    : Handle the SetConfiguration request.
+* Nombre de la funcion  : Mass_Storage_SetConfiguration
+* Descripcion    : Handle the SetConfiguration request.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -208,13 +208,13 @@ void Mass_Storage_SetConfiguration(void)
     ClearDTOG_RX(ENDP2);
 #endif /* STM32F10X_CL */
 
-    Bot_State = BOT_IDLE; /* set the Bot state machine to the IDLE state */
+    Bot_State = BOT_IDLE; /* establece la maquina de estados BOT en estado IDLE */
   }
 }
 
 /*******************************************************************************
-* Function Name  : Mass_Storage_ClearFeature
-* Description    : Handle the ClearFeature request.
+* Nombre de la funcion  : Mass_Storage_ClearFeature
+* Descripcion    : Handle the ClearFeature request.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -228,8 +228,8 @@ void Mass_Storage_ClearFeature(void)
 }
 
 /*******************************************************************************
-* Function Name  : Mass_Storage_SetConfiguration.
-* Description    : Update the device state to addressed.
+* Nombre de la funcion  : Mass_Storage_SetConfiguration.
+* Descripcion    : Update the device state to addressed.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -239,8 +239,8 @@ void Mass_Storage_SetDeviceAddress (void)
   bDeviceState = ADDRESSED;
 }
 /*******************************************************************************
-* Function Name  : MASS_Status_In
-* Description    : Mass Storage Status IN routine.
+* Nombre de la funcion  : MASS_Status_In
+* Descripcion    : Mass Storage Status IN routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -251,8 +251,8 @@ void MASS_Status_In(void)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_Status_Out
-* Description    : Mass Storage Status OUT routine.
+* Nombre de la funcion  : MASS_Status_Out
+* Descripcion    : Mass Storage Status OUT routine.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -263,8 +263,8 @@ void MASS_Status_Out(void)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_Data_Setup.
-* Description    : Handle the data class specific requests..
+* Nombre de la funcion  : MASS_Data_Setup.
+* Descripcion    : Handle the data class specific requests..
 * Input          : RequestNo.
 * Output         : None.
 * Return         : RESULT.
@@ -299,8 +299,8 @@ RESULT MASS_Data_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_NoData_Setup.
-* Description    : Handle the no data class specific requests.
+* Nombre de la funcion  : MASS_NoData_Setup.
+* Descripcion    : Handle the no data class specific requests.
 * Input          : RequestNo.
 * Output         : None.
 * Return         : RESULT.
@@ -335,8 +335,8 @@ RESULT MASS_NoData_Setup(uint8_t RequestNo)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_Get_Interface_Setting
-* Description    : Test the interface and the alternate setting according to the
+* Nombre de la funcion  : MASS_Get_Interface_Setting
+* Descripcion    : Test the interface and the alternate setting according to the
 *                  supported one.
 * Input          : uint8_t Interface, uint8_t AlternateSetting.
 * Output         : None.
@@ -356,8 +356,8 @@ RESULT MASS_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_GetDeviceDescriptor
-* Description    : Get the device descriptor.
+* Nombre de la funcion  : MASS_GetDeviceDescriptor
+* Descripcion    : Get the device descriptor.
 * Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
@@ -368,8 +368,8 @@ uint8_t *MASS_GetDeviceDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_GetConfigDescriptor
-* Description    : Get the configuration descriptor.
+* Nombre de la funcion  : MASS_GetConfigDescriptor
+* Descripcion    : Get the configuration descriptor.
 * Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
@@ -380,8 +380,8 @@ uint8_t *MASS_GetConfigDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : MASS_GetStringDescriptor
-* Description    : Get the string descriptors according to the needed index.
+* Nombre de la funcion  : MASS_GetStringDescriptor
+* Descripcion    : Get the string descriptors according to the needed index.
 * Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
@@ -401,8 +401,8 @@ uint8_t *MASS_GetStringDescriptor(uint16_t Length)
 }
 
 /*******************************************************************************
-* Function Name  : Get_Max_Lun
-* Description    : Handle the Get Max Lun request.
+* Nombre de la funcion  : Get_Max_Lun
+* Descripcion    : Handle the Get Max Lun request.
 * Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
