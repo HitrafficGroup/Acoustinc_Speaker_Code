@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Descripcion        : Initialization of the SCSI data
+* Description        : Initialization of the SCSI data
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.

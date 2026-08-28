@@ -19,11 +19,11 @@
   ******************************************************************************
   */
 
-/* Definicion para evitar inclusiones recursivas -------------------------------------*/
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F10x_CONF_H
 #define __STM32F10x_CONF_H
 
-/* Inclusiones ------------------------------------------------------------------*/
+/* Includes ------------------------------------------------------------------*/
 /* Uncomment/Comment the line below to enable/disable peripheral header file inclusion */
 #include "stm32f10x_adc.h"
 #include "stm32f10x_bkp.h"
@@ -47,7 +47,7 @@
 #include "stm32f10x_tim.h"
 #include "stm32f10x_usart.h"
 #include "stm32f10x_wwdg.h"
-#include "misc.h" /* Funciones de alto nivel para NVIC y SysTick (add-on to CMSIS functions) */
+#include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
 
 
 #include "stm32f10x_it.h"
@@ -72,19 +72,21 @@
 #include <stdarg.h>
 #include <string.h>
 
-/* Tipos exportados ------------------------------------------------------------*/
+/* Exported types ------------------------------------------------------------*/
+#define ENABLE_INT()	__set_PRIMASK(0)	/* 使能全局中断 */
+#define DISABLE_INT()	__set_PRIMASK(1)	/* 禁止全局中断 */
 
-/* Constantes exportadas --------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
 void Delay(__IO uint32_t nTime);
 
 
 #define Debug 0
 
-/* Descomenta la linea siguiente to expanse the "assert_param" macro in the 
-   Codigo de controladores de la biblioteca de perifericos estandar */
+/* Uncomment the line below to expanse the "assert_param" macro in the 
+   Standard Peripheral Library drivers code */
 /* #define USE_FULL_ASSERT    1 */
 
-/* Macros exportadas ------------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
 
 /**
@@ -95,7 +97,7 @@ void Delay(__IO uint32_t nTime);
   * @retval None
   */
   #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
-/* Funciones exportadas ------------------------------------------------------- */
+/* Exported functions ------------------------------------------------------- */
   void assert_failed(uint8_t* file, uint32_t line);
 #else
   #define assert_param(expr) ((void)0)

@@ -1,7 +1,8 @@
-/* Controlador I2C y reloj de tiempo real. */
 /*
 *********************************************************************************************************
 *
+*	模块名称 : I2C总线驱动模块
+*	文件名称 : bsp_i2c.c
 *********************************************************************************************************
 */
 
@@ -18,30 +19,34 @@ void bsp_Init_RTCIRQ(void)
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-    
+    /* GPIOB.5 中断线配置 IRQ0 */
   	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB,GPIO_PinSource5);
-    
+    /* GPIOB.5 中断初始化配置 */
   	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    
+    /*根据EXTI_InitStruct中指定的参数初始化外设EXTI寄存*/
   	EXTI_Init(&EXTI_InitStructure);
 	
-    
+    /*使能按键所在的外部中断通道*/
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
-    
+    /*设置抢占优先级，抢占优先级设为2*/	
   	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02;	
-    
+    /*设置子优先级，子优先级设为2*/
   	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;		
-    
+    /*使能外部中断通*/
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
-    
+    /*根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器*/	
   	NVIC_Init(&NVIC_InitStructure);
 }
 
 /*
 *********************************************************************************************************
+*	函 数 名: bsp_InitI2C
+*	功能说明: 配置I2C总线的GPIO，采用模拟IO的方式实现
+*	形    参:  无
+*	返 回 值: 无
 *********************************************************************************************************
 */
 void bsp_InitI2C(void)  
@@ -67,7 +72,7 @@ void bsp_InitI2C(void)
     I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
     I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;   
     I2C_InitStructure.I2C_OwnAddress1 = 0XA0;
-    I2C_InitStructure.I2C_Ack = I2C_Ack_Enable; 
+    I2C_InitStructure.I2C_Ack = I2C_Ack_Enable; //使能自动应答 
     I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;   
     I2C_InitStructure.I2C_ClockSpeed = 50000;//50000
     
@@ -208,12 +213,12 @@ void RtcFreqConfig(void)
 
 void EXTI9_5_IRQHandler(void)
 {
-    
+    //检查指定的EXTI5线路触发请求发生与否
     if(EXTI_GetITStatus(EXTI_Line5) != RESET)
 	{
         //printf("E5_IRQ\r\n");
         system_temp.timeUpdate = 1;
-        
+        /*清除EXTI5线路挂起位*/
         EXTI_ClearITPendingBit(EXTI_Line5);
     }
 }

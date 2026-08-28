@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Descripcion        : ISTR events interrupt service routines
+* Description        : ISTR events interrupt service routines
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -68,8 +68,8 @@ void (*pEpInt_OUT[7])(void) =
 #ifndef STM32F10X_CL
 
 /*******************************************************************************
-* Nombre de la funcion  : USB_Istr
-* Descripcion    : ISTR events interrupt service routine
+* Function Name  : USB_Istr
+* Description    : ISTR events interrupt service routine
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -185,8 +185,8 @@ void USB_Istr(void)
 #else /* STM32F10X_CL */
 
 /*******************************************************************************
-* Nombre de la funcion  : STM32_PCD_OTG_ISR_Handler
-* Descripcion    : Handles all USB Device Interrupts
+* Function Name  : STM32_PCD_OTG_ISR_Handler
+* Description    : Handles all USB Device Interrupts
 * Input          : None
 * Output         : None
 * Return         : status

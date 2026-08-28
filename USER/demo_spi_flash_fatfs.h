@@ -1,6 +1,10 @@
 /*
 *********************************************************************************************************
 *
+*	ģ������ : SPI Flash��FatFS ��ʾģ�顣
+*	�ļ����� : demo_spi_flash_fatfs.h
+*	��    �� : V1.0
+*	˵    �� : ͷ�ļ�
 *
 *********************************************************************************************************
 */
@@ -8,7 +12,7 @@
 #ifndef _DEMO_SPI_FLASH_FATFS_H
 #define _DEMO_SPI_FLASH_FATFS_H
 
-#define BUF_SIZE                  (4096 * 4)
+#define BUF_SIZE				  (4096*4)		/* ÿ�ζ�дSD����������ݳ��� */
 
 
 enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
@@ -17,9 +21,14 @@ enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
 
 typedef struct
 {
+    char filename[13];          /* �ļ��� */
+	uint8_t ucMuteOn;			/* 1 : ������ 0: ���� */
+	uint8_t ucVolume;			/* ��ǰ���� */
     uint8_t VolumeEnviron;
     uint8_t VolumePeriod;
     uint8_t VolumeChangeFlag;
+	uint32_t uiProgress;		/* ��ǰ����(�Ѷ�ȡ���ֽ���) */
+	uint8_t ucPauseEn;			/* ��ͣʹ�� */
     uint8_t fileOpenFlag;
     uint8_t fileChangeFlag;
     uint8_t cycleFlag;
@@ -43,13 +52,23 @@ typedef struct
 
 typedef struct
 {
+    uint8_t cardType;           /* �����ͣ�0x32ä���� */
+	uint8_t packType;			/* �����ͣ�0x68 */
 	char filename[13];
+	uint8_t operaType;		    /* �������� */
+	uint16_t total;			    /* �ְ��� */
+    uint16_t now;               /* ����� */
+    uint16_t len;               /* ������ */
     uint8_t data;
 }PACK_T;
 
 typedef struct
 {
+    char filename[13];          /* �ļ��� */
+	uint16_t total;			    /* �ְ��� */
+	uint16_t get;			    /* ��ǰ���� */
     uint16_t filebufbytes;
+	uint32_t bytes;		        /* ��ǰ����(�Ѷ�ȡ���ֽ���) */
     uint8_t* Pdata;
     uint32_t timeCount;
 }FIle_TRANS_T;
@@ -61,7 +80,7 @@ extern uint8_t Time_Volume[2][6][3];
 extern uint8_t Par[64];
 extern uint8_t FileBuf[BUF_SIZE];
 
-
+/* ���ⲿ���õĺ������� */
 void FileFormat(void);
 void ViewRootDir(void);
 
@@ -88,4 +107,5 @@ void mp3_par_init(void);
 void get_filename(uint8_t num);
 
 #endif
+
 

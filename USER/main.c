@@ -1,29 +1,23 @@
-/* Modulo principal de coordinacion del firmware. */
 #include "stm32f10x.h" 
 
 #include "usb_hw.h"
 #include "usb_pwr.h"
 
-/* Marca generada cada milisegundo por SysTick. */
 __IO uint8_t reg1ms_flag;
-/* Cuenta los milisegundos que forman una ventana de 10 ms. */
 __IO uint8_t ten_mm_counter;
-/* Indicador global de error del sistema. */
 __IO uint8_t system_error = 0;
-/* Contador de milisegundos usado para tareas periodicas de 1 segundo. */
 __IO uint16_t reg1ms_count = 1000;
 
 uint8_t StartFlag = 1;
 
 static void SysTick_Init(void);
 void Delay(__IO uint32_t nTime);
-void SocketProcess(void);
+void SocketProcess(void);//��ѯ����˿�
     int contador = 0;
     int i = 0;
 
-/* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
 int main(void){
-    
+    //�������� 
 //    if(FLASH_GetReadOutProtectionStatus() != SET)
 //    {
 //        FLASH_Unlock();
@@ -31,38 +25,34 @@ int main(void){
 //        FLASH_Lock();
 //    }
     
-    /* Inicializacion de reloj de sistema y perifericos de la aplicacion. */
     SysTick_Init();
     bsp_GpioInit();
-    vs1053_IO_Init();//encargado de el audio sonido
+    vs1053_IO_Init();//encargado de el audio record
     
     bsp_InitUart();
     
     ADC_Inits();
     bsp_InitI2C();
     bsp_InitSpi1Bus();
-    bsp_InitSpiFlash();		
+    bsp_InitSpiFlash();		//��ʼ��SPI_Flash
     W5500_GPIO_Config(); //Puerto de comunicacion 
     
     bsp_InitSpi2Bus();
     mp3_par_init(); 
-    vs1053_HardInit();      
+    vs1053_HardInit();      //��ʼ��VS1053b
     
     Config();
     CheckVolume();
     
-    /* Reinicia y configura el controlador Ethernet W5500. */
-    W5500_Hardware_Reset();
+    W5500_Hardware_Reset(); //Eth
 	W5500_Initialization();
 
     bsp_InitIwdg(3000);
     
-	/* Deja el transceptor de radio en un estado conocido antes de recibir. */
-	nRF24L01ioConfig();
+	nRF24L01ioConfig();		//�������� Radiofreq
 	SPI_RW_Reg(FLUSH_RX,0xff);
 	SPI_RW_Reg(FLUSH_TX,0xff);
-	/* Configura el nRF24L01 en modo receptor. */
-	RX_Mode();
+	RX_Mode(); //configurado para enviar datos
 	rf24l01_irq_init();
 	pps_irq_init();
 	
@@ -74,19 +64,15 @@ int main(void){
     //     LED_Toggle();
     // }
 
-    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
     while(1)
     {
-        /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */
         if(reg1ms_flag)
         {
             reg1ms_flag = 0;
-            /* Durante la escritura de parametros se pausa el procesamiento de entradas. */
-            if(MP3.Writingflag == 0)
+            if(MP3.Writingflag == 0)//if(MP3.Writingflag == 0)
             {
                 ain_filterAC_DC();
                 filterAC_DC();
-                /* Agrupa diez ticks para las tareas de filtrado y visualizacion de 10 ms. */
                 if(++ten_mm_counter >= 10)
                 {
                     ten_mm_counter = 0;
@@ -102,16 +88,15 @@ int main(void){
                     }
                 }
             }
-            /* Guarda en Flash los parametros recibidos y actualiza el reloj. */
             if(MP3.writeParFlag)
             {
                 //printf("MP3.writeParFlag\r\n");
                 MP3.writeParFlag = 0;
-                RtcWrite((RtcType*)Par);
+                RtcWrite((RtcType*)Par);//дʱ��
 				
-                WriteConfigFile(&Par[7], 12, 40);
+                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
                 //Config();
-                if(ReadConfigFile())
+                if(ReadConfigFile())//�������ļ��ɹ�
                     Load_Period_Parameters(&FileBuf[12]); 
                 system_temp.timeUpdate = 1;
                 MP3.fileChangeFlag = 1;
@@ -123,7 +108,6 @@ int main(void){
 				IWDG_Feed();
 			}
 			
-            /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
             if(lamp_chge_flag)
             {
                 lamp_chge_flag = 0;
@@ -148,15 +132,14 @@ int main(void){
 				{
                     printf("\r\n==BLACK STATE ==LCF#%d ==LS#%d\r\n", lamp_chge_flag, lamp_status);
 					MP3.stopFlag = 1;
-					
+					//MP3.dir = 3;//����
 				}
                 memset(MP3.filename,0x00,13);
                 get_filename(MP3.dir);
                 MP3.fileChangeFlag = 1;
                 MP3.lamp_chge_sound_flag = 1;
             }
-            /* Aplica los cambios pendientes de archivo y reproduce el aviso necesario. */
-            fileChange();
+            fileChange(); //iniciar a reproducir musica
             if(++reg1ms_count >= 1000)
             {
                 reg1ms_count = 0;
@@ -201,18 +184,15 @@ int main(void){
                     }
                 }
             }
-            /* Atiende red, panel luminoso y pruebas periodicas del sistema. */
             SocketProcess();
 			flash_panel_control();
 			
             SYS_TEST();
         }
-        /* La reproduccion debe atenderse continuamente, incluso entre ticks. */
         Playing();
 		if(spi2_busy_flag == 0)
 		{
-			/* Procesa los paquetes de radio cuando SPI2 no esta ocupado. */
-			if(rf_int_flag == 1)
+			if(rf_int_flag == 1) //Si hay datos por radio frecuencia
 			{
 				rf_int_flag = 0;
 				rf24l01_rx_process(); //funcion que debe procesar informacion que llega por radio frecuencia
@@ -224,24 +204,25 @@ int main(void){
 }
 
 /*******************************************************************************
+* ������  : Process_Socket_Data
+* ����    : W5500���ղ����ͽ��յ�������
+* ����    : s:�˿ں�
+* ���    : ��
+* ����ֵ  : ��
+* ˵��    : �������ȵ���S_rx_process()��W5500�Ķ˿ڽ������ݻ�������ȡ����,
+*			Ȼ�󽫶�ȡ�����ݴ�Rx_Buffer������Temp_Buffer���������д�����
+*			������ϣ������ݴ�Temp_Buffer������Tx_Buffer������������S_tx_process()
+*			�������ݡ�
 *******************************************************************************/
-/*
- * Procesa una trama recibida por UDP o TCP.
- * UDP se utiliza para descubrir/configurar la red; TCP transporta comandos
- * de la aplicacion. Las respuestas se construyen en Tx_Buffer.
- */
 void Process_Socket_Data(SOCKET s)
 {
 	uint16_t size,i;
     uint8_t CheckSum,result;
-	/* Lee del W5500 la cantidad de bytes disponible en el socket. */
 	size = Read_SOCK_Data_Buffer(s, Rx_Buffer);
     
-	/* Socket 0: mensajes UDP de identificacion y configuracion de red. */
-	if(s == 0)
+	if(s == 0)//UDP
 	{
-		/* 0x55BB solicita la informacion de red y el identificador del equipo. */
-		if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xbb)
+        if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xbb)
         {
             if(Rx_Buffer[0]==Net.IP_Addr[0] && Rx_Buffer[1]==Net.IP_Addr[1] && Rx_Buffer[2]==Net.IP_Addr[2])
             {
@@ -267,25 +248,24 @@ void Process_Socket_Data(SOCKET s)
             Tx_Buffer[4] = Net.IP_Addr[2];
             Tx_Buffer[5] = Net.IP_Addr[3];
             
-            Tx_Buffer[6] = Net.Gateway_IP[0];    
+            Tx_Buffer[6] = Net.Gateway_IP[0];    //�������ز���
             Tx_Buffer[7] = Net.Gateway_IP[1];
             Tx_Buffer[8] = Net.Gateway_IP[2];
             Tx_Buffer[9] = Net.Gateway_IP[3];
             
-            Tx_Buffer[10] = Net.Sub_Mask[0];      
+            Tx_Buffer[10] = Net.Sub_Mask[0];      //������������
             Tx_Buffer[11] = Net.Sub_Mask[1];
             Tx_Buffer[12] = Net.Sub_Mask[2];
             Tx_Buffer[13] = Net.Sub_Mask[3];
             
-            get_cpuid(&Tx_Buffer[14]);
+            get_cpuid(&Tx_Buffer[14]);//���ض˿�1����Ϊ�ͻ���ģʽ,��Ҫ���÷�������ַ�Ͷ˿�
             
             Tx_Buffer[18] = 0x00;
             for(i=2;i<18;i++)
                 Tx_Buffer[18] += Tx_Buffer[i];
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 19);
         }
-		/* 0x55DD actualiza la configuracion IP si la suma de comprobacion es valida. */
-		else if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xdd)
+        else if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xdd)
         {
             CheckSum = 0;
             for(i=10;i<22;i++) CheckSum += Rx_Buffer[i];
@@ -294,26 +274,24 @@ void Process_Socket_Data(SOCKET s)
                 WriteConfigFile(&Rx_Buffer[10], 0, 12);
                 Config();
                 
-                Tx_Buffer[0] = 0x55;
+                Tx_Buffer[0] = 0x55;//�������óɹ�ָ��
                 Tx_Buffer[1] = 0xEE;
                 Socket[s].UdpDestPort = 7788;
                 Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
                 
-                W5500_Initialization();
+                W5500_Initialization();//��������
                 //printf("new ip = %d.%d.%d.%d\r",Net.IP_Addr[0],Net.IP_Addr[1],Net.IP_Addr[2],Net.IP_Addr[3]);
             }
         }
 	}
-	/* Socket 1: canal TCP para comandos de control. */
-	else if(s==1)
+	else if(s==1) //TCP_CLIENT
 	{
 		//memcpy(Tx_Buffer, Rx_Buffer, size);
 		//if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_ON", strlen("BEEP_ON")))beep_count = 4;
 		//else if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_OFF", strlen("BEEP_OFF")))beep_count = 0;
         //Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
         LED_Toggle();
-		/* ReceiveProcess interpreta el comando y devuelve el tipo de respuesta. */
-		result = ReceiveProcess(Rx_Buffer, size);
+        result = ReceiveProcess(Rx_Buffer, size);
         if(result == 1)
         {
             Tx_Buffer[0] = 'O';
@@ -321,7 +299,7 @@ void Process_Socket_Data(SOCKET s)
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
             LED_Toggle();
         }
-        else if(result == 2)
+        else if(result == 2)//д����
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -338,7 +316,7 @@ void Process_Socket_Data(SOCKET s)
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 24);
             LED_Toggle();
         }
-        else if(result == 3)
+        else if(result == 3)//������
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -363,38 +341,33 @@ void Process_Socket_Data(SOCKET s)
 	}
 }
 
-/* Actualiza sockets, procesa interrupciones del W5500 y entrega tramas recibidas. */
-void SocketProcess(void)
+void SocketProcess(void)//��ѯ����˿� funcion de conexion por ethernet con la computadora
 {
     SOCKET n;
-    /* Prepara los sockets de trabajo y atiende sus eventos pendientes. */
-    W5500_Socket_Set(0);
+    W5500_Socket_Set(0);//W5500�˿ڳ�ʼ������
     W5500_Socket_Set(1);
     //W5500_Socket_Set(2);
-    W5500_Interrupt_Process();
-    /* Recorre los ocho sockets disponibles en el controlador. */
+    W5500_Interrupt_Process();//W5500�жϴ���������
     for(n=0;n<8;n++)
     {
-        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)
+        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)//���Socket���յ�����
         {
             Socket[n].DataState &= ~S_RECEIVE;
-            /* La bandera se limpia antes de procesar para evitar repetir la trama. */
-            Process_Socket_Data(n);
+            Process_Socket_Data(n);//W5500���ղ����ͽ��յ�������
         }
-        else if(W5500_Send_Delay_Counter[n] >= 5000)
+        else if(W5500_Send_Delay_Counter[n] >= 5000)//��ʱ�����ַ���
         {
             if(Socket[n].State == (S_INIT|S_CONN))
             {
                 Socket[n].DataState &= ~S_TRANSMITOK;
                 //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-                
+                //Write_SOCK_Data_Buffer(n, Tx_Buffer, strlen(netaddr));//ָ��Socket(0~7)�������ݴ���,�˿�0����23�ֽ�����
             }
             W5500_Send_Delay_Counter[n] = 0;
         }
     }
 }
 
-/* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
 static void SysTick_Init(void)
 {
     while(SysTick_Config(SystemCoreClock / 1000));

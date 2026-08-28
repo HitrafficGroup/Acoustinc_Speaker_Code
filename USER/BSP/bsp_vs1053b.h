@@ -1,6 +1,9 @@
 /*
 *********************************************************************************************************
 *
+*	模块名称 : VS1053B mp3解码器模块
+*	文件名称 : bsp_vs1053b.h
+*	说    明 : VS1053B芯片底层驱动。
 *
 *
 *********************************************************************************************************
@@ -9,7 +12,7 @@
 #ifndef __BSP_VS1053B_H
 #define __BSP_VS1053B_H
 
-
+/* 芯片版本，也就是芯片型号识别 */
 enum
 {
 	VS1001 = 0,
@@ -24,7 +27,7 @@ enum
 #define VS_WRITE_COMMAND 	0x02
 #define VS_READ_COMMAND 	0x03
 
-
+/* 寄存器定义 */
 #define SCI_MODE        	0x00
 #define SCI_STATUS      	0x01
 #define SCI_BASS        	0x02
@@ -57,7 +60,10 @@ enum
 #define SM_ADPCM        	0x1000
 #define SM_ADPCM_HP     	0x2000
 
-
+/* 用于音量调节函数形参的宏，已取254的模 */
+#define VS_VOL_MUTE			0    /* 静音 */
+#define VS_VOL_MAX			254  /* 最大 */
+#define VS_VOL_MIN			0    /* 最小 */
 
 
 uint8_t VS_HD_Reset(void);

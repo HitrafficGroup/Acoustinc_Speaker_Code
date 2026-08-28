@@ -3,7 +3,7 @@
 * Author             : MCD Application Team
 * Version            : V3.3.0
 * Date               : 21-March-2011
-* Descripcion        : This file includes the peripherals header files in the
+* Description        : This file includes the peripherals header files in the
 *                      user application.
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS

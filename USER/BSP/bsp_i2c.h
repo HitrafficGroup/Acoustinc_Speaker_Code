@@ -1,6 +1,10 @@
 /*
 *********************************************************************************************************
 *
+*	模块名称 : I2C总线驱动模块
+*	文件名称 : bsp_i2c_gpio.h
+*	版    本 : V1.0
+*	说    明 : 头文件。
 *********************************************************************************************************
 */
 
@@ -14,7 +18,7 @@
 
 #define ISL1208_ADDR 0xDE
 
-
+/* ISL1208_ADDR 寄存器定 */
 #define SecReg  0x00
 #define MinReg  0x01
 #define HourReg 0x02
@@ -37,7 +41,7 @@
 #define User1       0x12
 #define User2       0x13
 
-typedef struct  
+typedef struct  //数据格式 BCD码
 {
 	uint8_t second;     //00-59 
 	uint8_t minute;     //00-59 
@@ -45,7 +49,7 @@ typedef struct
 	uint8_t day;        //00-31 
 	uint8_t month;      //01-12
 	uint8_t year;       //00-99
-	uint8_t week;       
+	uint8_t week;       //00-06 00周天 01周一 …… 06周六
 }RtcType;
 
 

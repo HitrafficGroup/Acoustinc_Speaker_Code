@@ -6,14 +6,14 @@
 
 #define green_flash_sound_en	0
 /***********************************************************************************/
-#define STUDY_MODE              0   
-#define FIRST_RED_LAMP_VALID    1   
+#define STUDY_MODE              0   //0锟斤拷示锟斤拷锟斤拷锟斤拷  1锟斤拷示双锟斤拷锟斤拷
+#define FIRST_RED_LAMP_VALID    1   //1锟斤拷效 0锟斤拷效
 /***********************************************************************************/
 #define FILTER_ON_TIME          6
 #define FILTER_OFF_TIME         21
-#define DEVIATION_TIME          300 
+#define DEVIATION_TIME          300 //锟斤拷锟斤拷学习时锟斤拷2锟斤拷  锟斤拷位10MS
 #define AHEAD_END_TIME          2 
-#define LOST_DELAY_TIME         3   
+#define LOST_DELAY_TIME         3   //锟斤拷每锟诫发锟酵碉拷前锟斤拷示时锟斤拷时锟斤拷锟�3锟斤拷没锟斤拷锟秸碉拷锟斤拷一锟斤拷锟斤拷锟斤拷氐锟�
 /***********************************************************************************/
 
 
@@ -82,9 +82,9 @@ typedef struct  //Variables para guardar los datos de GPS obtenidos
 	char NS[2];
 	char Longitude[16];
 	char EW[2];
-    char FS[2];     
-    char numSv[4];  
-	char Altitude[4];
+    char FS[2];     //锟斤拷位状态锟斤拷志
+    char numSv[4];  //锟斤拷锟斤拷锟斤拷锟斤拷
+	char Altitude[4];//锟斤拷锟斤拷
 	char Speed[8];
 }GpsType;
 
@@ -95,7 +95,7 @@ typedef struct
 	uint8_t timeUpdate;
 	
 	uint32_t            seconds;
-    uint32_t            gps_seconds;
+    uint32_t            gps_seconds;//GPS时锟戒本锟截伙拷锟斤拷锟斤拷锟斤拷
 	uint32_t		gps1ms;
 	GpsType	Gps;
 	uint8_t gps_flag;
@@ -109,7 +109,7 @@ typedef struct
 	
 	RtcType		rtc_bcd;
 	RtcType		rtc_dec;
-	uint8_t TimeZone[4];	
+	uint8_t TimeZone[4];	// 2.4 时锟斤拷,value -43200~43200,4byte,0x137-0x13a; TimeZone[0] == 1锟斤拷锟斤拷,0锟斤拷锟斤拷 1,2,3为时锟斤拷锟斤拷锟斤拷, 锟斤拷锟街斤拷锟斤拷前
 }SYSTEM_TEMP_TypeDef;
 
 

@@ -1,4 +1,3 @@
-/* Controlador de entradas y salidas del sistema. */
 #include "stm32f10x.h"
 
 uint8_t spi2_busy_flag = 0;
@@ -34,7 +33,7 @@ void bsp_GpioInit(void)
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
     
 	//PA0_GPS_ON/OFF	PA15_LED	PA11_PA
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //LED�˿��������
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_11 | GPIO_Pin_15;//
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -44,41 +43,41 @@ void bsp_GpioInit(void)
     PA_ON();
     
 	
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
     ADC_OFF();
     
-	
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       
+	//MOS������
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	DR1_OFF(); DR2_OFF(); DR3_OFF();
     /****************************************************/
-	
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       
+	//RELAY_PB9ɾ��  RF_CE_PB10ʹ�ܿ���  RF_CSN_PB11Ƭѡ
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //�˿��������
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
     RELAY_OFF();
-    
+    //IN-PB8ɾ��    XIN-PB4ɾ�� 
 //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 //    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_8;
 //    GPIO_Init(GPIOB, &GPIO_InitStructure);
     
     /****************************************************/
-    
+    //SW5-SW8 PA0-PA3 ��ΪGPS���� PA0_ON/OFF PA1_1PPS 
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
     GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_1;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     /****************************************************/
-	
+	//IRQ_PB12�ж� // Pin de Radio frecuencia 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;     
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;     //��������
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
@@ -130,7 +129,7 @@ uint8_t lamp_stab_state = 0x03;
 uint8_t lamp_temp_state = 0x03;
 uint8_t study_lamp_stab_state = 0x03;
 
-uint16_t lamp_chge_counter[2] = {0};
+uint16_t lamp_chge_counter[2] = {0};//20MS�˲�������
 uint16_t lamp_chge_flag = 0;
 uint16_t lamp_off_count = 0;
 uint8_t lamp_state_chg_count = 0;
@@ -156,7 +155,7 @@ void down_time_display(void)//10ms yi ci
 {
 	if(display_data[0] != 0)//red
 	{
-		if(red_displaying_flag == 0)
+		if(red_displaying_flag == 0)//��ʼ����ʱ
 		{
 			red_displaying_flag = 1;
 			gre_displaying_flag = 0;
@@ -168,7 +167,7 @@ void down_time_display(void)//10ms yi ci
 	}
 	if(display_data[1] != 0)//gre
 	{
-		if(gre_displaying_flag == 0)
+		if(gre_displaying_flag == 0)//��ʼ����ʱ
 		{
 			gre_displaying_flag = 1;
 			red_displaying_flag = 0;
@@ -254,14 +253,19 @@ void workmodejudge(void)
 /*
 *** void ain_filterAC_DC(void)
 
+La función void ain_filterAC_DC(void) es un filtro digital antirrebote (debounce) con histéresis temporal para la entrada de la señal AIN (conectada al pin PC15). Su objetivo es evitar falsos disparos por ruido o fluctuaciones rápidas de la señal AC/DC determinando un estado estable (stab_state).
 
 [ Muestreo: ain.temp_state = AIN() ]
                   |
+        ¿temp_state != stab_state?
              /          \
+         (SÍ)            (NO) ---> [ Reset: lamp_chge_counter = 0 ]
           /                \
+   ¿temp_state == 1?     ¿temp_state == 0?
        /                      \
 ++lamp_chge_counter      ++lamp_chge_counter
      |                        |
+¿>= FILTER_ON_TIME (6)?  ¿>= FILTER_OFF_TIME (21)?
      |                        |
 (Actualiza stab_state)   (Actualiza stab_state)
 */
@@ -372,7 +376,7 @@ void filterAC_DC(void)
                 gre_off = 0;
             }
         }
-        else
+        else//����-���ź�����
         {
             if(gre_off == 1)
             {
@@ -414,7 +418,7 @@ void filterAC_DC(void)
 	
 }
 
-void study_mode_filterAC_DC(void)
+void study_mode_filterAC_DC(void)//10�������һ��calculation
 {
 	unsigned char i;
 	unsigned char temp_var1;
@@ -481,19 +485,19 @@ void study_mode_time_calculation(void)//10ms yici
 	temp_var1 = 0x01;
 	for(i=0;i<2;i++)
 	{
-		if(study_lamp_stab_state==((~temp_var1)&0x03))
+		if(study_lamp_stab_state==((~temp_var1)&0x03))//�еƻ� ��Ϊ�����������ѧϰģʽ�½�����ʾ
 		{
-			if((study_time_flag&temp_var1)==0)
+			if((study_time_flag&temp_var1)==0)//û ����ѧϰ���� �Ƹյ���
 			{
 				study_time_flag |= temp_var1;
 				current_study_counter[i]=0;
-                if((study_time_valid_flag&temp_var1)==temp_var1)
+                if((study_time_valid_flag&temp_var1)==temp_var1)//ѧϰ������OK
                 {
                     if(previous_study_counter[i] >= 60000) display_data[i] = 0;
                     else 
                     {
-                        display_data[i] = (previous_study_counter[i]+18)/100;   
-                        if(i==0)red_displaying_flag = 0;
+                        display_data[i] = (previous_study_counter[i]+18)/100;   //��ƺ��̵Ƶ�ѧϰʱ�䴥��
+                        if(i==0)red_displaying_flag = 0;//���¿�ʼ����ʱ
                         if(i==1)gre_displaying_flag = 0;
                     }
                 }
@@ -503,9 +507,9 @@ void study_mode_time_calculation(void)//10ms yici
 				if(++current_study_counter[i] >= 60000) current_study_counter[i] = 60000;
 			}
 		}
-		else
+		else//����10 01 11������״̬ʱ
 		{
-			if((study_time_flag&temp_var1)==temp_var1)
+			if((study_time_flag&temp_var1)==temp_var1)// һ��״̬����,����״̬��Ч
 			{
 				study_time_flag &= ~temp_var1;
 
@@ -519,7 +523,7 @@ void study_mode_time_calculation(void)//10ms yici
 				}
 				if((lamp_counter_valid_flag & temp_var1)==temp_var1)
 				{
-					if(STUDY_MODE == 0)
+					if(STUDY_MODE == 0)//���Ϊ������ģʽ
 					{
 //						if(temp_var2 > DEVIATION_TIME)
 //						{
@@ -539,7 +543,7 @@ void study_mode_time_calculation(void)//10ms yici
 //                            study_time_valid_flag &= (~temp_var1);	
 //                        }
 					}
-					else
+					else//Ϊ˫����ģʽ
 					{
 						if(temp_var2 <= DEVIATION_TIME)
 						{
@@ -568,7 +572,7 @@ void study_mode_time_calculation(void)//10ms yici
 		}
 		if(((study_lamp_stab_state&temp_var1)==temp_var1)&&(study_lamp_stab_state!=0x03)) 
 		{
-			lamp_counter_valid_flag |= temp_var1;
+			lamp_counter_valid_flag |= temp_var1;//��ƺ��̵Ƶ���Ч״̬ //��ǰ״̬��һ��������״̬,����״̬�л����״̬����һ��������״̬,������Ϊ���ϵ�ʱ״̬�Ĳ�����
 		}
 		temp_var1 <<= 1; 
 	}
@@ -580,19 +584,19 @@ void flash_panel_control(void)//1ms
 {
 	if(system_temp.pps_flag)
 	{
-		if(++system_temp.pps_1ms >= 1000) 
+		if(++system_temp.pps_1ms >= 1000) //3Sû���յ�PPS�źţ���0 pps_flag
 		{
 			system_temp.pps_1ms = 0;
 		}
 		
-		if(++system_temp.pps_count >= 3000) 
+		if(++system_temp.pps_count >= 3000) //3Sû���յ�PPS�źţ���0 pps_flag
 		{
 			system_temp.pps_count = 0;
 			system_temp.pps_flag = 0;
 		}
 	}
-	
-	if(system_temp.gps_flag)
+	//if(system_temp.VolumePeriod == 0)//�����ʱ�ο���
+	if(system_temp.gps_flag)//GPSʱ����Ч
 	{
 		system_temp.gps1ms++;
 		if(system_temp.pps_1ms < 300) 
@@ -634,25 +638,25 @@ void pps_irq_init(void)
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-    
+    /* PC9 �ж������� IRQ0 */
   	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
-    
+    /* PC9 �жϳ�ʼ������ */
   	EXTI_InitStructure.EXTI_Line = EXTI_Line1;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    
+    /*����EXTI_InitStruct��ָ���Ĳ�����ʼ������EXTI�Ĵ�*/
   	EXTI_Init(&EXTI_InitStructure);
 	
-    
+    /*ʹ�ܰ������ڵ��ⲿ�ж�ͨ��*/
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
-    
+    /*������ռ���ȼ�����ռ���ȼ���Ϊ2*/	
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
-    
+    /*���������ȼ��������ȼ���Ϊ2*/
   	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		
-    
+    /*ʹ���ⲿ�ж�ͨ*/
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
-    
+    /*����NVIC_InitStruct��ָ���Ĳ�����ʼ������NVIC�Ĵ���*/	
   	NVIC_Init(&NVIC_InitStructure);
 }
 

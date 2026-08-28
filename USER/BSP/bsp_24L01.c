@@ -1,44 +1,43 @@
-/* Controlador del transceptor inalambrico nRF24L01. */
 #include "stm32f10x.h"
 
 u8 Buffer[16]  ; // Define a static TX address
-u8 TX_ADDRESS[TX_ADR_WIDTH]= {0x34,0x43,0x10,0x12,0x01};	
-u8 RX_ADDRESS[RX_ADR_WIDTH]= {0x34,0x43,0x10,0x12,0x01};	
+u8 TX_ADDRESS[TX_ADR_WIDTH]= {0x34,0x43,0x10,0x12,0x01};	//���ص�ַ
+u8 RX_ADDRESS[RX_ADR_WIDTH]= {0x34,0x43,0x10,0x12,0x01};	//���յ�ַ
 
 void nRF24L01ioConfig(void)//LCD initial IO.
 {
- 	nRF24L01_CE_L;	
-	nRF24L01_CSN_H;	
+ 	nRF24L01_CE_L;	//ʹ�ܿ���
+	nRF24L01_CSN_H;	//Ƭѡ����
 	
 	nRF24L01_CE_L;
-	SPI_Write_Buf(RFWRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);    
-	SPI_Write_Buf(RFWRITE_REG + RX_ADDR_P0, RX_ADDRESS, RX_ADR_WIDTH); 
+	SPI_Write_Buf(RFWRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);    // д���ص�ַ	
+	SPI_Write_Buf(RFWRITE_REG + RX_ADDR_P0, RX_ADDRESS, RX_ADR_WIDTH); // д���ն˵�ַ
 
-	SPI_RW_Reg(RFWRITE_REG + EN_AA, 0x01);      
-	SPI_RW_Reg(RFWRITE_REG + EN_RXADDR, 0x01);  
-	SPI_RW_Reg(RFWRITE_REG + RF_CH, 40);        
-	SPI_RW_Reg(RFWRITE_REG + RX_PW_P0, RX_PLOAD_WIDTH); 
-	SPI_RW_Reg(RFWRITE_REG + RF_SETUP, 0x07);   
+	SPI_RW_Reg(RFWRITE_REG + EN_AA, 0x01);      //  Ƶ��0�Զ�	ACKӦ������	
+	SPI_RW_Reg(RFWRITE_REG + EN_RXADDR, 0x01);  //  �������յ�ַֻ��Ƶ��0�������Ҫ��Ƶ�����Բο�Page21  
+	SPI_RW_Reg(RFWRITE_REG + RF_CH, 40);        //  �����ŵ�����Ϊ2.4GHZ���շ�����һ��
+	SPI_RW_Reg(RFWRITE_REG + RX_PW_P0, RX_PLOAD_WIDTH); //���ý������ݳ��ȣ���������Ϊ32�ֽ�
+	SPI_RW_Reg(RFWRITE_REG + RF_SETUP, 0x07);   //���÷�������Ϊ1MHZ�����书��Ϊ���ֵ0dB	
 	
 	nRF24L01_CE_H;
 }
 
-
-
+//��NRF��ȡһ���ֽ�����
+//reg �Ĵ�����ַ
 u8 SPI_Read(u8 reg)
 {
 	u8 reg_val;	
-	nRF24L01_CSN_L;                
+	nRF24L01_CSN_L;                //Ƭѡʹ��  
     Spi2_SendByte(reg);
-	reg_val = Spi2_SendByte(0);    
-	nRF24L01_CSN_H;               
-	return(reg_val);        
+	reg_val = Spi2_SendByte(0);    // ��ȡ���ݵ�reg_val
+	nRF24L01_CSN_H;               // ȡ��Ƭѡ	
+	return(reg_val);        // ���ض�ȡ������
 }
    
 
 
-
-
+//��NRFд��һ���ֽ�����
+//reg �Ĵ�����ַ  value Ҫд�������
 u8 SPI_RW_Reg(u8 reg, u8 value)
 {
 	u8 status;	
@@ -51,41 +50,41 @@ u8 SPI_RW_Reg(u8 reg, u8 value)
 
 
 
-
-
+//��NRF��ȡ����ֽ�����
+//reg �Ĵ�����ַ  *pBuf ��ȡ���ݴ洢ָ��  nchars ��ȡ���ֽڸ���
 u8 SPI_Read_Buf(u8 reg, u8 *pBuf,u8 nchars)
 {
 	u8 status,uchar_ctr;	
 	nRF24L01_CSN_L;                   		// Set CSN low, init SPI tranaction
 	status = Spi2_SendByte(reg);
-	for(uchar_ctr=0;uchar_ctr<nchars;uchar_ctr++)		  
-    pBuf[uchar_ctr] = Spi2_SendByte(0); 				  
+	for(uchar_ctr=0;uchar_ctr<nchars;uchar_ctr++)		  //ѭ�� uchars��
+    pBuf[uchar_ctr] = Spi2_SendByte(0); 				  //�ֱ�	 Spi2_SendByte(0)���������ݵ�ַ ����������	
 	nRF24L01_CSN_H;                          	
 	return status;                    // return nRF24L01 status uchar
 }
 
 
-
-
+//��NRFд�����ֽ�����
+//reg �Ĵ�����ַ  *pBuf Ҫд�������  nchars д����ֽڸ���
 u8 SPI_Write_Buf(u8 reg, u8 *pBuf, u8 nchars)
 {
 	u8 status,uchar_ctr;	
-	nRF24L01_CSN_L;            
+	nRF24L01_CSN_L;            //SPIʹ��       
 	  status = Spi2_SendByte(reg);
-	for(uchar_ctr=0; uchar_ctr<nchars; uchar_ctr++) 
-		Spi2_SendByte(*pBuf++);						
-	nRF24L01_CSN_H;           
+	for(uchar_ctr=0; uchar_ctr<nchars; uchar_ctr++) //	 �������ݸ���ѭ��							 
+		Spi2_SendByte(*pBuf++);						//����������� ����д��
+	nRF24L01_CSN_H;           //�ر�SPI
 	return(status);    // 
 }
-
-
-
+//NRF�������ݺ���
+//rx_buf  ���ݻ�����
+//�ú������NRF״̬�Ĵ���״̬ �����ж������������ݵ�rx_buf������
 u8 nRF24L01_RxPacket(u8* rx_buf)
 {	 
 	u8 sta;
-	sta=SPI_Read(STATUS);	    
-	SPI_RW_Reg(RFWRITE_REG+STATUS,sta);   
-	if(sta&RX_OK)				
+	sta=SPI_Read(STATUS);	    // ��ȡ״̬�Ĵ������ж����ݽ���״��
+	SPI_RW_Reg(RFWRITE_REG+STATUS,sta);   //���ж� �����յ����ݺ�RX_DR,TX_DS,MAX_PT���ø�Ϊ1��ͨ��д1������жϱ�־��
+	if(sta&RX_OK)				// �ж��Ƿ���յ�����
 	{
 		SPI_Read_Buf(RD_RX_PLOAD,rx_buf,TX_PLOAD_WIDTH);// read receive payload from RX_FIFO buffer
 		SPI_RW_Reg(FLUSH_RX,0xff);
@@ -95,26 +94,26 @@ u8 nRF24L01_RxPacket(u8* rx_buf)
 }
 
 
-
-
+//��������tx_buf�е����ݷ��ͳ�ȥ
+//tx_buf  Ҫ���͵����ݻ�����
 u8 nRF24L01_TxPacket(u8 * tx_buf)
 {	 
     u8 st;
 	nRF24L01_CE_L;	
-	SPI_Write_Buf(WR_TX_PLOAD, tx_buf, TX_PLOAD_WIDTH); 			 
+	SPI_Write_Buf(WR_TX_PLOAD, tx_buf, TX_PLOAD_WIDTH); 			 // װ������	
 
 	nRF24L01_CE_H;	
-	while(RF_IRQ()!=0) IWDG_Feed();
-	st=	SPI_Read(STATUS);			  
-	SPI_RW_Reg(RFWRITE_REG+STATUS,st);  
+	while(RF_IRQ()!=0) IWDG_Feed();//ι��			   //�ȴ��������
+	st=	SPI_Read(STATUS);			  //��NRF�Ĵ���״̬
+	SPI_RW_Reg(RFWRITE_REG+STATUS,st);  //���ж�
 	
-	if(st&MAX_TX)
+	if(st&MAX_TX)//�ﵽ����ط�����
 	{
-		SPI_RW_Reg(FLUSH_TX,0xff);
+		SPI_RW_Reg(FLUSH_TX,0xff);//���TX FIFO�Ĵ��� 
 		return MAX_TX; 
 	}
 	
-	if(st&TX_OK)				 
+	if(st&TX_OK)				 //���ͳɹ�
 	{
 		return TX_OK;
 	}
@@ -140,25 +139,25 @@ void rf24l01_irq_init(void)
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-    
+    /* PC9 �ж������� IRQ0 */
   	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource12);
-    
+    /* PC9 �жϳ�ʼ������ */
   	EXTI_InitStructure.EXTI_Line = EXTI_Line12;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    
+    /*����EXTI_InitStruct��ָ���Ĳ�����ʼ������EXTI�Ĵ�*/
   	EXTI_Init(&EXTI_InitStructure);
 	
-    
+    /*ʹ�ܰ������ڵ��ⲿ�ж�ͨ��*/
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
-    
+    /*������ռ���ȼ�����ռ���ȼ���Ϊ2*/	
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
-    
+    /*���������ȼ��������ȼ���Ϊ2*/
   	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;		
-    
+    /*ʹ���ⲿ�ж�ͨ*/
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
-    
+    /*����NVIC_InitStruct��ָ���Ĳ�����ʼ������NVIC�Ĵ���*/	
   	NVIC_Init(&NVIC_InitStructure);
 }
 
