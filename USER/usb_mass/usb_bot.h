@@ -17,7 +17,7 @@
 #ifndef __USB_BOT_H
 #define __USB_BOT_H
 
-#define BOT_PRINTF_EN	1		/* 1表示打印调试信息使能，0禁止(正式发布程序时应禁止) */
+#define BOT_PRINTF_EN	1
 
 #if BOT_PRINTF_EN == 1
 	#define bot_printf(...)	printf(__VA_ARGS__)

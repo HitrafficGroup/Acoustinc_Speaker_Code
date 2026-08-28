@@ -1,17 +1,4 @@
-/*
-*********************************************************************************************************
-*	                                  
-*	模块名称 : 内存管理层
-*	文件名称 : memory.c
-*	版    本 : V1.0
-*	说    明 :  提供内存管理层接口函数。 
-*
-*	修改记录 :
-*		版本号  日期       作者    说明
-*		v1.0    2011-05-25         由ST原厂 V3.3.0版本的 memory.c 文件修改而来
-*
-*********************************************************************************************************
-*/
+
 
 #include "memory.h"
 #include "usb_scsi.h"
@@ -41,21 +28,12 @@ extern Bulk_Only_CSW CSW;
 
 extern uint32_t Mass_Block_Size;
 
-/*
-*********************************************************************************************************
-*	函 数 名: Read_Memory
-*	功能说明: 读存储器数据
-*	形    参：lun ： SCSI逻辑单元号，0表示SD卡，1表示NAND Flash
-*			  Memory_Offset : 存储器偏移地址
-*			  Transfer_Length : 数据长度（单位：字节）
-*	返 回 值: 无
-*********************************************************************************************************
-*/
+
 void Read_Memory(uint8_t lun, uint32_t Memory_Offset, uint32_t Transfer_Length)
 {
-	static uint32_t Offset, Length;	/* 静态变量 */
+	static uint32_t Offset, Length;
 	
-	if (TransferState == TXFR_IDLE )	/* 传输第一帧时，保存偏移量 */
+	if (TransferState == TXFR_IDLE )
 	{
 		Offset = Memory_Offset * Mass_Block_Size;
 		Length = Transfer_Length * Mass_Block_Size;
@@ -91,7 +69,7 @@ void Read_Memory(uint8_t lun, uint32_t Memory_Offset, uint32_t Transfer_Length)
 	    Led_RW_ON();
 	}
   
-	if (Length == 0)	/* 传输完毕 */
+	if (Length == 0)
 	{
 		Block_Read_count = 0;
 		Block_offset = 0;
@@ -102,23 +80,14 @@ void Read_Memory(uint8_t lun, uint32_t Memory_Offset, uint32_t Transfer_Length)
 	}
 }
 
-/*
-*********************************************************************************************************
-*	函 数 名: Write_Memory
-*	功能说明: 写存储器数据
-*	形    参：lun ： SCSI逻辑单元号，0表示SD卡，1表示NAND Flash
-*			  Memory_Offset : 存储器偏移地址
-*			  Transfer_Length : 数据长度（单位：字节）
-*	返 回 值: 无
-*********************************************************************************************************
-*/
+
 void Write_Memory (uint8_t lun, uint32_t Memory_Offset, uint32_t Transfer_Length)
 {
 	static uint32_t W_Offset, W_Length;
 	
 	uint32_t temp =  Counter + 64;
 	
-	if (TransferState == TXFR_IDLE )		/* 传输第一帧时，保存偏移量 */
+	if (TransferState == TXFR_IDLE )
 	{
 		W_Offset = Memory_Offset * Mass_Block_Size;
 		W_Length = Transfer_Length * Mass_Block_Size;
@@ -142,12 +111,12 @@ void Write_Memory (uint8_t lun, uint32_t Memory_Offset, uint32_t Transfer_Length
 		}
 		
 		CSW.dDataResidue -= Data_Len;
-		SetEPRxStatus(ENDP2, EP_RX_VALID); /* 使能下次传输 */   
+		SetEPRxStatus(ENDP2, EP_RX_VALID);
 		
 		Led_RW_ON();
 	}
 	
-	if ((W_Length == 0) || (Bot_State == BOT_CSW_Send))		/* 传输结束 */
+	if ((W_Length == 0) || (Bot_State == BOT_CSW_Send))
 	{
 		Counter = 0;
 		Set_CSW (CSW_CMD_PASSED, SEND_CSW_ENABLE);

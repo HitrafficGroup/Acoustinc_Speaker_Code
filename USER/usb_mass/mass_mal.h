@@ -17,8 +17,8 @@
 #ifndef __MASS_MAL_H
 #define __MASS_MAL_H
 
-#define MASS_PRINTF_OK_EN	0		/* 1表示打印执行成功的调试信息 */
-#define MASS_PRINTF_ERR_EN	1		/* 1表示打印执行失败的调试信息 */
+#define MASS_PRINTF_OK_EN	0
+#define MASS_PRINTF_ERR_EN	1
 
 
 #if MASS_PRINTF_EN == 1
@@ -40,7 +40,7 @@
 #define MAL_OK   0
 #define MAL_FAIL 1
 
-/* 定义大容量存储设备ID */
+
 typedef enum _MASS_ID
 {
     SPI_FLASH = 0,
@@ -48,7 +48,7 @@ typedef enum _MASS_ID
 	MASS_NAND = 2,
 }MASS_ID_E;
 
-/* LUN是Logical Unit Number的简写，即逻辑单元号，内部逻辑单元的SCSI标识符 */
+
 extern uint32_t Max_Lun;
 
 /* Exported macro ------------------------------------------------------------*/

@@ -73,8 +73,8 @@
 #include <string.h>
 
 /* Exported types ------------------------------------------------------------*/
-#define ENABLE_INT()	__set_PRIMASK(0)	/* 使能全局中断 */
-#define DISABLE_INT()	__set_PRIMASK(1)	/* 禁止全局中断 */
+#define ENABLE_INT()	__set_PRIMASK(0)	/* Define la constante ENABLE_INT utilizada por este modulo. */
+#define DISABLE_INT()	__set_PRIMASK(1)	/* Define la constante DISABLE_INT utilizada por este modulo. */
 
 /* Exported constants --------------------------------------------------------*/
 void Delay(__IO uint32_t nTime);

@@ -214,7 +214,7 @@ void CBW_Decode(void)
           SCSI_Format_Cmd(CBW.bLUN);
           break;
           
-          /* ртоб Unsupported command*/
+          /* Procesa el comando SCSI correspondiente. */
 
         case SCSI_MODE_SELECT10:
           SCSI_Mode_Select10_Cmd(CBW.bLUN);

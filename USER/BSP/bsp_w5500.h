@@ -201,75 +201,75 @@
 #define S7_TX_BUF	0xf0
 #define S7_RX_BUF	0xf8
 
-//端口的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
-#define TCP_SERVER		0x00	//TCP服务器模式
-#define TCP_CLIENT		0x01	//TCP客户端模式 
-#define UDP_MODE		0x02	//UDP(广播)模式 
 
-//端口0状态记录,1:端口完成初始化,2端口完成连接(可以正常传输数据) 
-#define S_INIT			0x01	//端口完成初始化 
-#define S_CONN			0x02	//端口完成连接,可以正常传输数据 
+#define TCP_SERVER		0x00
+#define TCP_CLIENT		0x01
+#define UDP_MODE		0x02	// Define el modo de operacion UDP_MODE.
 
-//端口0接收和发送数据的状态,1:端口接收到数据,2:端口发送数据完成 
-#define S_RECEIVE		0x01    //端口接收到一个数据包 
-#define S_TRANSMITOK	0x02    //端口发送一个数据包完成 
 
-#define S_RX_SIZE	    2048	//定义Socket接收缓冲区的大小，可以根据W5500_RMSR的设置修改
-#define S_TX_SIZE	    2048    //定义Socket发送缓冲区的大小，可以根据W5500_TMSR的设置修改
+#define S_INIT			0x01
+#define S_CONN			0x02
+
+
+#define S_RECEIVE		0x01
+#define S_TRANSMITOK	0x02
+
+#define S_RX_SIZE	    2048	// Define el tamano S_RX_SIZE.
+#define S_TX_SIZE	    2048    // Define el tamano S_TX_SIZE.
 
 #define NET_TRUE	    0x01
 #define NET_FALSE	    0x00
 
 
-typedef unsigned char SOCKET;		//自定义端口号数据类型
+typedef unsigned char SOCKET;
 
-/***************----- 数据结构定义 -----***************/
+
 typedef struct 
 {
-	unsigned char IP_Addr[4];	//本机IP地址 	
-	unsigned char Gateway_IP[4];//网关IP地址 
-	unsigned char Sub_Mask[4];	//子网掩码 
-	unsigned char Phy_Addr[6];	//物理地址(MAC) 
+	unsigned char IP_Addr[4];
+	unsigned char Gateway_IP[4];
+	unsigned char Sub_Mask[4];
+	unsigned char Phy_Addr[6];
 }NET;
 
 typedef struct 
 {
-    uint8_t     Mode;           //端口的运行模式,0:TCP服务器模式,1:TCP客户端模式,2:UDP(广播)模式
+    uint8_t     Mode;
     uint8_t     State;          
     uint8_t     DataState;
-	uint16_t    LocalPort;      //本地端口
-	uint8_t     DestIP[4];      //目的IP地址 destination
-	uint16_t    DestPort;       //目的端口号
-    uint8_t     UdpDIPR[4];	    //UDP(广播)模式,目的主机IP地址
-	uint16_t    UdpDestPort;    //UDP(广播)模式,目的主机端口号
+	uint16_t    LocalPort;
+	uint8_t     DestIP[4];
+	uint16_t    DestPort;
+    uint8_t     UdpDIPR[4];
+	uint16_t    UdpDestPort;
 }SOCKET_TYPE;
 
 
-/***************----- 网络参数变量定义 -----***************/
+
 extern NET           Net;
 extern SOCKET_TYPE   Socket[8];
 
-/***************----- 端口数据缓冲区 -----***************/
-extern unsigned char Rx_Buffer[2048];	//端口接收数据缓冲区 
-extern unsigned char Tx_Buffer[2048];	//端口发送数据缓冲区 
 
-extern unsigned char W5500_Interrupt;	//W5500中断标志(0:无中断,1:有中断)
-extern unsigned int W5500_Send_Delay_Counter[8]; //W5500发送延时计数变量(ms)
+extern unsigned char Rx_Buffer[2048];
+extern unsigned char Tx_Buffer[2048];
 
-extern void Delay(unsigned int d);//延时函数(ms)
-extern void W5500_GPIO_Config(void);//W5500 GPIO初始化配置
-extern void W5500_NVIC_Config(void);//W5500 接收引脚中断优先级设置
+extern unsigned char W5500_Interrupt;
+extern unsigned int W5500_Send_Delay_Counter[8];
 
-extern void W5500_Hardware_Reset(void);//硬件复位W5500
-extern void W5500_Init(void);//初始化W5500寄存器函数
-extern unsigned char Detect_Gateway(SOCKET s);  //检查网关服务器
-extern void Socket_Init(SOCKET s);              //指定Socket(0~7)初始化
-extern unsigned char Socket_Connect(SOCKET s);  //设置指定Socket(0~7)为客户端与远程服务器连接
-extern unsigned char Socket_Listen(SOCKET s);   //设置指定Socket(0~7)作为服务器等待远程主机的连接
-extern unsigned char Socket_UDP(SOCKET s);      //设置指定Socket(0~7)为UDP模式
-extern unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);//指定Socket(0~7)接收数据处理
-extern void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size); //指定Socket(0~7)发送数据处理
-extern void W5500_Interrupt_Process(void);//W5500中断处理程序框架
+extern void Delay(unsigned int d);
+extern void W5500_GPIO_Config(void);
+extern void W5500_NVIC_Config(void);
+
+extern void W5500_Hardware_Reset(void);
+extern void W5500_Init(void);
+extern unsigned char Detect_Gateway(SOCKET s);
+extern void Socket_Init(SOCKET s);
+extern unsigned char Socket_Connect(SOCKET s);
+extern unsigned char Socket_Listen(SOCKET s);
+extern unsigned char Socket_UDP(SOCKET s);
+extern unsigned short Read_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr);
+extern void Write_SOCK_Data_Buffer(SOCKET s, unsigned char *dat_ptr, unsigned short size);
+extern void W5500_Interrupt_Process(void);
 
 void W5500_Socket_Set(SOCKET s);
 void W5500_Initialization(void);

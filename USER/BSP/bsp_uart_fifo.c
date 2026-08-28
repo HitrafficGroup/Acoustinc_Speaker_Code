@@ -1,24 +1,17 @@
-/*
-*********************************************************************************************************
-*	ģ������ : �����ж�+FIFO����ģ��
-*	�ļ����� : bsp_uart_fifo.c
-*	��    �� : V1.0
-*	˵    �� : ���ô����ж�+FIFOģʽʵ�ֶ�����ڵ�ͬʱ����
-*********************************************************************************************************
-*/
+
 
 
 #include "stm32f10x.h"
 
 
-/* ����ÿ�����ڽṹ����� */
-static uint8_t g_TxBuf1[UART1_TX_BUF_SIZE];		/* ���ͻ����� */
-static uint8_t g_RxBuf1[UART1_RX_BUF_SIZE];		/* ���ջ����� */
+
+static uint8_t g_TxBuf1[UART1_TX_BUF_SIZE];
+static uint8_t g_RxBuf1[UART1_RX_BUF_SIZE];
 
 UART_T g_tUart1;
 UART_T Uart2Gps;
-static uint8_t g_TxBuf2[UART2_TX_BUF_SIZE];		/* ���ͻ����� */
-static uint8_t g_RxBuf2[UART2_RX_BUF_SIZE];		/* ���ջ����� */
+static uint8_t g_TxBuf2[UART2_TX_BUF_SIZE];
+static uint8_t g_RxBuf2[UART2_RX_BUF_SIZE];
 
 static void UartVarInit(void);
 static void InitHardUart(void);
@@ -38,8 +31,8 @@ void DMA_Configuration(void)
 	DMA_InitTypeDef DMA_InitStructure;
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	
-    // ����DMA1ͨ��3��USART3_RX��
-	// ����DMA1ͨ��6��USART2_RX��
+
+
     DMA_DeInit(DMA1_Channel6);
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)dma_usart2_rx_buffer;
@@ -54,34 +47,20 @@ void DMA_Configuration(void)
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel6, &DMA_InitStructure);
 	
-	DMA_Cmd(DMA1_Channel6, ENABLE);// ����DMA����
+	DMA_Cmd(DMA1_Channel6, ENABLE);
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: bsp_InitUart
-*	����˵��: ��ʼ������Ӳ��������ȫ�ֱ�������ֵ.
-*	��    ��:  ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 void bsp_InitUart(void)
 {
-	UartVarInit();		/* �����ȳ�ʼ��ȫ�ֱ���,������Ӳ�� */
-	InitHardUart();		/* ���ô��ڵ�Ӳ������(�����ʵ�) */
+	UartVarInit();
+	InitHardUart();
 	DMA_Configuration();
-	ConfigUartNVIC();	/* ���ô����ж� */
+	ConfigUartNVIC();
 }
 
 
-/*
-*********************************************************************************************************
-*	�� �� ��: UartClearTxFifo
-*	����˵��: ���㴮�ڷ��ͻ�����
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 void UartClearTxFifo(void)
 {
 	g_tUart1.usTxWrite = 0;
@@ -89,115 +68,29 @@ void UartClearTxFifo(void)
 	g_tUart1.usTxCount = 0;
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: UartClearRxFifo
-*	����˵��: ���㴮�ڽ��ջ�����
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 void UartClearRxFifo(void)
 {
 	g_tUart1.usRxWrite = 0;
 	g_tUart1.usRxRead = 0;
 	g_tUart1.usRxCount = 0;
 }
-/*
-void utc_to_local(RtcType* local, RtcType* utc, uint8_t* TimeZone)
-{
-    uint8_t days;
-    uint32_t timezone, seconds, local_seconds;
-	
-    timezone = (TimeZone[2]<<8)|TimeZone[3];
-    seconds = utc->hour * 3600 + utc->minute * 60 + utc->second;
-    if(utc->month != 2) days = DayMonth[utc->month];
-    else 
-    {
-        if(Is_Leap_Year(2000+utc->year)) days = 29; else days = 28;
-    }
-    
-    local->year = utc->year;
-    local->month = utc->month;
-    local->day = utc->day;
-    
-    if(TimeZone[0])//����
-    {
-        if(seconds + timezone < 86400)
-        {
-            local_seconds = seconds + timezone;
-        }
-        else 
-        {
-            local_seconds = seconds + timezone - 86400;
-            if(local->day < days) local->day++;
-            else 
-            {
-                local->day = 1;
-                if(local->month < 12) local->month++;
-                else 
-                {
-                    local->month = 1;
-                    local->year++;
-                }
-            }
-        }
-    }
-    else //����
-    {
-        if(seconds >= timezone)
-        {
-            local_seconds = seconds - timezone;
-        }
-        else 
-        {
-            local_seconds = seconds + 86400 - timezone;
-            if(local->day > 1) local->day--;
-            else 
-            {
-                if(local->month > 1) 
-                {
-                    local->month--;
-                    if(local->month != 2) local->day = DayMonth[local->month];
-                    else 
-                    {
-                        if(Is_Leap_Year(2000+local->year)) local->day = 29; else local->day = 28;
-                    }
-                }
-                else 
-                {
-                    local->year--;
-                    local->month = 12;
-                    local->day = 31;
-                }
-            }
-        }
-    }
-    
-    calc_week(local);
-    local->year = DEC_to_BCD(local->year);
-    local->month = DEC_to_BCD(local->month);
-    local->day = DEC_to_BCD(local->day);
-    
-    second_to_rtc(local_seconds, local);
-    OP.gps_seconds = local_seconds;
-}
-*/
+
 
 
 
 //                             0   1   2   3   4   5   6   7   8   9  10  11  12
 const uint8_t DayMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-//����:���
-//���:������ǲ������� 1�� 0����
+
+
 uint8_t Is_Leap_Year(uint16_t year)
 {
-	if(year%4==0)//�����ܱ�4����
+	if(year%4==0)
 	{
 		if(year%100==0)
 		{
-			if(year%400==0)return 1;//�����00��β,��Ҫ�ܱ�400���� 	   
+			if(year%400==0)return 1;
 			else return 0;
 		}else return 1;
 	}else return 0;
@@ -206,7 +99,7 @@ uint8_t Is_Leap_Year(uint16_t year)
 void calc_week(RtcType* rtc)
 {
     uint16_t y,m,d,a,b,c;
-    //��������
+
     y = rtc->year;
     m = rtc->month;
     d = rtc->day;
@@ -254,7 +147,7 @@ void utc_to_local(RtcType* local, RtcType* utc, uint8_t* TimeZone)
     local->month = utc->month;
     local->day = utc->day;
     
-    if(TimeZone[0])//����
+    if(TimeZone[0])
     {
         if(seconds + timezone < 86400)
         {
@@ -276,7 +169,7 @@ void utc_to_local(RtcType* local, RtcType* utc, uint8_t* TimeZone)
             }
         }
     }
-    else //����
+    else
     {
         if(seconds >= timezone)
         {
@@ -415,52 +308,45 @@ void Gps_ReciveNew(uint16_t RxCount)
     }
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: UartVarInit
-*	����˵��: ��ʼ��������صı���
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 static void UartVarInit(void)
 {
-	g_tUart1.uart = USART1;						/* STM32 �����豸 */
-	g_tUart1.pTxBuf = g_TxBuf1;					/* ���ͻ�����ָ�� */
-	g_tUart1.pRxBuf = g_RxBuf1;					/* ���ջ�����ָ�� */
-	g_tUart1.usTxBufSize = UART1_TX_BUF_SIZE;	/* ���ͻ�������С */
-	g_tUart1.usRxBufSize = UART1_RX_BUF_SIZE;	/* ���ջ�������С */
-	g_tUart1.usTxWrite = 0;						/* ����FIFOд���� */
-	g_tUart1.usTxRead = 0;						/* ����FIFO������ */
-	g_tUart1.usRxWrite = 0;						/* ����FIFOд���� */
-	g_tUart1.usRxRead = 0;						/* ����FIFO������ */
-	g_tUart1.usRxCount = 0;						/* ���յ��������ݸ��� */
-	g_tUart1.usTxCount = 0;						/* �����͵����ݸ��� */
-	g_tUart1.SendBefor = 0;						/* ��������ǰ�Ļص����� */
-	g_tUart1.SendOver = 0;						/* ������Ϻ�Ļص����� */
-	g_tUart1.ReciveNew = 0;						/* ���յ������ݺ�Ļص����� */
+	g_tUart1.uart = USART1;
+	g_tUart1.pTxBuf = g_TxBuf1;
+	g_tUart1.pRxBuf = g_RxBuf1;
+	g_tUart1.usTxBufSize = UART1_TX_BUF_SIZE;
+	g_tUart1.usRxBufSize = UART1_RX_BUF_SIZE;
+	g_tUart1.usTxWrite = 0;
+	g_tUart1.usTxRead = 0;
+	g_tUart1.usRxWrite = 0;
+	g_tUart1.usRxRead = 0;
+	g_tUart1.usRxCount = 0;
+	g_tUart1.usTxCount = 0;
+	g_tUart1.SendBefor = 0;
+	g_tUart1.SendOver = 0;
+	g_tUart1.ReciveNew = 0;
 	
-	Uart2Gps.uart = USART2;						/* STM32 �����豸 */
-	Uart2Gps.pTxBuf = g_TxBuf2;					/* ���ͻ�����ָ�� */
-	Uart2Gps.pRxBuf = g_RxBuf2;					/* ���ջ�����ָ�� */
-	Uart2Gps.usTxBufSize = UART2_TX_BUF_SIZE;	/* ���ͻ�������С */
-	Uart2Gps.usRxBufSize = UART2_RX_BUF_SIZE;	/* ���ջ�������С */
-	Uart2Gps.usTxWrite = 0;						/* ����FIFOд���� */
-	Uart2Gps.usTxRead = 0;						/* ����FIFO������ */
-	Uart2Gps.usRxWrite = 0;						/* ����FIFOд���� */
-	Uart2Gps.usRxRead = 0;						/* ����FIFO������ */
-	Uart2Gps.usRxCount = 0;						/* ���յ��������ݸ��� */
-	Uart2Gps.usTxCount = 0;						/* �����͵����ݸ��� */
-	Uart2Gps.SendBefor = 0;						/* ��������ǰ�Ļص����� */
-	Uart2Gps.SendOver = 0;						/* ������Ϻ�Ļص����� */
-	Uart2Gps.ReciveNew = Gps_ReciveNew;			/* ���յ������ݺ�Ļص����� */
+	Uart2Gps.uart = USART2;
+	Uart2Gps.pTxBuf = g_TxBuf2;
+	Uart2Gps.pRxBuf = g_RxBuf2;
+	Uart2Gps.usTxBufSize = UART2_TX_BUF_SIZE;
+	Uart2Gps.usRxBufSize = UART2_RX_BUF_SIZE;
+	Uart2Gps.usTxWrite = 0;
+	Uart2Gps.usTxRead = 0;
+	Uart2Gps.usRxWrite = 0;
+	Uart2Gps.usRxRead = 0;
+	Uart2Gps.usRxCount = 0;
+	Uart2Gps.usTxCount = 0;
+	Uart2Gps.SendBefor = 0;
+	Uart2Gps.SendOver = 0;
+	Uart2Gps.ReciveNew = Gps_ReciveNew;
 }
 void Init_Uart1(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 
-	/* ����1 TX = PA9   RX = PA10 �� TX = PB6   RX = PB7*/
+
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 
@@ -473,7 +359,7 @@ void Init_Uart1(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	USART_InitStructure.USART_BaudRate = UART1_BAUD;	/* ������ */
+	USART_InitStructure.USART_BaudRate = UART1_BAUD;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
@@ -481,122 +367,87 @@ void Init_Uart1(void)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART1, &USART_InitStructure);
 
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);	/* ʹ�ܽ����ж� */
-	/*
-		USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-		ע��: ��Ҫ�ڴ˴��򿪷����ж�
-		�����ж�ʹ����SendUart()������
-	*/
-	USART_Cmd(USART1, ENABLE);		/* ʹ�ܴ��� */
-	USART_ClearFlag(USART1, USART_FLAG_TC);     /* �巢����ɱ�־��Transmission Complete flag */
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+
+	USART_Cmd(USART1, ENABLE);
+	USART_ClearFlag(USART1, USART_FLAG_TC);
 }
 void Init_Uart2(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
-	/* ��1������GPIO��USART������ʱ�� */
+
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
-	/* ��2������USART Tx��GPIO����Ϊ���츴��ģʽ */
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	/* ��3������USART Rx��GPIO����Ϊ��������ģʽ
-		����CPU��λ��GPIOȱʡ���Ǹ�������ģʽ���������������費�Ǳ����
-		���ǣ��һ��ǽ�����ϱ����Ķ������ҷ�ֹ�����ط��޸���������ߵ����ò���
-	*/
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	/*  ��3���Ѿ����ˣ�����ⲽ���Բ���
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	*/
+
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	/* ��4���� ���ô���Ӳ������ */
-	USART_InitStructure.USART_BaudRate = UART2_BAUD;	/* ������ */
+
+	USART_InitStructure.USART_BaudRate = UART2_BAUD;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;		/* ��ѡ�����ģʽ */
+	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	USART_Init(USART2, &USART_InitStructure);
 
-	//USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);	/* ʹ�ܽ����ж� */
-	USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);	// ʹ��USART3��DMA����
-	USART_ITConfig(USART2, USART_IT_IDLE, ENABLE);	// ʹ��USART3�Ŀ����ж�
-	/*
-		USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-		ע��: ��Ҫ�ڴ˴��򿪷����ж�
-		�����ж�ʹ����SendUart()������
-	*/
-	USART_Cmd(USART2, ENABLE);		/* ʹ�ܴ��� */
 
-	/* CPU��Сȱ�ݣ��������úã����ֱ��Send�����1���ֽڷ��Ͳ���ȥ
-		�����������1���ֽ��޷���ȷ���ͳ�ȥ������ */
-	USART_ClearFlag(USART2, USART_FLAG_TC);     /* �巢����ɱ�־��Transmission Complete flag */
+	USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);
+	USART_ITConfig(USART2, USART_IT_IDLE, ENABLE);
+
+	USART_Cmd(USART2, ENABLE);
+
+
+	USART_ClearFlag(USART2, USART_FLAG_TC);
 }
 
 
-/*
-*********************************************************************************************************
-*	�� �� ��: InitHardUart
-*	����˵��: ���ô��ڵ�Ӳ�������������ʣ�����λ��ֹͣλ����ʼλ��У��λ���ж�ʹ�ܣ��ʺ���STM32-F4������
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 static void InitHardUart(void)
 {
 	Init_Uart1();
 	Init_Uart2();
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: ConfigUartNVIC
-*	����˵��: ���ô���Ӳ���ж�.
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 static void ConfigUartNVIC(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-	/* ʹ�ܴ���1�ж� */
+
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-	/* ʹ�ܴ���2�ж� */
+
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: UartSend
-*	����˵��: ��д���ݵ�UART���ͻ�����,�����������жϡ��жϴ�������������Ϻ��Զ��رշ����ж�
-*	��    ��:  ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 void UartSendBuf(uint8_t *_ucaBuf, uint16_t _usLen)
 {
 	uint16_t i;
     
 	if(g_tUart1.SendBefor != 0)
 	{
-		g_tUart1.SendBefor();		/* �����RS485ͨ�ţ���������������н�RS485����Ϊ����ģʽ */
+		g_tUart1.SendBefor();
 	}
     
 	for(i = 0; i < _usLen; i++)
@@ -614,7 +465,7 @@ void UartSendBuf(uint8_t *_ucaBuf, uint16_t _usLen)
 				break;
 			}
 		}
-		/* �����������뷢�ͻ����� */
+
 		g_tUart1.pTxBuf[g_tUart1.usTxWrite] = _ucaBuf[i];
 
 		DISABLE_INT();
@@ -626,7 +477,7 @@ void UartSendBuf(uint8_t *_ucaBuf, uint16_t _usLen)
 		ENABLE_INT();
 	}
 
-	USART_ITConfig(g_tUart1.uart, USART_IT_TXE, ENABLE);//���������ж� 
+	USART_ITConfig(g_tUart1.uart, USART_IT_TXE, ENABLE);
 }
 
 void UartSendChar(uint8_t _ucByte)
@@ -634,37 +485,29 @@ void UartSendChar(uint8_t _ucByte)
 	UartSendBuf(&_ucByte, 1);
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: UartGetChar
-*	����˵��: �Ӵ��ڽ��ջ�������ȡ1�ֽ����� ��������������ã�
-*	��    ��: _pUart : �����豸
-*			  _pByte : ��Ŷ�ȡ���ݵ�ָ��
-*	�� �� ֵ: 0 ��ʾ������  1��ʾ��ȡ������
-*********************************************************************************************************
-*/
+
 uint8_t UartGetChar(uint8_t *_pByte)
 {
 	uint16_t usCount;
 
-	/* usRxWrite �������жϺ����б���д���������ȡ�ñ���ʱ����������ٽ������� */
+
 	DISABLE_INT();
 	usCount = g_tUart1.usRxCount;
 	ENABLE_INT();
 
-	/* �������д������ͬ���򷵻�0 */
+
 	//if (_g_tUart1.usRxRead == usRxWrite)
-	if (usCount == 0)	/* �Ѿ�û������ */
+	if (usCount == 0)
 	{
 		return 0;
 	}
 	else
 	{
-		*_pByte = g_tUart1.pRxBuf[g_tUart1.usRxRead];		/* �Ӵ��ڽ���FIFOȡ1������ */
+		*_pByte = g_tUart1.pRxBuf[g_tUart1.usRxRead];
 
-		/* ��дFIFO������ */
+
 		DISABLE_INT();
-		if (++g_tUart1.usRxRead >= g_tUart1.usRxBufSize)//������������β��
+		if (++g_tUart1.usRxRead >= g_tUart1.usRxBufSize)
 		{
 			g_tUart1.usRxRead = 0;
 		}
@@ -740,10 +583,10 @@ static void Uart1IRQ(void)
 
 static void GpsIRQ(void)
 {
-	/* ���������ж�  */
+
 //	if(USART_GetITStatus(Uart2Gps.uart, USART_IT_RXNE) != RESET)
 //	{
-//		/* �Ӵ��ڽ������ݼĴ�����ȡ���ݴ�ŵ�����FIFO */
+
 //		uint8_t ch;
 //		
 //		ch = USART_ReceiveData(Uart2Gps.uart);
@@ -772,23 +615,19 @@ static void GpsIRQ(void)
     if (USART_GetITStatus(USART2, USART_IT_IDLE) != RESET) 
 	{
 		uint16_t i;
-        // ��������жϱ�־
-        USART_ReceiveData(USART2); // ��ȡDR�Ĵ����������־
-        // �����ѽ��յ����ݳ���
+
+        USART_ReceiveData(USART2);
+
         rx_length = DMA_BUFFER_SIZE - DMA_GetCurrDataCounter(DMA1_Channel6);
-		/*
-		printf("USART3_IT_IDLE rx_length = %d\n",rx_length);
-		printf_fifo_hex(rx_buffer, rx_length);
-        // �������յ�������
-		*/
+
         for (i = 0; i < rx_length; i++) 
 		{
-            // ����rx_buffer�е�����
+
 			uint8_t ch = dma_usart2_rx_buffer[i];
 			
 			if(Uart2Gps.usRxWrite == 0)
 			{
-				if(ch == '$')//֡ͷ
+				if(ch == '$')
 				{
 					Uart2Gps.pRxBuf[Uart2Gps.usRxWrite] = ch;
 					Uart2Gps.usRxWrite++;
@@ -802,9 +641,9 @@ static void GpsIRQ(void)
 					Uart2Gps.usRxWrite++;
 				}
 
-				if(ch == '\n')//֡β
+				if(ch == '\n')
 				{
-					// �ص�����,֪ͨӦ�ó����յ�������,һ���Ƿ���1����Ϣ��������һ����� 
+
 					if (Uart2Gps.ReciveNew)
 					{
 						Uart2Gps.ReciveNew(Uart2Gps.usRxWrite);
@@ -814,26 +653,26 @@ static void GpsIRQ(void)
 			}
         }
 		
-        // ��������DMA����
+
         DMA_Cmd(DMA1_Channel6, DISABLE);
         DMA_SetCurrDataCounter(DMA1_Channel6, DMA_BUFFER_SIZE);
         DMA_Cmd(DMA1_Channel6, ENABLE);
     }
 	
-	/* �������ͻ��������ж� */
+
 	if(USART_GetITStatus(Uart2Gps.uart, USART_IT_TXE) != RESET)
 	{
 		if (Uart2Gps.usTxCount == 0)
 		{
-			/* ���ͻ�������������ȡ��ʱ�� ��ֹ���ͻ��������ж� ��ע�⣺��ʱ���1�����ݻ�δ����������ϣ�*/
+
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TXE, DISABLE);
 
-			/* ʹ�����ݷ�������ж� */
+
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, ENABLE);
 		}
 		else
 		{
-			/* �ӷ���FIFOȡ1���ֽ�д�봮�ڷ������ݼĴ��� */
+
 			USART_SendData(Uart2Gps.uart, Uart2Gps.pTxBuf[Uart2Gps.usTxRead]);
 			if (++Uart2Gps.usTxRead >= Uart2Gps.usTxBufSize)
 			{
@@ -842,15 +681,15 @@ static void GpsIRQ(void)
 			Uart2Gps.usTxCount--;
 		}
 	}
-	/* ����bitλȫ��������ϵ��ж� */
+
 	else if (USART_GetITStatus(Uart2Gps.uart, USART_IT_TC) != RESET)
 	{
 		if (Uart2Gps.usTxCount == 0)
 		{
-			/* �������FIFO������ȫ��������ϣ���ֹ���ݷ�������ж� */
+
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, DISABLE);
 
-			/* �ص�����, һ����������RS485ͨ�ţ���RS485оƬ����Ϊ����ģʽ��������ռ���� */
+
 			if (Uart2Gps.SendOver)
 			{
 				Uart2Gps.SendOver();
@@ -858,8 +697,8 @@ static void GpsIRQ(void)
 		}
 		else
 		{
-			/* ��������£��������˷�֧ */
-			/* �������FIFO�����ݻ�δ��ϣ���ӷ���FIFOȡ1������д�뷢�����ݼĴ��� */
+
+
 			USART_SendData(Uart2Gps.uart, Uart2Gps.pTxBuf[Uart2Gps.usTxRead]);
 			if (++Uart2Gps.usTxRead >= Uart2Gps.usTxBufSize)
 			{
@@ -874,26 +713,19 @@ static void GpsIRQ(void)
 //		USART_ReceiveData(Uart2Gps.uart);
 //		//USART_ClearFlag(Uart2Gps.uart, USART_FLAG_ORE);
 //	}
-	//USART_IT_FE	 ֡���� (Framing error)
-	//USART_FLAG_ORE ������� ���ش��� (Overrun error)
-	//USART_FLAG_PE	 ��ż����� У����� (Parity error)
-	//USART_FLAG_NE	 ���������־ (Noise error flag)
-	//NE��ORT��FE	 ������־���໺��ͨ���е���������֡����
-	if ((Uart2Gps.uart->SR & (USART_FLAG_PE|USART_FLAG_NE|USART_IT_FE|USART_FLAG_ORE)) != (uint16_t)RESET)//�����������
+
+
+
+
+
+	if ((Uart2Gps.uart->SR & (USART_FLAG_PE|USART_FLAG_NE|USART_IT_FE|USART_FLAG_ORE)) != (uint16_t)RESET)
 	{
 		//USART_ClearFlag(_pUart->uart, USART_FLAG_ORE);
 		USART_ReceiveData(Uart2Gps.uart);
 	}
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: USART1_IRQHandler
-*	����˵��: USART�жϷ������
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 void USART1_IRQHandler(void)
 {
     Uart1IRQ();
@@ -914,28 +746,14 @@ void printf_fifo_hex(uint8_t* tx, uint8_t len)
 }
 
 
-/*
-*********************************************************************************************************
-*	�� �� ��: fputc
-*	����˵��: �ض���putc��������������ʹ��printf�����Ӵ���1��ӡ���
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 int fputc(int ch, FILE *f)
 {
     UartSendChar(ch);
 	return ch;
 }
 
-/*
-*********************************************************************************************************
-*	�� �� ��: fgetc
-*	����˵��: �ض���getc��������������ʹ��getchar�����Ӵ���1��������
-*	��    ��: ��
-*	�� �� ֵ: ��
-*********************************************************************************************************
-*/
+
 int fgetc(FILE *f)
 {
 	uint8_t ucData;

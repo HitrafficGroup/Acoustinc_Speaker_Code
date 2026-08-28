@@ -1,18 +1,9 @@
-/*
-*********************************************************************************************************
-*
-*	ģ������ : SPI Flash��FatFS ��ʾģ�顣
-*	�ļ����� : demo_spi_flash_fatfs.h
-*	��    �� : V1.0
-*	˵    �� : ͷ�ļ�
-*
-*********************************************************************************************************
-*/
+/* Configura o realiza una transferencia por el bus SPI. */
 
 #ifndef _DEMO_SPI_FLASH_FATFS_H
 #define _DEMO_SPI_FLASH_FATFS_H
 
-#define BUF_SIZE				  (4096*4)		/* ÿ�ζ�дSD����������ݳ��� */
+#define BUF_SIZE				  (4096*4)		/* Define el tamano del buffer BUF_SIZE. */
 
 
 enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
@@ -21,14 +12,14 @@ enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
 
 typedef struct
 {
-    char filename[13];          /* �ļ��� */
-	uint8_t ucMuteOn;			/* 1 : ������ 0: ���� */
-	uint8_t ucVolume;			/* ��ǰ���� */
+    char filename[13];          /* Declara el recurso de datos utilizado por esta rutina. */
+	uint8_t ucMuteOn;			/* Declara el recurso de datos utilizado por esta rutina. */
+	uint8_t ucVolume;			/* Declara el recurso de datos utilizado por esta rutina. */
     uint8_t VolumeEnviron;
     uint8_t VolumePeriod;
     uint8_t VolumeChangeFlag;
-	uint32_t uiProgress;		/* ��ǰ����(�Ѷ�ȡ���ֽ���) */
-	uint8_t ucPauseEn;			/* ��ͣʹ�� */
+	uint32_t uiProgress;		/* Declara el recurso de datos utilizado por esta rutina. */
+	uint8_t ucPauseEn;			/* Declara el recurso de datos utilizado por esta rutina. */
     uint8_t fileOpenFlag;
     uint8_t fileChangeFlag;
     uint8_t cycleFlag;
@@ -52,23 +43,23 @@ typedef struct
 
 typedef struct
 {
-    uint8_t cardType;           /* �����ͣ�0x32ä���� */
-	uint8_t packType;			/* �����ͣ�0x68 */
+    uint8_t cardType;           /* Declara el recurso de datos utilizado por esta rutina. */
+	uint8_t packType;			/* Declara el recurso de datos utilizado por esta rutina. */
 	char filename[13];
-	uint8_t operaType;		    /* �������� */
-	uint16_t total;			    /* �ְ��� */
-    uint16_t now;               /* ����� */
-    uint16_t len;               /* ������ */
+	uint8_t operaType;		    /* Declara el recurso de datos utilizado por esta rutina. */
+	uint16_t total;			    /* Declara el recurso de datos utilizado por esta rutina. */
+    uint16_t now;               /* Declara el recurso de datos utilizado por esta rutina. */
+    uint16_t len;               /* Declara el recurso de datos utilizado por esta rutina. */
     uint8_t data;
 }PACK_T;
 
 typedef struct
 {
-    char filename[13];          /* �ļ��� */
-	uint16_t total;			    /* �ְ��� */
-	uint16_t get;			    /* ��ǰ���� */
+    char filename[13];          /* Declara el recurso de datos utilizado por esta rutina. */
+	uint16_t total;			    /* Declara el recurso de datos utilizado por esta rutina. */
+	uint16_t get;			    /* Declara el recurso de datos utilizado por esta rutina. */
     uint16_t filebufbytes;
-	uint32_t bytes;		        /* ��ǰ����(�Ѷ�ȡ���ֽ���) */
+	uint32_t bytes;		        /* Declara el recurso de datos utilizado por esta rutina. */
     uint8_t* Pdata;
     uint32_t timeCount;
 }FIle_TRANS_T;
@@ -80,7 +71,7 @@ extern uint8_t Time_Volume[2][6][3];
 extern uint8_t Par[64];
 extern uint8_t FileBuf[BUF_SIZE];
 
-/* ���ⲿ���õĺ������� */
+
 void FileFormat(void);
 void ViewRootDir(void);
 
