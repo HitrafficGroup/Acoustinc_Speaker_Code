@@ -23,6 +23,10 @@ enum
 
 typedef struct
 {
+	uint32_t ChipID;
+	char ChipName[20];
+	uint32_t TotalSize;
+	uint32_t PageSize;
 }SFLASH_T;
 
 

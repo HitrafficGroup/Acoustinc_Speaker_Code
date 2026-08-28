@@ -8,6 +8,7 @@
 #ifndef _DEMO_SPI_FLASH_FATFS_H
 #define _DEMO_SPI_FLASH_FATFS_H
 
+#define BUF_SIZE                  (4096 * 4)
 
 
 enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
@@ -87,5 +88,4 @@ void mp3_par_init(void);
 void get_filename(uint8_t num);
 
 #endif
-
 
