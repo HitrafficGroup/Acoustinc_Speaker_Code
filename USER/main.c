@@ -13,8 +13,8 @@ uint8_t StartFlag = 1;
 static void SysTick_Init(void);
 void Delay(__IO uint32_t nTime);
 void SocketProcess(void);
-    int contador = 0;
-    int i = 0;
+// int contador = 0;
+// int i = 0;
 
 int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
     

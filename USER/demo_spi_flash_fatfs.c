@@ -194,7 +194,6 @@ void SYS_TEST(void)
                 printf("??7 - PlaySound??\r\n");
                 PlaySound("002.WAV");
                 break;
-            
             case 'H':
                 printf("??7 - PlaySound??\r\n");
                 memset(MP3.filename,0x00,13);
@@ -209,10 +208,15 @@ void SYS_TEST(void)
                 vs1053_SetVolume(MP3.ucVolume);
                 printf("++ Volume = %d\r\n", MP3.ucVolume);
                 break;
+			case 'M':
+                //if(MP3.ucVolume <= 244)MP3.ucVolume += 10;
+                vs1053_SetVolume(244);
+                printf("++ Volume = %d\r\n", MP3.ucVolume);
+                break;
             case '-':
                 if(MP3.ucVolume >= 10)
-					//MP3.ucVolume -= 10;
-					MP3.ucVolume ++;
+					MP3.ucVolume -= 10;
+					//MP3.ucVolume ++;
                 vs1053_SetVolume(MP3.ucVolume);
                 printf("-- Volume = %d\r\n", MP3.ucVolume);
                 break;
@@ -283,7 +287,6 @@ void SYS_TEST(void)
                DR3_Toggle();
                break;
 			////////
-
             default:
                 DispMenu();
                 break;
@@ -1610,7 +1613,7 @@ void CheckVolume(void)
 			MP3.ucVolume = 1;//????????????1??????????? 20250219
         }
         //printf("VolumePeriod = %d\r\n", MP3.VolumePeriod);
-		(rtc, 7);
+		//(rtc, 7); //Vino asi desde el original, no se que hace, lo comento para que compile sin warnings ya que RTC no tiene que ver con el volumen 
     }
     
     if(ain.stab_state)
