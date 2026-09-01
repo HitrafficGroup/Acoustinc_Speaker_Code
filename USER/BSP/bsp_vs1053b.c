@@ -277,7 +277,7 @@ uint8_t vs1053_ReadChipID(void)
         case VS1103:    pModel = "VS1103";      break;
         default:        pModel = "unknow";      break;
     }
-    printf("½âÂëÐ¾Æ¬ÐÍºÅ : %s\r\n", pModel);
+    printf("ï¿½ï¿½ï¿½ï¿½Ð¾Æ¬ï¿½Íºï¿½ : %s\r\n", pModel);
     return usStatus;
 }
 

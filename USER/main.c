@@ -1,17 +1,12 @@
-/* Modulo principal de coordinacion del firmware. */
-#include "stm32f10x.h" 
+#include "stm32f10x.h" /* Modulo principal de coordinacion del firmware. */
 
 #include "usb_hw.h"
 #include "usb_pwr.h"
 
-/* Marca generada cada milisegundo por SysTick. */
-__IO uint8_t reg1ms_flag;
-/* Cuenta los milisegundos que forman una ventana de 10 ms. */
-__IO uint8_t ten_mm_counter;
-/* Indicador global de error del sistema. */
-__IO uint8_t system_error = 0;
-/* Contador de milisegundos usado para tareas periodicas de 1 segundo. */
-__IO uint16_t reg1ms_count = 1000;
+__IO uint8_t reg1ms_flag; /* Marca generada cada milisegundo por SysTick. */
+__IO uint8_t ten_mm_counter; /* Cuenta los milisegundos que forman una ventana de 10 ms. */
+__IO uint8_t system_error = 0; /* Indicador global de error del sistema. */
+__IO uint16_t reg1ms_count = 1000; /* Contador de milisegundos usado para tareas periodicas de 1 segundo. */
 
 uint8_t StartFlag = 1;
 
@@ -21,8 +16,7 @@ void SocketProcess(void);
     int contador = 0;
     int i = 0;
 
-/* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
-int main(void){
+int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
     
 //    if(FLASH_GetReadOutProtectionStatus() != SET)
 //    {
@@ -41,28 +35,26 @@ int main(void){
     ADC_Inits();
     bsp_InitI2C();
     bsp_InitSpi1Bus();
-    bsp_InitSpiFlash();		
+    bsp_InitSpiFlash();		//��ʼ��SPI_Flash
     W5500_GPIO_Config(); //Puerto de comunicacion 
     
     bsp_InitSpi2Bus();
     mp3_par_init(); 
-    vs1053_HardInit();      
+    vs1053_HardInit(); 
     
     Config();
     CheckVolume();
     
-    /* Reinicia y configura el controlador Ethernet W5500. */
-    W5500_Hardware_Reset();
+    W5500_Hardware_Reset();    /* Reinicia y configura el controlador Ethernet W5500. */
 	W5500_Initialization();
 
     bsp_InitIwdg(3000);
-    
-	/* Deja el transceptor de radio en un estado conocido antes de recibir. */
-	nRF24L01ioConfig();
+	
+	nRF24L01ioConfig(); /* Deja el transceptor de radio en un estado conocido antes de recibir. */
 	SPI_RW_Reg(FLUSH_RX,0xff);
 	SPI_RW_Reg(FLUSH_TX,0xff);
-	/* Configura el nRF24L01 en modo receptor. */
-	RX_Mode();
+	
+	RX_Mode(); /* Configura el nRF24L01 en modo receptor. */
 	rf24l01_irq_init();
 	pps_irq_init();
 	
@@ -74,44 +66,40 @@ int main(void){
     //     LED_Toggle();
     // }
 
-    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
-    while(1)
+    while(1)    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
     {
-        /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */
-        if(reg1ms_flag)
+        if(reg1ms_flag) /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */
         {
             reg1ms_flag = 0;
-            /* Durante la escritura de parametros se pausa el procesamiento de entradas. */
-            if(MP3.Writingflag == 0)
+            if(MP3.Writingflag == 0)    /* Durante la escritura de parametros se pausa el procesamiento de entradas. */
             {
                 ain_filterAC_DC();
                 filterAC_DC();
-                /* Agrupa diez ticks para las tareas de filtrado y visualizacion de 10 ms. */
-                if(++ten_mm_counter >= 10)
+                if(++ten_mm_counter >= 10)  /* Agrupa diez ticks para las tareas de filtrado y visualizacion de 10 ms. */
                 {
                     ten_mm_counter = 0;
                     study_mode_filterAC_DC();
                     study_mode_time_calculation();
                     down_time_display();
-                    if(MP3.PushbuttonCount)
-                    {
-                        if(--MP3.PushbuttonCount > 0)
-                            RELAY_ON();
-                        else
-                            RELAY_OFF();
-                    }
+                    // if(MP3.PushbuttonCount) // Deshabilito ya que no hay Relay en el sistema de prueba
+                    // {
+                    //     if(--MP3.PushbuttonCount > 0)
+                    //         RELAY_ON();
+                    //     else
+                    //         RELAY_OFF();
+                    // }
                 }
             }
-            /* Guarda en Flash los parametros recibidos y actualiza el reloj. */
-            if(MP3.writeParFlag)
+            
+            if(MP3.writeParFlag)    /* Guarda en Flash los parametros recibidos y actualiza el reloj. */
             {
                 //printf("MP3.writeParFlag\r\n");
                 MP3.writeParFlag = 0;
                 RtcWrite((RtcType*)Par);
 				
-                WriteConfigFile(&Par[7], 12, 40);
+                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
                 //Config();
-                if(ReadConfigFile())
+                if(ReadConfigFile())//�������ļ��ɹ�
                     Load_Period_Parameters(&FileBuf[12]); 
                 system_temp.timeUpdate = 1;
                 MP3.fileChangeFlag = 1;
@@ -123,8 +111,7 @@ int main(void){
 				IWDG_Feed();
 			}
 			
-            /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
-            if(lamp_chge_flag)
+            if(lamp_chge_flag)  /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
             {
                 lamp_chge_flag = 0;
 //                if(MP3.fileOpenFlag == 0)
@@ -135,29 +122,24 @@ int main(void){
 //                }
                 if(lamp_status == RS)
                 {
-                    printf("\r\n==RED STATE ==LCF#%x ==LS#%x \r\n", lamp_chge_flag, lamp_status);
                     MP3.dir = 0;//MP3.dir = 2;
                 }
                 else if(lamp_status == GS)
 				{
-                    printf("\r\n==GREEN STATE ==LCF#%d ==LS#%d\r\n", lamp_chge_flag, lamp_status);
 					//if(gre_flash_flag == 0) MP3.dir = 3; else MP3.dir = 4;
 					MP3.dir = 2;
 				}
 				else if(lamp_status == BS)
 				{
-                    printf("\r\n==BLACK STATE ==LCF#%d ==LS#%d\r\n", lamp_chge_flag, lamp_status);
 					MP3.stopFlag = 1;
-					
 				}
                 memset(MP3.filename,0x00,13);
                 get_filename(MP3.dir);
                 MP3.fileChangeFlag = 1;
                 MP3.lamp_chge_sound_flag = 1;
             }
-            /* Aplica los cambios pendientes de archivo y reproduce el aviso necesario. */
-            fileChange();
-            if(++reg1ms_count >= 1000)
+            fileChange();   /* Aplica los cambios pendientes de archivo y reproduce el aviso necesario. */
+            if(++reg1ms_count >= 1000) //Cada 1 segundo
             {
                 reg1ms_count = 0;
 				MP3.WorkMode = MODEA;
@@ -174,13 +156,17 @@ int main(void){
                 IWDG_Feed();
                 LED_Toggle();
 
-                ////
-                //ain_filter_ac
-                printf(">>ain.stab_state %d \r\n", ain.stab_state);
-                //filterAC_DC
-                printf(">>lamp_state[0] %d >>lamp_state[1] %d \r\n", lamp_state[0], lamp_state[1]);
-                printf(">>lamp_status %d \r\n", lamp_status);
-                printf(">>gre_flash_flag %d \r\n", gre_flash_flag);
+                ////YO imprimir
+                printf("> AMAR ST %d \r\n", ain.stab_state); //YO Imprimir estado AIN estable
+                printf("> ROJO ST %d \r\n", lamp_state[0]); //YO Imprimir estados rojo estable
+                printf("> VERD ST %d \r\n", lamp_state[1]); //YO Imprimir estados verde estable
+                if(lamp_status == RS)//YO Imprimir estados BS = 0, RS = 1, GS = 2)
+                    printf("> LS=RS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+                else if(lamp_status == GS)
+				    printf("> LS=GS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+				else if(lamp_status == BS)
+                    printf("> LS=BS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+                printf("> gre_flash_flag %d \r\n", gre_flash_flag);//YO Imprimir estados
                 //study_mode_filterAC_DC
                 //printf(">>lamp_state[0] %d \r\n", display_data[1] );
                 //printf(">>lamp_status %d \r\n", study_lamp_stab_state);
@@ -201,18 +187,15 @@ int main(void){
                     }
                 }
             }
-            /* Atiende red, panel luminoso y pruebas periodicas del sistema. */
-            SocketProcess();
+            SocketProcess();    /* Atiende red, panel luminoso y pruebas periodicas del sistema. */
 			flash_panel_control();
 			
             SYS_TEST();
         }
-        /* La reproduccion debe atenderse continuamente, incluso entre ticks. */
-        Playing();
+        Playing();  /* La reproduccion debe atenderse continuamente, incluso entre ticks. */
 		if(spi2_busy_flag == 0)
 		{
-			/* Procesa los paquetes de radio cuando SPI2 no esta ocupado. */
-			if(rf_int_flag == 1)
+			if(rf_int_flag == 1)    /* Procesa los paquetes de radio cuando SPI2 no esta ocupado. */
 			{
 				rf_int_flag = 0;
 				rf24l01_rx_process(); //funcion que debe procesar informacion que llega por radio frecuencia
@@ -223,8 +206,6 @@ int main(void){
     }
 }
 
-/*******************************************************************************
-*******************************************************************************/
 /*
  * Procesa una trama recibida por UDP o TCP.
  * UDP se utiliza para descubrir/configurar la red; TCP transporta comandos
@@ -234,14 +215,12 @@ void Process_Socket_Data(SOCKET s)
 {
 	uint16_t size,i;
     uint8_t CheckSum,result;
-	/* Lee del W5500 la cantidad de bytes disponible en el socket. */
-	size = Read_SOCK_Data_Buffer(s, Rx_Buffer);
+	
+	size = Read_SOCK_Data_Buffer(s, Rx_Buffer); /* Lee del W5500 la cantidad de bytes disponible en el socket. */
     
-	/* Socket 0: mensajes UDP de identificacion y configuracion de red. */
-	if(s == 0)
+	if(s == 0)  /* Socket 0: mensajes UDP de identificacion y configuracion de red. */
 	{
-		/* 0x55BB solicita la informacion de red y el identificador del equipo. */
-		if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xbb)
+		if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xbb)    /* 0x55BB solicita la informacion de red y el identificador del equipo. */
         {
             if(Rx_Buffer[0]==Net.IP_Addr[0] && Rx_Buffer[1]==Net.IP_Addr[1] && Rx_Buffer[2]==Net.IP_Addr[2])
             {
@@ -259,7 +238,6 @@ void Process_Socket_Data(SOCKET s)
                 Socket[s].UdpDIPR[3] = 255;
                 Socket[s].UdpDestPort = 7788;
             }
-            
             Tx_Buffer[0] = 0x55;
             Tx_Buffer[1] = 0xCC;
             Tx_Buffer[2] = Net.IP_Addr[0];
@@ -284,8 +262,7 @@ void Process_Socket_Data(SOCKET s)
                 Tx_Buffer[18] += Tx_Buffer[i];
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 19);
         }
-		/* 0x55DD actualiza la configuracion IP si la suma de comprobacion es valida. */
-		else if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xdd)
+		else if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xdd) /* 0x55DD actualiza la configuracion IP si la suma de comprobacion es valida. */
         {
             CheckSum = 0;
             for(i=10;i<22;i++) CheckSum += Rx_Buffer[i];
@@ -304,24 +281,22 @@ void Process_Socket_Data(SOCKET s)
             }
         }
 	}
-	/* Socket 1: canal TCP para comandos de control. */
-	else if(s==1)
+	else if(s==1)   /* Socket 1: canal TCP para comandos de control. */
 	{
 		//memcpy(Tx_Buffer, Rx_Buffer, size);
 		//if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_ON", strlen("BEEP_ON")))beep_count = 4;
 		//else if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_OFF", strlen("BEEP_OFF")))beep_count = 0;
         //Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
         LED_Toggle();
-		/* ReceiveProcess interpreta el comando y devuelve el tipo de respuesta. */
-		result = ReceiveProcess(Rx_Buffer, size);
-        if(result == 1)
+		result = ReceiveProcess(Rx_Buffer, size);/* ReceiveProcess interpreta el comando y devuelve el tipo de respuesta. */
+        if(result == 1) // RESPUESTA al recibir AUDIOS
         {
             Tx_Buffer[0] = 'O';
             Tx_Buffer[1] = 'K';
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
             LED_Toggle();
         }
-        else if(result == 2)
+        else if(result == 2) //RESPUESTA al SET.
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -338,7 +313,7 @@ void Process_Socket_Data(SOCKET s)
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 24);
             LED_Toggle();
         }
-        else if(result == 3)
+        else if(result == 3) //RESPPUESTA al READ: ENVIA horarios y reloj
         {
             Tx_Buffer[0] = 0x32;
             Tx_Buffer[1] = 0x60;
@@ -363,22 +338,19 @@ void Process_Socket_Data(SOCKET s)
 	}
 }
 
-/* Actualiza sockets, procesa interrupciones del W5500 y entrega tramas recibidas. */
-void SocketProcess(void)
+void SocketProcess(void) /* Actualiza sockets, procesa interrupciones del W5500 y entrega tramas recibidas. */
 {
     SOCKET n;
-    /* Prepara los sockets de trabajo y atiende sus eventos pendientes. */
-    W5500_Socket_Set(0);
+    W5500_Socket_Set(0);/* Prepara los sockets de trabajo y atiende sus eventos pendientes. */
     W5500_Socket_Set(1);
     //W5500_Socket_Set(2);
     W5500_Interrupt_Process();
-    /* Recorre los ocho sockets disponibles en el controlador. */
-    for(n=0;n<8;n++)
+    
+    for(n=0;n<8;n++)    /* Recorre los ocho sockets disponibles en el controlador. */
     {
         if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)
         {
-            Socket[n].DataState &= ~S_RECEIVE;
-            /* La bandera se limpia antes de procesar para evitar repetir la trama. */
+            Socket[n].DataState &= ~S_RECEIVE;  /* La bandera se limpia antes de procesar para evitar repetir la trama. */
             Process_Socket_Data(n);
         }
         else if(W5500_Send_Delay_Counter[n] >= 5000)
@@ -387,15 +359,13 @@ void SocketProcess(void)
             {
                 Socket[n].DataState &= ~S_TRANSMITOK;
                 //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-                
             }
             W5500_Send_Delay_Counter[n] = 0;
         }
     }
 }
 
-/* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
-static void SysTick_Init(void)
+static void SysTick_Init(void)  /* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
 {
     while(SysTick_Config(SystemCoreClock / 1000));
 }

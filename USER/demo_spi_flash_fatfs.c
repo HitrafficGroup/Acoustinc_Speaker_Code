@@ -29,7 +29,6 @@ uint8_t *bufptr;
 //(4096*2) ???24S
 //(4096*4) ???22S
 
-
 uint8_t Par[64];//
 uint8_t Time_Volume[2][6][3];
 uint8_t FileBuf[BUF_SIZE];
@@ -62,23 +61,23 @@ static const char * FR_Table[]=
 	"FR_OK?????",				                             /* (0) Succeeded */
 	"FR_DISK_ERR????????????",			                 /* (1) A hard error occurred in the low level disk I/O layer */
 	"FR_INT_ERR?????????",				                     /* (2) Assertion failed */
-	"FR_NOT_READY????????????§Û???",			             /* (3) The physical drive cannot work */
+	"FR_NOT_READY????????????é”Ÿæ–¤æ‹·???",			             /* (3) The physical drive cannot work */
 	"FR_NO_FILE???????????",				                 /* (4) Could not find the file */
-	"FR_NO_PATH??¡¤????????",				                 /* (5) Could not find the path */
-	"FR_INVALID_NAME????§¹?????",		                     /* (6) The path name format is invalid */
+	"FR_NO_PATH??é”Ÿæ–¤æ‹·????????",				                 /* (5) Could not find the path */
+	"FR_INVALID_NAME????é”Ÿæ–¤æ‹·?????",		                     /* (6) The path name format is invalid */
 	"FR_DENIED?????????????????????????????",         /* (7) Access denied due to prohibited access or directory full */
 	"FR_EXIST????????????",			                     /* (8) Access denied due to prohibited access */
-	"FR_INVALID_OBJECT?????????????????§¹",		         /* (9) The file/directory object is invalid */
-	"FR_WRITE_PROTECTED????????????§Õ????",		             /* (10) The physical drive is write protected */
-	"FR_INVALID_DRIVE?????????????§¹",		                 /* (11) The logical drive number is invalid */
+	"FR_INVALID_OBJECT?????????????????é”Ÿæ–¤æ‹·",		         /* (9) The file/directory object is invalid */
+	"FR_WRITE_PROTECTED????????????é”Ÿæ–¤æ‹·????",		             /* (10) The physical drive is write protected */
+	"FR_INVALID_DRIVE?????????????é”Ÿæ–¤æ‹·",		                 /* (11) The logical drive number is invalid */
 	"FR_NOT_ENABLED?????????????",			                 /* (12) The volume has no work area */
-	"FR_NO_FILESYSTEM???????§¹??FAT??",		             /* (13) There is no valid FAT volume */
+	"FR_NO_FILESYSTEM???????é”Ÿæ–¤æ‹·??FAT??",		             /* (13) There is no valid FAT volume */
 	"FR_MKFS_ABORTED?????????????f_mkfs()?????",	         /* (14) The f_mkfs() aborted due to any parameter error */
-	"FR_TIMEOUT????ÕÇ????????????¡Â??????????",		 /* (15) Could not get a grant to access the volume within defined period */
+	"FR_TIMEOUT????é”Ÿæ–¤æ‹·????????????é”Ÿæ–¤æ‹·??????????",		 /* (15) Could not get a grant to access the volume within defined period */
 	"FR_LOCKED?????????????????????????",				 /* (16) The operation is rejected according to the file sharing policy */
 	"FR_NOT_ENOUGH_CORE????????????????????",		     /* (17) LFN working buffer could not be allocated */
 	"FR_TOO_MANY_OPEN_FILES?????????????????_FS_SHARE", /* (18) Number of open files > _FS_SHARE */
-	"FR_INVALID_PARAMETER????????§¹"	                     /* (19) Given parameter is invalid */
+	"FR_INVALID_PARAMETER????????é”Ÿæ–¤æ‹·"	                     /* (19) Given parameter is invalid */
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,7 +122,6 @@ void SYS_TEST(void)
                 printf("??0 - FileFormat??\r\n");
                 FileFormat();		/* ???SD?????????????? */
                 break;
-            
             case '1':
                 printf("??1 - ViewRootDir??\r\n");
                 ViewRootDir();		/* ???SD?????????????? */
@@ -135,66 +133,58 @@ void SYS_TEST(void)
 				SPI_RW_Reg(FLUSH_TX,0xff);
 				RX_Mode();
                 break;
-
-//            case '2':
-//                printf("??2 - CreateNewFile??\r\n");
-// Prueba deshabilitada para crear un archivo desde la consola serie.
-//                break;
-            
-//            case '3':
-//                printf("??3 - ReadFileData??\r\n");
-//                ReadFileData(fileTrans.filename);
-//                break;
-            
-//            case 'X':
-//                printf("??3 - ReadFileData??\r\n");
-//                AddFileData("armfly.bin", "sinowatcher", 11);		/* ?????????armfly.txt?????? */
-//                break;
-            
-//            case '4':
-//                printf("??4 - CreateDir??\r\n");
-//                CreateDir();		/* ?????? */
-//                break;
-            
-//            case '5':
-//                printf("??5 - DeleteDirFile??\r\n");
-//                DeleteDirFile();	/* ?????????? */
-//                break;
-
-//            case '6':
-//                printf("??6 - TestSpeed??\r\n");
-//                WriteFileTest();	/* ?????? */
-//                break;
-            
+			////////////////// Deshabilitado start
+			case '2':
+				printf("??2 - CreateNewFile??\r\n");	//Prueba deshabilitada para crear un archivo desde la consola serie.
+				break;
+			case '7':	//case '3':
+				printf("??3 - ReadFileData??\r\n");
+				ReadFileData(fileTrans.filename);
+				break;
+			case 'X':
+				printf("??3 - ReadFileData??\r\n");
+				AddFileData("armfly.bin", "sinowatcher", 11);		/* ?????????armfly.txt?????? */
+				break;
+			case '4':
+				printf("??4 - CreateDir??\r\n");
+				CreateDir();		/* ?????? */
+				break;
+			case '5':
+				printf("??5 - DeleteDirFile??\r\n");
+				DeleteDirFile();	/* ?????????? */
+				break;
+			case '6':
+				printf("??6 - TestSpeed??\r\n");
+				WriteFileTest();	/* ?????? */
+				break;
+            ////////////////// Deshabilitado fin
             case 'I':
                 printf("??i - vs1053_ReadChipID??\r\n");
                 vs1053_ReadChipID();
                 break;
-            
             case 'a':
                 printf("??7 - PlaySound??\r\n");
                 PlaySound(sysfile0);
                 break;
-            
             case 'A':
                 printf("??7 - PlaySound??\r\n");
-                PlaySound("001.MP3");
+                PlaySound("001.mp3");//PlaySound("001.MP3");
                 break;
             case 'B':
                 printf("??7 - PlaySound??\r\n");
-                PlaySound("002.MP3");
+                PlaySound("002.mp3");
                 break;
             case 'C':
                 printf("??7 - PlaySound??\r\n");
-                PlaySound("003.MP3");
+                PlaySound("003.mp3");
                 break;
             case 'D':
                 printf("??7 - PlaySound??\r\n");
-                PlaySound("004.MP3");
+                PlaySound("004.mp3");
                 break;
             case 'E':
                 printf("??7 - PlaySound??\r\n");
-                PlaySound("005.MP3");
+                PlaySound("005.mp3");
                 break;
             case 'F':
                 printf("??7 - PlaySound??\r\n");
@@ -220,29 +210,35 @@ void SYS_TEST(void)
                 printf("++ Volume = %d\r\n", MP3.ucVolume);
                 break;
             case '-':
-                if(MP3.ucVolume >= 10)MP3.ucVolume -= 10;
+                if(MP3.ucVolume >= 10)
+					//MP3.ucVolume -= 10;
+					MP3.ucVolume ++;
                 vs1053_SetVolume(MP3.ucVolume);
                 printf("-- Volume = %d\r\n", MP3.ucVolume);
                 break;
-//            case '8':
-//                printf("??8 - ????????\r\n");
-//                vs1053_TestSine();
-//                break;
-//            case '9':
-//                printf("??9 - ???????????\r\n");
-//                vs1053_TestSineExit();
-//                break;
-//            case 'W':
-// Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
-//                SYS_RTC->second  = 0x00;
-//                SYS_RTC->minute  = 0x21;
-//                SYS_RTC->hour    = 0x15;
-//                SYS_RTC->week    = 0x02;
-//                SYS_RTC->day     = 0x08;
-//                SYS_RTC->month   = 0x12;
-//                SYS_RTC->year    = 0x20;
-//                RtcWrite(SYS_RTC);
-//                break;
+				////////////////// Deshabilitado start
+			case '8':
+				printf("??8 - ????????\r\n");
+				vs1053_TestSine();
+				vs1053_TestSine();
+				vs1053_TestSine();
+				vs1053_TestSine();
+				break;
+			case '9':
+				printf("??9 - ???????????\r\n");
+				vs1053_TestSineExit();
+				break;
+			case 'W':	//Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
+				SYS_RTC->second  = 0x00;
+				SYS_RTC->minute  = 0x21;
+				SYS_RTC->hour    = 0x15;
+				SYS_RTC->week    = 0x02;
+				SYS_RTC->day     = 0x08;
+				SYS_RTC->month   = 0x12;
+				SYS_RTC->year    = 0x20;
+				RtcWrite(SYS_RTC);
+				break;
+			////////////////// Deshabilitado END
             case 'T':
                 printf("??T - ???????\r\n");
                 RtcRead(SYS_RTC);
@@ -250,7 +246,6 @@ void SYS_TEST(void)
                 printf("%08x\r\n",SCB->CPUID);
                 //get_cpuid();
                 break;
-
 			////////
 			case 'U':
                 printf("??T - ???????\r\n");
@@ -303,12 +298,12 @@ static void DispMenu(void)
 	printf("?????????????????0????SPI Flash?????\r\n");
 	printf("????????????:\r\n");
 	printf("0 - ??SPI_Flash??????????????\r\n");
-	printf("1 - ??????????????§Ò?\r\n");
+	printf("1 - ??????????????é”Ÿæ–¤æ‹·?\r\n");
 	printf("2 - ????????????armfly.txt\r\n");
 	printf("3 - ??armfly.txt?????????\r\n");
 	printf("4 - ??????\r\n");
 	printf("5 - ??????????\r\n");
-	printf("6 - ??§Õ?????????\r\n");
+	printf("6 - ??é”Ÿæ–¤æ‹·?????????\r\n");
     printf("7 - ????WAV????\r\n");
 }
 
@@ -339,7 +334,7 @@ uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize)
     {
         if(pack->packType == 0x68)
         {
-            if(pack->operaType == 0x02)
+            if(pack->operaType == 0x02) //recibe audio
             {
                 if(pack->now == 1)
                 {
@@ -442,11 +437,11 @@ void FileFormat(void)
 	result  = f_mount(NULL, "0:", 0);
 	if (result != FR_OK)
 	{
-		printf("§Ø?????????? (%s)\r\n", FR_Table[result]);
+		printf("é”Ÿæ–¤æ‹·?????????? (%s)\r\n", FR_Table[result]);
 	}
 	else
 	{
-		printf("§Ø?????????? (%s)\r\n", FR_Table[result]);
+		printf("é”Ÿæ–¤æ‹·?????????? (%s)\r\n", FR_Table[result]);
 	}
 }
 
@@ -479,7 +474,7 @@ void ViewRootDir(void)
 	}
 
 	/* ????????????????????? */
-	printf("????        |  ?????§³ | ??????? | \r\n");
+	printf("????        |  ?????é”Ÿæ–¤æ‹· | ??????? | \r\n");
 	for (cnt = 0; ;cnt++)
 	{
 		result = f_readdir(&DirInf,&FileInf); 		/* ???????????????????? */
@@ -519,7 +514,7 @@ void ViewRootDir(void)
 	}
 
 	/* ????????????????????? */
-	printf("????        |  ?????§³ | ??????? | \r\n");
+	printf("????        |  ?????é”Ÿæ–¤æ‹· | ??????? | \r\n");
 	for (cnt = 0; ;cnt++)
 	{
 		result = f_readdir(&DirInf,&FileInf); 		/* ???????????????????? */
@@ -554,11 +549,11 @@ void ViewRootDir(void)
 	result  = f_mount(NULL, "0:", 0);
 	if (result != FR_OK)
 	{
-		printf("§Ø?????????? (%s)\r\n", FR_Table[result]);
+		printf("é”Ÿæ–¤æ‹·?????????? (%s)\r\n", FR_Table[result]);
 	}
 	else
 	{
-		printf("§Ø?????????? (%s)\r\n", FR_Table[result]);
+		printf("é”Ÿæ–¤æ‹·?????????? (%s)\r\n", FR_Table[result]);
 	}
 }
 
@@ -592,11 +587,11 @@ static void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
 	result = f_write(&file, data, len, &bw);
 	if (result == FR_OK)
 	{
-		printf("%s ???§Õ????\r\n",filename);
+		printf("%s ???é”Ÿæ–¤æ‹·????\r\n",filename);
 	}
 	else
 	{
-		printf("%s ???§Õ?????\r\n",filename);
+		printf("%s ???é”Ÿæ–¤æ‹·?????\r\n",filename);
 	}
 
 	/* ??????*/
@@ -635,11 +630,11 @@ static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t le
 	result = f_write(&file, data, len, &bw);
 	if (result == FR_OK)
 	{
-		printf("%s ???§Õ????\r\n",filename);
+		printf("%s ???é”Ÿæ–¤æ‹·????\r\n",filename);
 	}
 	else
 	{
-		printf("%s ???§Õ?????\r\n",filename);
+		printf("%s ???é”Ÿæ–¤æ‹·?????\r\n",filename);
 	}
 }
 
@@ -683,11 +678,11 @@ static void AddFileData(char *filename, uint8_t* data, uint16_t len)
     {
         if (result == FR_OK)
         {
-            printf("%s ???§Õ????\r\n", filename);
+            printf("%s ???é”Ÿæ–¤æ‹·????\r\n", filename);
         }
         else
         {
-            printf("%s ???§Õ?????\r\n", filename);
+            printf("%s ???é”Ÿæ–¤æ‹·?????\r\n", filename);
         }
     }
     
@@ -734,11 +729,11 @@ void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len)
     
     if (result == FR_OK && bw == len)
     {
-        printf("%s ???§Õ????\r\n", ConfigFile);
+        printf("%s ???é”Ÿæ–¤æ‹·????\r\n", ConfigFile);
     }
     else
     {
-        printf("%s ???§Õ?????\r\n", ConfigFile);
+        printf("%s ???é”Ÿæ–¤æ‹·?????\r\n", ConfigFile);
     }
     
 	/* ??????*/
@@ -769,11 +764,11 @@ static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
     {
         if (result == FR_OK)
         {
-            printf("%s ???§Õ????\r\n", filename);
+            printf("%s ???é”Ÿæ–¤æ‹·????\r\n", filename);
         }
         else
         {
-            printf("%s ???§Õ?????\r\n", filename);
+            printf("%s ???é”Ÿæ–¤æ‹·?????\r\n", filename);
         }
     }
 }
@@ -873,14 +868,14 @@ static void CreateConfigFile(void)
         printf("???????? (%s)\r\n", FR_Table[result]);
     }
     
-    printf("???§Õ??? %s\r\n", ConfigFile);
+    printf("???é”Ÿæ–¤æ‹·??? %s\r\n", ConfigFile);
     result = f_write(&file, DefaultConfig, 52, &bw);
     if (result != FR_OK)
     {
-        printf("???§Õ??? (%s)\r\n", FR_Table[result]);
+        printf("???é”Ÿæ–¤æ‹·??? (%s)\r\n", FR_Table[result]);
     }
 
-    printf("???§Õ???\r\n");
+    printf("???é”Ÿæ–¤æ‹·???\r\n");
 	/* ??????*/
 	f_close(&file);
 
@@ -934,7 +929,7 @@ uint8_t ReadAndCheckConfigFile(void)
 {
     if(ReadConfigFile())//????????????
     {
-        printf("???????¨°???\r\n");
+        printf("???????é”Ÿæ–¤æ‹·???\r\n");
         Load_Net_Parameters(FileBuf);
         Load_Period_Parameters(&FileBuf[12]);
         return 1;
@@ -1297,7 +1292,6 @@ static void CreateDir(void)
 	result  = f_mount(NULL, "0:", 0);
 }
 
-
 static void DeleteDirFile(void)
 {
 	/* Elimina archivos y directorios de prueba, comprobando cada resultado de FatFS. */
@@ -1330,7 +1324,7 @@ static void DeleteDirFile(void)
 	}
 	else if (result == FR_NO_FILE)
 	{
-		printf("??§Ù?????????? :%s\r\n", "/Dir1");
+		printf("??é”Ÿæ–¤æ‹·?????????? :%s\r\n", "/Dir1");
 	}
 	else
 	{
@@ -1341,15 +1335,15 @@ static void DeleteDirFile(void)
 	result = f_unlink("/Dir1/Dir1_1");
 	if (result == FR_OK)
 	{
-		printf("???????/Dir1/Dir1_1???\r\n");
+		printf("??????? // Dir1 // Dir1_1 ??? \r\n");
 	}
 	else if ((result == FR_NO_FILE) || (result == FR_NO_PATH))
 	{
-		printf("??§Ù?????????? :%s\r\n", "/Dir1/Dir1_1");
+		printf("??é”Ÿæ–¤æ‹·?????????? :%s\r\n", "/Dir1/Dir1_1");
 	}
 	else
 	{
-		printf("???????/Dir1/Dir1_1???(??????? = %s) ?????????????\r\n",  FR_Table[result]);
+		printf("??????? // Dir1 // Dir1_1 ???(??????? = %s) ????????????? \r\n",  FR_Table[result]);
 	}
 
 	/* ???????/Dir1 */
@@ -1360,7 +1354,7 @@ static void DeleteDirFile(void)
 	}
 	else if (result == FR_NO_FILE)
 	{
-		printf("??§Ù?????????? :%s\r\n", "/Dir1");
+		printf("??é”Ÿæ–¤æ‹·?????????? :%s\r\n", "/Dir1");
 	}
 	else
 	{
@@ -1375,7 +1369,7 @@ static void DeleteDirFile(void)
 	}
 	else if (result == FR_NO_FILE)
 	{
-		printf("??§Ù?????????? :%s\r\n", "/Dir2");
+		printf("??é”Ÿæ–¤æ‹·?????????? :%s\r\n", "/Dir2");
 	}
 	else
 	{
@@ -1390,7 +1384,7 @@ static void DeleteDirFile(void)
 	}
 	else if (result == FR_NO_FILE)
 	{
-		printf("??§Ù?????????? :%s\r\n", "armfly.txt");
+		printf("??é”Ÿæ–¤æ‹·?????????? :%s\r\n", "armfly.txt");
 	}
 	else
 	{
@@ -1408,7 +1402,7 @@ static void DeleteDirFile(void)
 		}
 		else if (result == FR_NO_FILE)
 		{
-			printf("??§Ù??????:%s\r\n", FileName);
+			printf("??é”Ÿæ–¤æ‹·??????:%s\r\n", FileName);
 		}
 		else
 		{
@@ -1459,7 +1453,7 @@ static void WriteFileTest(void)
 	result = f_open(&file, TestFileName, FA_CREATE_ALWAYS | FA_WRITE);
 
 	
-	printf("???§Õ???%s %dKB ...\r\n", TestFileName, TEST_FILE_LEN / 1024);
+	printf("???é”Ÿæ–¤æ‹·???%s %dKB ...\r\n", TestFileName, TEST_FILE_LEN / 1024);
 	runtime1 = 10;//wcx bsp_GetRunTime();	/* ???????????? */
 	for (i = 0; i < TEST_FILE_LEN / BUF_SIZE; i++)
 	{
@@ -1474,7 +1468,7 @@ static void WriteFileTest(void)
 		else
 		{
 			err = 1;
-			printf("%s???§Õ???\r\n", TestFileName);
+			printf("%s???é”Ÿæ–¤æ‹·???\r\n", TestFileName);
 			break;
 		}
 	}
@@ -1483,7 +1477,7 @@ static void WriteFileTest(void)
 	if (err == 0)
 	{
 		timelen = (runtime2 - runtime1);
-		printf("\r\n  §Õ??? : %dms   ???§Õ??? : %dB/S (%dKB/S)\r\n",
+		printf("\r\n  é”Ÿæ–¤æ‹·??? : %dms   ???é”Ÿæ–¤æ‹·??? : %dB/S (%dKB/S)\r\n",
 			timelen,
 			(TEST_FILE_LEN * 1000) / timelen,
 			((TEST_FILE_LEN / 1024) * 1000) / timelen);

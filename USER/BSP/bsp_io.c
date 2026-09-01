@@ -1,5 +1,4 @@
-/* Controlador de entradas, salidas y estados de las luces. */
-#include "stm32f10x.h"
+#include "stm32f10x.h"	/* Controlador de entradas, salidas y estados de las luces. */
 
 uint8_t spi2_busy_flag = 0;
 uint8_t rf_int_flag = 0;
@@ -14,7 +13,6 @@ SYSTEM_TEMP_TypeDef system_temp;
 #define GET_MUTE_STATE()   (GPIOC->IDR & 0x8000)
 
 #define GET_LAMP_STATE()   ((GPIOC->IDR>>13) & 0x0003)
-
 
 void bsp_GpioInit(void)
 {
@@ -38,45 +36,44 @@ void bsp_GpioInit(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_11 | GPIO_Pin_15;//
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPS_ON(); //Cuando inicia enciende el GPS
-	//GPS_OFF();
+	GPS_ON(); //GPS_OFF(); //Cuando inicia enciende el GPS
     LED_ON();
     PA_ON();
-    
 	
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;	 //锟剿匡拷锟斤拷锟斤拷锟斤拷锟�
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
     ADC_OFF();
-    
 
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    //MOS锟斤拷锟斤拷锟斤拷
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;       //锟剿匡拷锟斤拷锟斤拷锟斤拷锟�
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	DR1_OFF(); DR2_OFF(); DR3_OFF();
     /****************************************************/
-
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    //RELAY_PB9删锟斤拷  RF_CE_PB10使锟杰匡拷锟斤拷  RF_CSN_PB11片选
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
     RELAY_OFF();
 
+//IN-PB8删锟斤拷    XIN-PB4删锟斤拷 
 //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
 //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 //    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_8;
 //    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    
-    /****************************************************/
 
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+    /****************************************************/
+    //SW5-SW8 PA0-PA3 锟斤拷为GPS锟斤拷锟斤拷 PA0_ON/OFF PA1_1PPS 
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
     GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_1;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     /****************************************************/
-
+	//IRQ_PB12锟叫讹拷 // Pin de Radio frecuencia 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -86,7 +83,6 @@ void bsp_GpioInit(void)
 uint16_t get_dir(void) //switch function
 {
     uint16_t temp, count, sw, dir;
-
     for(count=0; count<5; )
     {
         temp = SW1_3();
@@ -130,7 +126,7 @@ uint8_t lamp_stab_state = 0x03;
 uint8_t lamp_temp_state = 0x03;
 uint8_t study_lamp_stab_state = 0x03;
 
-uint16_t lamp_chge_counter[2] = {0};
+uint16_t lamp_chge_counter[2] = {0};//20MS锟剿诧拷锟斤拷锟斤拷锟斤拷
 uint16_t lamp_chge_flag = 0;
 uint16_t lamp_off_count = 0;
 uint8_t lamp_state_chg_count = 0;
@@ -152,11 +148,11 @@ uint8_t gre_displaying_flag;
 uint16_t display_data[2];
 uint16_t display_data_backup = 0;
 
-void down_time_display(void)//10ms yi ci
+void down_time_display(void)	//10ms yi ci
 {
 	if(display_data[0] != 0)//red
 	{
-		if(red_displaying_flag == 0)
+		if(red_displaying_flag == 0)//锟斤拷始锟斤拷锟斤拷时
 		{
 			red_displaying_flag = 1;
 			gre_displaying_flag = 0;
@@ -168,7 +164,7 @@ void down_time_display(void)//10ms yi ci
 	}
 	if(display_data[1] != 0)//gre
 	{
-		if(gre_displaying_flag == 0)
+		if(gre_displaying_flag == 0)//锟斤拷始锟斤拷锟斤拷时
 		{
 			gre_displaying_flag = 1;
 			red_displaying_flag = 0;
@@ -250,8 +246,6 @@ void workmodejudge(void)
 	}
 }
 
-
-
 void ain_filterAC_DC(void)
 {
     ain.temp_state = AIN();
@@ -263,7 +257,6 @@ void ain_filterAC_DC(void)
             {
                 ain.stab_state = ain.temp_state;
                 ain.lamp_chge_counter = 0;
-				printf("\r\n==AinFilter ==STBL#%d ==TMP#%d\r\n", ain.stab_state, ain.temp_state);
             }
         }
         else
@@ -272,16 +265,13 @@ void ain_filterAC_DC(void)
             {
                 ain.stab_state = ain.temp_state;
                 ain.lamp_chge_counter = 0;
-				printf("\r\n==AinFilter ==STBL#%d ==TMP#%d\r\n", ain.stab_state, ain.temp_state);
             }
         }
     }
 	else
 	{
 		ain.lamp_chge_counter = 0;
-		//printf("\r\n==AinFilter ==STBL#%d ==TMP#%d\r\n", ain.stab_state, ain.temp_state);
 	}
-	
 }
 
 void filterAC_DC(void)
@@ -359,7 +349,7 @@ void filterAC_DC(void)
                 gre_off = 0;
             }
         }
-        else
+        else//锟斤拷锟斤拷-锟斤拷锟脚猴拷锟斤拷锟斤拷
         {
             if(gre_off == 1)
             {
@@ -401,7 +391,7 @@ void filterAC_DC(void)
 	
 }
 
-void study_mode_filterAC_DC(void)
+void study_mode_filterAC_DC(void)//10锟斤拷锟斤拷锟斤拷锟揭伙拷锟絚alculation
 {
 	unsigned char i;
 	unsigned char temp_var1;
@@ -459,7 +449,7 @@ void study_mode_filterAC_DC(void)
 	}
 }
 
-void study_mode_time_calculation(void)//10ms yici
+void study_mode_time_calculation(void)	//10ms yici
 {
 	unsigned char i;
 	unsigned char temp_var1;
@@ -468,19 +458,19 @@ void study_mode_time_calculation(void)//10ms yici
 	temp_var1 = 0x01;
 	for(i=0;i<2;i++)
 	{
-		if(study_lamp_stab_state==((~temp_var1)&0x03))
+		if(study_lamp_stab_state==((~temp_var1)&0x03))//锟叫灯伙拷 锟斤拷为锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟窖澳Ｊ斤拷陆锟斤拷锟斤拷锟绞�
 		{
-			if((study_time_flag&temp_var1)==0)
+			if((study_time_flag&temp_var1)==0)//没 锟斤拷锟斤拷学习锟斤拷锟斤拷 锟狡刚碉拷锟斤拷
 			{
 				study_time_flag |= temp_var1;
 				current_study_counter[i]=0;
-                if((study_time_valid_flag&temp_var1)==temp_var1)
+                if((study_time_valid_flag&temp_var1)==temp_var1)//学习锟斤拷锟斤拷锟斤拷OK
                 {
                     if(previous_study_counter[i] >= 60000) display_data[i] = 0;
                     else 
                     {
-                        display_data[i] = (previous_study_counter[i]+18)/100;
-                        if(i==0)red_displaying_flag = 0;
+                        display_data[i] = (previous_study_counter[i]+18)/100;   //锟斤拷坪锟斤拷痰频锟窖笆憋拷浯ワ拷锟�
+                        if(i==0)red_displaying_flag = 0;//锟斤拷锟铰匡拷始锟斤拷锟斤拷时
                         if(i==1)gre_displaying_flag = 0;
                     }
                 }
@@ -490,9 +480,9 @@ void study_mode_time_calculation(void)//10ms yici
 				if(++current_study_counter[i] >= 60000) current_study_counter[i] = 60000;
 			}
 		}
-		else
+		else//锟斤拷锟斤拷10 01 11锟斤拷锟斤拷锟斤拷状态时
 		{
-			if((study_time_flag&temp_var1)==temp_var1)
+			if((study_time_flag&temp_var1)==temp_var1)// 一锟斤拷状态锟斤拷锟斤拷,锟斤拷锟斤拷状态锟斤拷效
 			{
 				study_time_flag &= ~temp_var1;
 
@@ -506,7 +496,7 @@ void study_mode_time_calculation(void)//10ms yici
 				}
 				if((lamp_counter_valid_flag & temp_var1)==temp_var1)
 				{
-					if(STUDY_MODE == 0)
+					if(STUDY_MODE == 0)//锟斤拷锟轿拷锟斤拷锟斤拷锟侥Ｊ�
 					{
 //						if(temp_var2 > DEVIATION_TIME)
 //						{
@@ -526,7 +516,7 @@ void study_mode_time_calculation(void)//10ms yici
 //                            study_time_valid_flag &= (~temp_var1);	
 //                        }
 					}
-					else
+					else//为双锟斤拷锟斤拷模式
 					{
 						if(temp_var2 <= DEVIATION_TIME)
 						{
@@ -555,7 +545,7 @@ void study_mode_time_calculation(void)//10ms yici
 		}
 		if(((study_lamp_stab_state&temp_var1)==temp_var1)&&(study_lamp_stab_state!=0x03)) 
 		{
-			lamp_counter_valid_flag |= temp_var1;
+			lamp_counter_valid_flag |= temp_var1;//锟斤拷坪锟斤拷痰频锟斤拷锟叫ё刺� //锟斤拷前状态锟斤拷一锟斤拷锟斤拷锟斤拷锟斤拷状态,锟斤拷锟斤拷状态锟叫伙拷锟斤拷锟阶刺拷锟斤拷锟揭伙拷锟斤拷锟斤拷锟斤拷锟阶刺�,锟斤拷锟斤拷锟斤拷为锟斤拷锟较碉拷时状态锟侥诧拷锟斤拷锟斤拷
 		}
 		temp_var1 <<= 1; 
 	}
@@ -567,39 +557,39 @@ void flash_panel_control(void)//1ms
 {
 	if(system_temp.pps_flag)
 	{
-		if(++system_temp.pps_1ms >= 1000)
+		if(++system_temp.pps_1ms >= 1000)	//3S没锟斤拷锟秸碉拷PPS锟脚号ｏ拷锟斤拷0 pps_flag
 		{
 			system_temp.pps_1ms = 0;
 		}
 		
-		if(++system_temp.pps_count >= 3000)
+		if(++system_temp.pps_count >= 3000)	 //3S没锟斤拷锟秸碉拷PPS锟脚号ｏ拷锟斤拷0 pps_flag
 		{
 			system_temp.pps_count = 0;
 			system_temp.pps_flag = 0;
 		}
 	}
-
-	if(system_temp.gps_flag)
+//锟斤拷锟斤拷锟绞憋拷慰锟斤拷锟�
+	if(system_temp.gps_flag)//GPS时锟斤拷锟斤拷效
 	{
 		system_temp.gps1ms++;
 		if(system_temp.pps_1ms < 300) 
 		{
-			//DR1_ON(); DR2_ON();
+			//DR1_ON(); DR2_ON(); //Apago DR para pruebas estables
 		}
 		else 
 		{
-			//DR1_OFF(); DR2_OFF();
+			//DR1_OFF(); DR2_OFF(); //Apago DR para pruebas estables
 		}
-		//if((system_temp.gps1ms%3000) < 300) 
-			//DR3_ON();
-		//else
-			//DR3_OFF(); 
+		//if((system_temp.gps1ms%3000) < 300)  //Apago DR para pruebas estables
+			//DR3_ON(); //Apago DR para pruebas estables
+		//else //Apago DR para pruebas estables
+			//DR3_OFF();  //Apago DR para pruebas estables
 	}
 	else//
 	{
-		//if(reg1ms_count < 300) DR1_ON(); else DR1_OFF(); 
-		//if(reg1ms_count >= 500 && reg1ms_count < 800) DR2_ON(); else DR2_OFF();
-		//DR3_OFF();
+		//if(reg1ms_count < 300) DR1_ON(); else DR1_OFF();  //Apago DR para pruebas estables
+		//if(reg1ms_count >= 500 && reg1ms_count < 800) DR2_ON(); else DR2_OFF(); //Apago DR para pruebas estables
+		//DR3_OFF(); //Apago DR para pruebas estables
 	}
 }
 
@@ -621,25 +611,25 @@ void pps_irq_init(void)
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-
-  	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
-
+  	/* PC9 锟叫讹拷锟斤拷锟斤拷锟斤拷 IRQ0 */
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
+	/* PC9 锟叫断筹拷始锟斤拷锟斤拷锟斤拷 */
   	EXTI_InitStructure.EXTI_Line = EXTI_Line1;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-
+    /*锟斤拷锟斤拷EXTI_InitStruct锟斤拷指锟斤拷锟侥诧拷锟斤拷锟斤拷始锟斤拷锟斤拷锟斤拷EXTI锟侥达拷*/
   	EXTI_Init(&EXTI_InitStructure);
 	
-
+    /*使锟杰帮拷锟斤拷锟斤拷锟节碉拷锟解部锟叫讹拷通锟斤拷*/
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
-
+    /*锟斤拷锟斤拷锟斤拷占锟斤拷锟饺硷拷锟斤拷锟斤拷占锟斤拷锟饺硷拷锟斤拷为2*/	
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
-
+    /*锟斤拷锟斤拷锟斤拷锟斤拷锟饺硷拷锟斤拷锟斤拷锟斤拷锟饺硷拷锟斤拷为2*/
   	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		
-
+    /*使锟斤拷锟解部锟叫讹拷通*/
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	
-
+    /*锟斤拷锟斤拷NVIC_InitStruct锟斤拷指锟斤拷锟侥诧拷锟斤拷锟斤拷始锟斤拷锟斤拷锟斤拷NVIC锟侥达拷锟斤拷*/	
   	NVIC_Init(&NVIC_InitStructure);
 }
 
@@ -654,5 +644,3 @@ void EXTI1_IRQHandler(void)
 		printf("PPS_IRQ\n");
 	}
 }
-
-
