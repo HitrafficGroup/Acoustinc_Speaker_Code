@@ -1014,15 +1014,15 @@ void fileChange(void)
 void get_filename(uint8_t num)
 {
     if(num == 0)
-        memcpy(MP3.filename,"001.MP3",7);
+        memcpy(MP3.filename,"001.mp3",7);
     else if(num == 1)
-        memcpy(MP3.filename,"002.MP3",7);
+        memcpy(MP3.filename,"002.mp3",7);
     else if(num == 2)
-        memcpy(MP3.filename,"003.MP3",7);
+        memcpy(MP3.filename,"003.mp3",7);
     else if(num == 3)
-        memcpy(MP3.filename,"004.MP3",7);
+        memcpy(MP3.filename,"004.mp3",7);
     else if(num == 4)
-        memcpy(MP3.filename,"005.MP3",7);
+        memcpy(MP3.filename,"005.mp3",7);
 }
 /* Crea los directorios de prueba usados para validar las operaciones de FatFS. */
 //static void CreateDir(void)

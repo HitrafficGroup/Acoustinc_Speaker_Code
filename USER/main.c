@@ -26,8 +26,7 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 //        FLASH_Lock();
 //    }
     
-    /* Inicializacion de reloj de sistema y perifericos de la aplicacion. */
-    SysTick_Init();
+    SysTick_Init(); /* Inicializacion de reloj de sistema y perifericos de la aplicacion. */
     bsp_GpioInit();
     vs1053_IO_Init();//encargado de el audio sonido
     
@@ -61,33 +60,24 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 
     vs1053_TestSine();//si no suena al comienzo no reproduce audios
 
-    while(1)    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
-    {
-        if(reg1ms_flag) /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */
-        {
+    while(1){    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
+        if(reg1ms_flag){    /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */
             reg1ms_flag = 0;
-            if(MP3.Writingflag == 0)    /* Durante la escritura de parametros se pausa el procesamiento de entradas. */
-            {
+            if(MP3.Writingflag == 0){    /* Durante la escritura de parametros se pausa el procesamiento de entradas. */
                 ain_filterAC_DC();
                 filterAC_DC();
-                if(++ten_mm_counter >= 10)  /* Agrupa diez ticks para las tareas de filtrado y visualizacion de 10 ms. */
-                {
+                if(++ten_mm_counter >= 10){     /* Agrupa diez ticks para las tareas de filtrado y visualizacion de 10 ms. */
                     ten_mm_counter = 0;
                     study_mode_filterAC_DC();
                     study_mode_time_calculation();
                     down_time_display();
-                    // if(MP3.PushbuttonCount) // Deshabilito ya que no hay Relay en el sistema de prueba
-                    // {
-                    //     if(--MP3.PushbuttonCount > 0)
-                    //         RELAY_ON();
-                    //     else
-                    //         RELAY_OFF();
+                    // if(MP3.PushbuttonCount){     // Deshabilito ya que no hay Relay en el sistema de prueba
+                    //     if(--MP3.PushbuttonCount > 0)    RELAY_ON();
+                    //     else     RELAY_OFF();
                     // }
                 }
             }
-            
-            if(MP3.writeParFlag)    /* Guarda en Flash los parametros recibidos y actualiza el reloj. */
-            {
+            if(MP3.writeParFlag){    /* Guarda en Flash los parametros recibidos y actualiza el reloj. */
                 //printf("MP3.writeParFlag\r\n");
                 MP3.writeParFlag = 0;
                 RtcWrite((RtcType*)Par);
@@ -200,7 +190,6 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 		}
     }
 }
-
 
 static void SysTick_Init(void)  /* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
 {

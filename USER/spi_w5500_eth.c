@@ -37,8 +37,6 @@ extern void W5500_Socket_Set(SOCKET s);
 extern void W5500_Interrupt_Process(void);
 
 /* ------------------------------------------------------------------------- */
-
-
 uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize)
 {
     pack = (PACK_T*)rdata;
@@ -116,7 +114,6 @@ uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize)
     }
     return 0;
 }
-
 
 
 /*

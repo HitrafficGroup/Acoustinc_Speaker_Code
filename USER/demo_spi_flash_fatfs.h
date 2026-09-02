@@ -40,17 +40,17 @@ typedef struct
     uint8_t Writingflag;
 }MP3_T;
 
-typedef struct
-{
-    uint8_t cardType;           /* Declara el recurso de datos utilizado por esta rutina. */
-	uint8_t packType;			/* Declara el recurso de datos utilizado por esta rutina. */
-	char filename[13];
-	uint8_t operaType;		    /* Declara el recurso de datos utilizado por esta rutina. */
-	uint16_t total;			    /* Declara el recurso de datos utilizado por esta rutina. */
-    uint16_t now;               /* Declara el recurso de datos utilizado por esta rutina. */
-    uint16_t len;               /* Declara el recurso de datos utilizado por esta rutina. */
-    uint8_t data;
-}PACK_T;
+// typedef struct
+// {
+//     uint8_t cardType;           /* Declara el recurso de datos utilizado por esta rutina. */
+// 	uint8_t packType;			/* Declara el recurso de datos utilizado por esta rutina. */
+// 	char filename[13];
+// 	uint8_t operaType;		    /* Declara el recurso de datos utilizado por esta rutina. */
+// 	uint16_t total;			    /* Declara el recurso de datos utilizado por esta rutina. */
+//     uint16_t now;               /* Declara el recurso de datos utilizado por esta rutina. */
+//     uint16_t len;               /* Declara el recurso de datos utilizado por esta rutina. */
+//     uint8_t data;
+// }PACK_T;
 
 typedef struct
 {

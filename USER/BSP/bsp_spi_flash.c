@@ -1,12 +1,9 @@
 /* Controlador de la memoria Flash externa. */
 #include "stm32f10x.h"
 
+#define SF_CS_LOW()       GPIOA->BRR = GPIO_Pin_4
 
-
-    #define SF_CS_LOW()       GPIOA->BRR = GPIO_Pin_4
-
-    #define SF_CS_HIGH()      GPIOA->BSRR = GPIO_Pin_4
-
+#define SF_CS_HIGH()      GPIOA->BSRR = GPIO_Pin_4
 
 #define CMD_AAI       0xAD  	/* Define el comando SPI CMD_AAI. */
 #define CMD_DISWR	  0x04		/* Define el comando SPI CMD_DISWR. */

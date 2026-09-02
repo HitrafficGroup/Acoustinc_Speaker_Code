@@ -7,7 +7,7 @@ SYSTEM_TEMP_TypeDef system_temp;
 #define SW1_3()       (GPIOC->IDR & 0x000f) //Read Switch
 
 #define RIN()	((GPIOC->IDR & 0x2000)? 0:1)	//#define RIN()	(GPIOC->IDR & 0x2000)
-#define GIN()   ((GPIOC->IDR & 0x4000)? 0:1)	//#define GIN()   (GPIOC->IDR & 0x4000)
+#define GIN()   ((GPIOC->IDR & 0x4000)? 0:1)	//#define GIN()  (GPIOC->IDR & 0x4000)
 #define AIN()   ((GPIOC->IDR & 0x8000)? 0:1)	
 
 #define GET_MUTE_STATE()   (GPIOC->IDR & 0x8000)
