@@ -1,7 +1,12 @@
 /* Configura o realiza una transferencia por el bus SPI. */
 
-#ifndef _DEMO_SPI_FLASH_FATFS_H
-#define _DEMO_SPI_FLASH_FATFS_H
+//#ifndef _DEMO_SPI_FLASH_FATFS_H
+//#define _DEMO_SPI_FLASH_FATFS_H
+
+#ifndef __DEMO_SPI_FLASH_FATFS_H
+#define __DEMO_SPI_FLASH_FATFS_H
+
+#include "stm32f10x.h"
 
 #define BUF_SIZE				  (4096*4)		/* Define el tamano del buffer BUF_SIZE. */
 
@@ -65,13 +70,18 @@ extern uint8_t Time_Volume[2][6][3];
 extern uint8_t Par[64];
 extern uint8_t FileBuf[BUF_SIZE];
 
+/* Public function prototypes */
+void CreateNewFile(char *filename, uint8_t* data, uint16_t len);
+void AddFileData(char *filename, uint8_t* data, uint16_t len);
+void ReadFileData(char *filename);
+void CreateDir(void);
+void DeleteDirFile(void);
+void WriteFileTest(void);
 
 void FileFormat(void);
 void ViewRootDir(void);
 
 static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
-
-
 
 void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
 
@@ -80,20 +90,20 @@ void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
 void FileClose(void);
 
 
-
+void PlaySound(char *filename);
 void PlayStart(void);
 void Playing(void);
 
 void get_cpuid(uint8_t *pdata);
 
-void SYS_TEST(void);
+//void SYS_TEST(void);
 void Config(void);
 void CheckVolume(void);
 
 uint8_t ReadConfigFile(void);
 uint8_t ReadAndCheckConfigFile(void);
 void ReadIPConfigFile(void);
-uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize);
+//uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize);
 void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len);
 void Load_Period_Parameters(uint8_t *pdata);
 
@@ -101,6 +111,7 @@ void fileChange(void);
 void mp3_par_init(void);
 void get_filename(uint8_t num);
 
-#endif
+void CreateConfigFile (void);
+void DeleteConfigFile (void);
 
-
+#endif /* __DEMO_SPI_FLASH_FATFS_H */

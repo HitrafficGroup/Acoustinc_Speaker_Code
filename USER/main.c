@@ -3,6 +3,9 @@
 #include "usb_hw.h"
 #include "usb_pwr.h"
 
+#include "spi_w5500_eth.h"
+#include "uart_consola.h"
+
 __IO uint8_t reg1ms_flag; /* Marca generada cada milisegundo por SysTick. */
 __IO uint8_t ten_mm_counter; /* Cuenta los milisegundos que forman una ventana de 10 ms. */
 __IO uint8_t system_error = 0; /* Indicador global de error del sistema. */
@@ -12,9 +15,7 @@ uint8_t StartFlag = 1;
 
 static void SysTick_Init(void);
 void Delay(__IO uint32_t nTime);
-void SocketProcess(void);
-// int contador = 0;
-// int i = 0;
+//void SocketProcess(void);
 
 int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
     
@@ -57,14 +58,8 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 	RX_Mode(); /* Configura el nRF24L01 en modo receptor. */
 	rf24l01_irq_init();
 	pps_irq_init();
-	
-    // //printf("START START ======= Consola Serie iniciada en Keil v5 ======= \r\n"); // // Mensaje inicial por consola
-    // while (1) {
-    //     printf("Lectura de sistema #%d\r\n", contador++);
-    //     for (i = 0; i < 2000000; i++);// Retardo simple de prueba
-    //     IWDG_Feed();
-    //     LED_Toggle();
-    // }
+
+    vs1053_TestSine();//si no suena al comienzo no reproduce audios
 
     while(1)    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
     {
@@ -206,164 +201,6 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
     }
 }
 
-/*
- * Procesa una trama recibida por UDP o TCP.
- * UDP se utiliza para descubrir/configurar la red; TCP transporta comandos
- * de la aplicacion. Las respuestas se construyen en Tx_Buffer.
- */
-void Process_Socket_Data(SOCKET s)
-{
-	uint16_t size,i;
-    uint8_t CheckSum,result;
-	
-	size = Read_SOCK_Data_Buffer(s, Rx_Buffer); /* Lee del W5500 la cantidad de bytes disponible en el socket. */
-    
-	if(s == 0)  /* Socket 0: mensajes UDP de identificacion y configuracion de red. */
-	{
-		if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xbb)    /* 0x55BB solicita la informacion de red y el identificador del equipo. */
-        {
-            if(Rx_Buffer[0]==Net.IP_Addr[0] && Rx_Buffer[1]==Net.IP_Addr[1] && Rx_Buffer[2]==Net.IP_Addr[2])
-            {
-                Socket[s].UdpDIPR[0] = Rx_Buffer[0];
-                Socket[s].UdpDIPR[1] = Rx_Buffer[1];
-                Socket[s].UdpDIPR[2] = Rx_Buffer[2];
-                Socket[s].UdpDIPR[3] = Rx_Buffer[3];
-                Socket[s].UdpDestPort = 7788;
-            }
-            else
-            {
-                Socket[s].UdpDIPR[0] = 255;
-                Socket[s].UdpDIPR[1] = 255;
-                Socket[s].UdpDIPR[2] = 255;
-                Socket[s].UdpDIPR[3] = 255;
-                Socket[s].UdpDestPort = 7788;
-            }
-            Tx_Buffer[0] = 0x55;
-            Tx_Buffer[1] = 0xCC;
-            Tx_Buffer[2] = Net.IP_Addr[0];
-            Tx_Buffer[3] = Net.IP_Addr[1];
-            Tx_Buffer[4] = Net.IP_Addr[2];
-            Tx_Buffer[5] = Net.IP_Addr[3];
-            
-            Tx_Buffer[6] = Net.Gateway_IP[0];    
-            Tx_Buffer[7] = Net.Gateway_IP[1];
-            Tx_Buffer[8] = Net.Gateway_IP[2];
-            Tx_Buffer[9] = Net.Gateway_IP[3];
-            
-            Tx_Buffer[10] = Net.Sub_Mask[0];      
-            Tx_Buffer[11] = Net.Sub_Mask[1];
-            Tx_Buffer[12] = Net.Sub_Mask[2];
-            Tx_Buffer[13] = Net.Sub_Mask[3];
-            
-            get_cpuid(&Tx_Buffer[14]);
-            
-            Tx_Buffer[18] = 0x00;
-            for(i=2;i<18;i++)
-                Tx_Buffer[18] += Tx_Buffer[i];
-            Write_SOCK_Data_Buffer(s, Tx_Buffer, 19);
-        }
-		else if(Rx_Buffer[8] == 0x55 && Rx_Buffer[9] == 0xdd) /* 0x55DD actualiza la configuracion IP si la suma de comprobacion es valida. */
-        {
-            CheckSum = 0;
-            for(i=10;i<22;i++) CheckSum += Rx_Buffer[i];
-            if(CheckSum == Rx_Buffer[22])
-            {
-                WriteConfigFile(&Rx_Buffer[10], 0, 12);
-                Config();
-                
-                Tx_Buffer[0] = 0x55;
-                Tx_Buffer[1] = 0xEE;
-                Socket[s].UdpDestPort = 7788;
-                Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
-                
-                W5500_Initialization();
-                //printf("new ip = %d.%d.%d.%d\r",Net.IP_Addr[0],Net.IP_Addr[1],Net.IP_Addr[2],Net.IP_Addr[3]);
-            }
-        }
-	}
-	else if(s==1)   /* Socket 1: canal TCP para comandos de control. */
-	{
-		//memcpy(Tx_Buffer, Rx_Buffer, size);
-		//if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_ON", strlen("BEEP_ON")))beep_count = 4;
-		//else if(Check_Ifo(Rx_Buffer, (u8*)"BEEP_OFF", strlen("BEEP_OFF")))beep_count = 0;
-        //Write_SOCK_Data_Buffer(s, Tx_Buffer, size);
-        LED_Toggle();
-		result = ReceiveProcess(Rx_Buffer, size);/* ReceiveProcess interpreta el comando y devuelve el tipo de respuesta. */
-        if(result == 1) // RESPUESTA al recibir AUDIOS
-        {
-            Tx_Buffer[0] = 'O';
-            Tx_Buffer[1] = 'K';
-            Write_SOCK_Data_Buffer(s, Tx_Buffer, 2);
-            LED_Toggle();
-        }
-        else if(result == 2) //RESPUESTA al SET.
-        {
-            Tx_Buffer[0] = 0x32;
-            Tx_Buffer[1] = 0x60;
-            memset(&Tx_Buffer[2], 0, 13);
-            Tx_Buffer[15] = 0x04;
-            Tx_Buffer[16] = 0x01;
-            Tx_Buffer[17] = 0x00;
-            Tx_Buffer[18] = 0x01;
-            Tx_Buffer[19] = 0x00;
-            Tx_Buffer[20] = 0x00;
-            Tx_Buffer[21] = 0x00;
-            Tx_Buffer[22] = 0xaa;
-            Tx_Buffer[23] = 0xcc;
-            Write_SOCK_Data_Buffer(s, Tx_Buffer, 24);
-            LED_Toggle();
-        }
-        else if(result == 3) //RESPPUESTA al READ: ENVIA horarios y reloj
-        {
-            Tx_Buffer[0] = 0x32;
-            Tx_Buffer[1] = 0x60;
-            memset(&Tx_Buffer[2], 0, 13);
-            Tx_Buffer[15] = 0x03;
-            Tx_Buffer[16] = 0x01;
-            Tx_Buffer[17] = 0x00;
-            Tx_Buffer[18] = 0x01;
-            Tx_Buffer[19] = 0x00;
-            Tx_Buffer[20] = 47;
-            Tx_Buffer[21] = 0x00;
-            RtcRead(SYS_RTC);
-            memcpy(&Tx_Buffer[22], rtc, 7); //22-28
-			memcpy(&Tx_Buffer[29], system_temp.TimeZone, 4); //29-32
-            memcpy(&Tx_Buffer[33], Time_Volume, 36); //33-64                //29-64
-            Tx_Buffer[65] = 0xaa;//Tx_Buffer[69] = 0xaa;
-            Tx_Buffer[66] = 0xcc;//Tx_Buffer[70] = 0xcc;
-            Write_SOCK_Data_Buffer(s, Tx_Buffer, 67);//Write_SOCK_Data_Buffer(s, Tx_Buffer, 71);
-            LED_Toggle();
-			printf_fifo_hex(system_temp.TimeZone, 4);
-        }
-	}
-}
-
-void SocketProcess(void) /* Actualiza sockets, procesa interrupciones del W5500 y entrega tramas recibidas. */
-{
-    SOCKET n;
-    W5500_Socket_Set(0);/* Prepara los sockets de trabajo y atiende sus eventos pendientes. */
-    W5500_Socket_Set(1);
-    //W5500_Socket_Set(2);
-    W5500_Interrupt_Process();
-    
-    for(n=0;n<8;n++)    /* Recorre los ocho sockets disponibles en el controlador. */
-    {
-        if((Socket[n].DataState & S_RECEIVE) == S_RECEIVE)
-        {
-            Socket[n].DataState &= ~S_RECEIVE;  /* La bandera se limpia antes de procesar para evitar repetir la trama. */
-            Process_Socket_Data(n);
-        }
-        else if(W5500_Send_Delay_Counter[n] >= 5000)
-        {
-            if(Socket[n].State == (S_INIT|S_CONN))
-            {
-                Socket[n].DataState &= ~S_TRANSMITOK;
-                //memcpy(Tx_Buffer, netaddr, strlen(netaddr));	
-            }
-            W5500_Send_Delay_Counter[n] = 0;
-        }
-    }
-}
 
 static void SysTick_Init(void)  /* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
 {

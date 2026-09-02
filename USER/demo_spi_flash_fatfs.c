@@ -3,6 +3,8 @@
 #include "stm32f10x.h" 
 #include "ff.h"			/* FatFS????????*/
 
+#include "spi_w5500_eth.h"
+
 #define SONG_LIST_MAX	24
 
 const char filenameBuf[24][4]={
@@ -13,7 +15,7 @@ const char filenameBuf[24][4]={
 
 const char zerobuf[32] = "\0\0\0\0\0\0\0\0\0\0\0";
 
-PACK_T  *pack;
+extern PACK_T  *pack;
 FIle_TRANS_T fileTrans;
 
 MP3_T MP3;
@@ -35,28 +37,37 @@ uint8_t FileBuf[BUF_SIZE];
 static unsigned char fileBuf[128];
 
 /* ???????????????????????? */
-static void DispMenu(void);
+//static void DispMenu(void);
 void FileFormat(void);
 void ViewRootDir(void);
 
-static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
+//static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
+void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
 
 //static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
 void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
-static void AddFileData(char *filename, uint8_t* data, uint16_t len);
+//static void AddFileData(char *filename, uint8_t* data, uint16_t len);
+void AddFileData(char *filename, uint8_t* data, uint16_t len);
 //static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
 void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
 //static void FileClose(void);
 void FileClose(void);
 
-static void ReadFileData(char *filename);
-static void CreateDir(void);
-static void DeleteDirFile(void);
-static void WriteFileTest(void);
+//static void ReadFileData(char *filename);
+void ReadFileData(char *filename);
+//static void CreateDir(void);
+void CreateDir(void);
+//static void DeleteDirFile(void);
+void DeleteDirFile(void);
+//static void WriteFileTest(void);
+void WriteFileTest(void);
 void PlaySound(char *filename);
 
 void Load_Net_Parameters(uint8_t *pdata);
 void Load_Period_Parameters(uint8_t *pdata);
+
+void CreateConfigFile(void);
+void DeleteConfigFile(void);
 
 /* FatFs API?????? */
 static const char * FR_Table[]= 
@@ -100,218 +111,12 @@ void get_cpuid(uint8_t *pdata)
     //05d8ff38 37304642 57177212 
 }
 
-char sysfile0[] = "/sys/0.mp3";
-char sysfile1[] = "/sys/1.wav";
-char file1[] = "/sound/1.mp3";
-char file2[] = "/sound/2.mp3";
-char file3[] = "/sound/3.mp3";
-char file4[] = "/sound/4.mp3";
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* Tabla de mensajes asociada a los codigos de resultado de FatFS. */
-
-int rin_test;
-int gin_test;
-int ain_test;
-void SYS_TEST(void)
-{
-	uint8_t cmd;
-    if(UartGetChar(&cmd))
-    {
-        //cmd = 'C';
-        switch(cmd)
-        {
-            case '0':	
-                printf("??0 - FileFormat??\r\n");
-                FileFormat();		/* ???SD?????????????? */
-                break;
-            case '1':
-                printf("??1 - ViewRootDir??\r\n");
-                ViewRootDir();		/* ???SD?????????????? */
-                break;
-            case '3':
-                printf("??3 - nRF24L01ioConfig\r\n");
-               	nRF24L01ioConfig();		//????????
-				SPI_RW_Reg(FLUSH_RX,0xff);
-				SPI_RW_Reg(FLUSH_TX,0xff);
-				RX_Mode();
-                break;
-			////////////////// Deshabilitado start
-			case '2':
-				printf("??2 - CreateNewFile??\r\n");	//Prueba deshabilitada para crear un archivo desde la consola serie.
-				break;
-			case '7':	//case '3':
-				printf("??3 - ReadFileData??\r\n");
-				ReadFileData(fileTrans.filename);
-				break;
-			case 'X':
-				printf("??3 - ReadFileData??\r\n");
-				AddFileData("armfly.bin", "sinowatcher", 11);		/* ?????????armfly.txt?????? */
-				break;
-			case '4':
-				printf("??4 - CreateDir??\r\n");
-				CreateDir();		/* ?????? */
-				break;
-			case '5':
-				printf("??5 - DeleteDirFile??\r\n");
-				DeleteDirFile();	/* ?????????? */
-				break;
-			case '6':
-				printf("??6 - TestSpeed??\r\n");
-				WriteFileTest();	/* ?????? */
-				break;
-            ////////////////// Deshabilitado fin
-            case 'I':
-                printf("??i - vs1053_ReadChipID??\r\n");
-                vs1053_ReadChipID();
-                break;
-            case 'a':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound(sysfile0);
-                break;
-            case 'A':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("001.mp3");//PlaySound("001.MP3");
-                break;
-            case 'B':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("002.mp3");
-                break;
-            case 'C':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("003.mp3");
-                break;
-            case 'D':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("004.mp3");
-                break;
-            case 'E':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("005.mp3");
-                break;
-            case 'F':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("001.WAV");
-                break;
-            case 'G':
-                printf("??7 - PlaySound??\r\n");
-                PlaySound("002.WAV");
-                break;
-            case 'H':
-                printf("??7 - PlaySound??\r\n");
-                memset(MP3.filename,0x00,13);
-                memcpy(MP3.filename,"002.MP3",7);
-                PlayStart();
-                break;
-            case 'S':
-                printf("MP3.dir = %d\r\n",MP3.dir);
-                break;
-            case '+':
-                if(MP3.ucVolume <= 244)MP3.ucVolume += 10;
-                vs1053_SetVolume(MP3.ucVolume);
-                printf("++ Volume = %d\r\n", MP3.ucVolume);
-                break;
-			case 'M':
-                //if(MP3.ucVolume <= 244)MP3.ucVolume += 10;
-                vs1053_SetVolume(244);
-                printf("++ Volume = %d\r\n", MP3.ucVolume);
-                break;
-            case '-':
-                if(MP3.ucVolume >= 10)
-					MP3.ucVolume -= 10;
-					//MP3.ucVolume ++;
-                vs1053_SetVolume(MP3.ucVolume);
-                printf("-- Volume = %d\r\n", MP3.ucVolume);
-                break;
-				////////////////// Deshabilitado start
-			case '8':
-				printf("??8 - ????????\r\n");
-				vs1053_TestSine();
-				vs1053_TestSine();
-				vs1053_TestSine();
-				vs1053_TestSine();
-				break;
-			case '9':
-				printf("??9 - ???????????\r\n");
-				vs1053_TestSineExit();
-				break;
-			case 'W':	//Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
-				SYS_RTC->second  = 0x00;
-				SYS_RTC->minute  = 0x21;
-				SYS_RTC->hour    = 0x15;
-				SYS_RTC->week    = 0x02;
-				SYS_RTC->day     = 0x08;
-				SYS_RTC->month   = 0x12;
-				SYS_RTC->year    = 0x20;
-				RtcWrite(SYS_RTC);
-				break;
-			////////////////// Deshabilitado END
-            case 'T':
-                printf("??T - ???????\r\n");
-                RtcRead(SYS_RTC);
-                printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
-                printf("%08x\r\n",SCB->CPUID);
-                //get_cpuid();
-                break;
-			////////
-			case 'U':
-                printf("??T - ???????\r\n");
-				Auto_adjust_time();
-                RtcRead(SYS_RTC);
-                printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
-                printf("%08x\r\n",SCB->CPUID);
-                //get_cpuid();
-                break;
-			case 'z':
-               printf("==SWIN %d \r\n", (GPIOC->IDR & 0x000f));
-
-			   rin_test=((GPIOC->IDR & 0x2000)? 0:1);
-			   //rin_test=((GPIOC->IDR & 0x2000));
-			   printf("==RIN  %x \r\n", rin_test);
-
-			   gin_test=((GPIOC->IDR & 0x4000)? 0:1);
-			   //gin_test=((GPIOC->IDR & 0x4000));
-			   printf("==GIN  %x \r\n", gin_test);
-
-			   ain_test=((GPIOC->IDR & 0x8000)? 0:1);
-			   //ain_test=((GPIOC->IDR & 0x8000));
-			   printf("==AIN  %x \r\n", ain_test);
-               break;
-			case 'b':
-			   printf("==DR1 ?Toggle \r\n");
-               DR1_Toggle();
-               break;
-			case 'n':
-			   printf("==DR2 ?Toggle \r\n");
-               DR2_Toggle();
-               break;
-			case 'm':
-			   printf("==DR3 ?Toggle \r\n");
-               DR3_Toggle();
-               break;
-			////////
-            default:
-                DispMenu();
-                break;
-        }
-    }
-}
-
-/* Muestra por UART las opciones de prueba disponibles para el sistema de archivos. */
-static void DispMenu(void)
-{
-	printf("\r\n------------------------------------------------\r\n");
-	printf("?????????????????0????SPI Flash?????\r\n");
-	printf("????????????:\r\n");
-	printf("0 - ??SPI_Flash??????????????\r\n");
-	printf("1 - ??????????????锟斤拷?\r\n");
-	printf("2 - ????????????armfly.txt\r\n");
-	printf("3 - ??armfly.txt?????????\r\n");
-	printf("4 - ??????\r\n");
-	printf("5 - ??????????\r\n");
-	printf("6 - ??锟斤拷?????????\r\n");
-    printf("7 - ????WAV????\r\n");
-}
+//char sysfile0[] = "/sys/0.mp3";
+//char sysfile1[] = "/sys/1.wav";
+//char file1[] = "/sound/1.mp3";
+//char file2[] = "/sound/2.mp3";
+//char file3[] = "/sound/3.mp3";
+//char file4[] = "/sound/4.mp3";
 
 void mp3_par_init(void)
 {
@@ -332,85 +137,6 @@ void mp3_par_init(void)
     
     MP3.Writingflag = 0;
 }
-
-uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize)
-{
-    pack = (PACK_T*)rdata;
-    if(pack->cardType == 0x32)
-    {
-        if(pack->packType == 0x68)
-        {
-            if(pack->operaType == 0x02) //recibe audio
-            {
-                if(pack->now == 1)
-                {
-                    strcpy(fileTrans.filename, pack->filename);
-                    fileTrans.total = pack->total;
-                    fileTrans.get = pack->now;
-                    fileTrans.bytes = pack->len;
-                    printf("??????? (%d)\r\n", pack->total);
-                    fileTrans.Pdata = FileBuf;
-                    memcpy(fileTrans.Pdata, &pack->data, pack->len);
-                    fileTrans.filebufbytes = pack->len;
-                    
-                    fileTrans.timeCount = 1;
-                    MP3.Writingflag = 1;
-                    MP3.fileOpenFlag = 0;
-                    MP3.stopCount = 0;
-                }
-                else if(pack->now == (fileTrans.get+1) && strcmp(fileTrans.filename, pack->filename)==0)
-                {
-                    fileTrans.get = pack->now;
-                    fileTrans.bytes += pack->len;
-                    memcpy(fileTrans.Pdata+fileTrans.filebufbytes, &pack->data, pack->len);
-                    fileTrans.filebufbytes += pack->len;
-                    
-                    if(fileTrans.filebufbytes >= BUF_SIZE)
-                    {
-                        if(fileTrans.get <= (BUF_SIZE/1024))
-                            CreateNewFileWithNotClose(fileTrans.filename, fileTrans.Pdata, BUF_SIZE);
-                        else
-                            AddFileDataInClearMode(fileTrans.filename, fileTrans.Pdata, BUF_SIZE);
-                        fileTrans.filebufbytes = 0;
-                        IWDG_Feed();
-                    }
-                    
-                    fileTrans.timeCount = 1;
-                    MP3.Writingflag = 1;
-                    if(fileTrans.get == fileTrans.total) 
-                    {
-                        if(fileTrans.filebufbytes != 0)
-                        {
-                            if(fileTrans.get <= (BUF_SIZE/1024))
-                                CreateNewFileWithNotClose(fileTrans.filename, fileTrans.Pdata, fileTrans.filebufbytes);
-                            else
-                                AddFileDataInClearMode(fileTrans.filename, fileTrans.Pdata, fileTrans.filebufbytes);
-                        }
-                        FileClose();
-                        memset(&fileTrans.filename, 0x00, 13);
-                        printf("??????????\r\n");
-                    }
-                }
-                return 1;
-            }
-        }
-        else if(pack->packType == 0x60)
-        {
-            if(pack->operaType == 0x01)//??????
-            {
-                return 3;
-            }
-            else if(pack->operaType == 0x02)
-            {
-                memcpy(Par, &pack->data, 47);
-                MP3.writeParFlag = 1;
-                return 2;
-            }
-        }
-    }
-    return 0;
-}
-
 
 void FileFormat(void)
 {
@@ -564,7 +290,8 @@ void ViewRootDir(void)
 }
 
 
-static void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
+//static void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
+void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
 {
 	/* Resultado de las operaciones de montaje, apertura, escritura y desmontaje. */
 	FRESULT result;
@@ -649,7 +376,8 @@ void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len)
 }
 
 
-static void AddFileData(char *filename, uint8_t* data, uint16_t len)
+//static void AddFileData(char *filename, uint8_t* data, uint16_t len)
+void AddFileData(char *filename, uint8_t* data, uint16_t len)
 {
 	/* Posiciona el cursor al final del archivo antes de anexar el bloque recibido. */
 	DIR DirInf;
@@ -786,8 +514,8 @@ void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
 }
 
 
-
-static void ReadFileData(char *filename)
+//static void ReadFileData(char *filename)
+void ReadFileData(char *filename)
 {
 	/* Variables necesarias para montar, abrir y leer el archivo solicitado. */
 	DIR DirInf;
@@ -836,14 +564,28 @@ static void ReadFileData(char *filename)
 
 /* Valores predeterminados de red, horario y volumen almacenados en Config.ini. */
 
-const uint8_t DefaultConfig[52]={
-    192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP????
-	0x01, 0x00, 0x70, 0x80,
+// const uint8_t DefaultConfig[52]={
+// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
+// 	0x01, 0x00, 0x70, 0x80,
+//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
+//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+// };
+
+// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
+// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
+//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
+//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+// 	0xaa, 0xcc, 0x00, 0x00,
+// };
+
+const uint8_t DefaultConfig[52]={	//Lee bien desde la app
+	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
 };
 
-static void CreateConfigFile(void)
+//static void CreateConfigFile(void)
+void CreateConfigFile(void)
 {
 	/* Crea la carpeta de sistema y escribe la configuracion inicial del equipo. */
 	FRESULT result;
@@ -890,7 +632,6 @@ static void CreateConfigFile(void)
     printf("???锟斤拷???\r\n");
 	/* ??????*/
 	f_close(&file);
-
 	
 	result  = f_mount(NULL, "0:", 0);
 }
@@ -960,6 +701,50 @@ void Config(void)
     {
         Delay(1000);
     }
+}
+
+void DeleteConfigFile(void)
+{
+//	char ConfigFile[] = "/sys/Config.ini";
+	char ConfigFileDir[] = "/sys";
+
+	/* Elimina archivos y directorios de prueba, comprobando cada resultado de FatFS. */
+	FRESULT result;
+//	char FileName[13];
+//	uint8_t i;
+
+ 	/* ????????? */
+	result = f_mount(&fs, "0:", 0);			/* Mount a logical drive */
+	if (result != FR_OK)
+	{
+		printf("Unidad Montada (%s)\r\n",  FR_Table[result]);
+	}
+
+	#if 0
+	/* ???????? */
+	result = f_opendir(&DirInf, "/"); /* ??????????????????????? */
+	if (result != FR_OK)
+	{
+		printf("????????(%s)\r\n",  FR_Table[result]);
+		return;
+	}
+	#endif
+
+	/* ?????/Dir1 ?????????????????????????)??????????????????*/
+	result = f_unlink(ConfigFileDir);
+	if (result == FR_OK)
+	{
+		printf("FR_OK ?????Dir1???\r\n");
+	}
+	else if (result == FR_NO_FILE)
+	{
+		printf("FR_NO_FILE ??锟斤拷?????????? :%s\r\n", "/Dir1");
+	}
+	else
+	{
+		printf("ELSE_FR ???Dir1???(??????? = %s) ?????????????\r\n",  FR_Table[result]);
+	}
+
 }
 
 /*******************************************************************************
@@ -1240,7 +1025,8 @@ void get_filename(uint8_t num)
         memcpy(MP3.filename,"005.MP3",7);
 }
 /* Crea los directorios de prueba usados para validar las operaciones de FatFS. */
-static void CreateDir(void)
+//static void CreateDir(void)
+void CreateDir(void)
 {
 	/* Monta la unidad antes de crear la jerarquia de directorios de prueba. */
 	FRESULT result;
@@ -1304,7 +1090,8 @@ static void CreateDir(void)
 	result  = f_mount(NULL, "0:", 0);
 }
 
-static void DeleteDirFile(void)
+//static void DeleteDirFile(void)
+void DeleteDirFile(void)
 {
 	/* Elimina archivos y directorios de prueba, comprobando cada resultado de FatFS. */
 	FRESULT result;
@@ -1427,7 +1214,8 @@ static void DeleteDirFile(void)
 }
 
 
-static void WriteFileTest(void)
+//static void WriteFileTest(void)
+void WriteFileTest(void)
 {
 	/* Prepara la transferencia de bloques para medir la velocidad de escritura en FATFS. */
 	FRESULT result;
