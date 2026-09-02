@@ -41,10 +41,13 @@ void ViewRootDir(void);
 
 static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
 
-static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
+//static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
+void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
 static void AddFileData(char *filename, uint8_t* data, uint16_t len);
-static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
-static void FileClose(void);
+//static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
+void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
+//static void FileClose(void);
+void FileClose(void);
 
 static void ReadFileData(char *filename);
 static void CreateDir(void);
@@ -604,7 +607,11 @@ static void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
 	result  = f_mount(NULL, "0:", 0);
 }
 
-static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len)
+
+
+
+//static void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len)
+void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len)
 {
 	/* Mantiene el archivo abierto para que llamadas posteriores agreguen mas datos. */
 	FRESULT result;
@@ -746,7 +753,8 @@ void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len)
 	result  = f_mount(NULL, "0:", 0);
 }
 
-static void FileClose(void)
+//static void FileClose(void)
+void FileClose(void)
 {
 	/* ??????*/
 	f_close(&file);
@@ -755,7 +763,8 @@ static void FileClose(void)
     f_mount(NULL, "0:", 0);
 }
 
-static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
+//static void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
+void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
 {
 	FRESULT result;
 	uint32_t bw;

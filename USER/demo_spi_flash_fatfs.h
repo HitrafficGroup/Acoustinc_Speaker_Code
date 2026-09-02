@@ -5,10 +5,7 @@
 
 #define BUF_SIZE				  (4096*4)		/* Define el tamano del buffer BUF_SIZE. */
 
-
 enum WORKMODE {MODEA = 1, MODEB, MODEC, MODED};
-
-
 
 typedef struct
 {
@@ -36,9 +33,6 @@ typedef struct
     uint8_t PushbuttonCount;
     uint8_t lamp_chge_sound_flag;
     uint8_t Writingflag;
-	
-
-	
 }MP3_T;
 
 typedef struct
@@ -76,6 +70,16 @@ void FileFormat(void);
 void ViewRootDir(void);
 
 static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
+
+
+
+void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
+
+void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
+
+void FileClose(void);
+
+
 
 void PlayStart(void);
 void Playing(void);
