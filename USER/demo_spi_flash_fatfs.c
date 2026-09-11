@@ -1496,5 +1496,3 @@ void CheckVolume(void)
         }
     }
 }
-
-
