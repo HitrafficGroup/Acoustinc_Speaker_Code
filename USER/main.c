@@ -58,7 +58,7 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 	rf24l01_irq_init();
 	pps_irq_init();
 
-    //vs1053_TestSine();//si no suena al comienzo no reproduce audios
+    vs1053_TestSine();//si no suena al comienzo no reproduce audios
 
     while(1){    /* Bucle principal: todas las tareas se ejecutan sin bloquear el sistema. */
         if(reg1ms_flag){    /* Las tareas temporizadas se ejecutan una vez por cada tick de 1 ms. */

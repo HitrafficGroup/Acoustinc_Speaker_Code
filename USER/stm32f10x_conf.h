@@ -49,7 +49,6 @@
 #include "stm32f10x_wwdg.h"
 #include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
 
-
 #include "stm32f10x_it.h"
 #include "bsp_uart_fifo.h"
 
@@ -59,7 +58,7 @@
 #include "bsp_w5500.h"
 #include "bsp_i2c.h"
 #include "bsp_24l01.h"
-#include "demo_spi_flash_fatfs.h"
+#include "spi_flash_fatfs.h"
 
 #include "bsp_adc.h"
 #include "bsp_io.h"

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "ff.h"               
 #include "spi_w5500_eth.h"    /* Ensures access to MP3, fileTrans, and other external definitions */
-#include "demo_spi_flash_fatfs.h"  /* Resolves FATFS file operation warnings */
+#include "spi_flash_fatfs.h"  /* Resolves FATFS file operation warnings */
 #include "bsp_vs1053b.h"           /* Replace with the actual header that contains PlaySound() */
 
 /* Global test variables moved from original file */

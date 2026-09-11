@@ -389,11 +389,6 @@
               <FilePath>.\USER\main.c</FilePath>
             </File>
             <File>
-              <FileName>demo_spi_flash_fatfs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\demo_spi_flash_fatfs.c</FilePath>
-            </File>
-            <File>
               <FileName>spi_w5500_eth.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\spi_w5500_eth.c</FilePath>
@@ -402,6 +397,16 @@
               <FileName>uart_consola.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\uart_consola.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_fatfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_fatfs_mp3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs_mp3.c</FilePath>
             </File>
           </Files>
         </Group>

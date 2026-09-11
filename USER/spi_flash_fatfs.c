@@ -1,27 +1,26 @@
 /* Utilidades de almacenamiento FATFS, configuracion persistente y reproduccion de audio. */
 
+#include "spi_flash_fatfs_mp3.h"/* Header inclusion for MP3 module */
 #include "stm32f10x.h" 
 #include "ff.h"			/* FatFS????????*/
 
 #include "spi_w5500_eth.h"
 
-#define SONG_LIST_MAX	24
+//#define SONG_LIST_MAX	24
 
-const char filenameBuf[24][4]={
-    "000.","001.","002.","003.","004.","005.","006.","007.",
-    "008.","009.","010.","011.","012.","013.","016.","015.",
-    "016.","017.","018.","019.","020.","021.","022.","023.",
-};
-
-const char zerobuf[32] = "\0\0\0\0\0\0\0\0\0\0\0";
+//const char filenameBuf[24][4]={
+//    "000.","001.","002.","003.","004.","005.","006.","007.",
+//    "008.","009.","010.","011.","012.","013.","016.","015.",
+//    "016.","017.","018.","019.","020.","021.","022.","023.",
+//};
 
 extern PACK_T  *pack;
 FIle_TRANS_T fileTrans;
 
-MP3_T MP3;
+//MP3_T MP3;
 FATFS fs;
 FIL file;
-FIL mfile;
+//FIL mfile;
 
 uint8_t *bufptr;
 /* Define la constante TEST_FILE_LEN utilizada por este modulo. */
@@ -34,7 +33,7 @@ uint8_t *bufptr;
 uint8_t Par[64];//
 uint8_t Time_Volume[2][6][3];
 uint8_t FileBuf[BUF_SIZE];
-static unsigned char fileBuf[128];
+//static unsigned char fileBuf[128];
 
 /* ???????????????????????? */
 //static void DispMenu(void);
@@ -61,7 +60,7 @@ void CreateDir(void);
 void DeleteDirFile(void);
 //static void WriteFileTest(void);
 void WriteFileTest(void);
-void PlaySound(char *filename);
+//void PlaySound(char *filename);
 
 void Load_Net_Parameters(uint8_t *pdata);
 void Load_Period_Parameters(uint8_t *pdata);
@@ -70,7 +69,8 @@ void CreateConfigFile(void);
 void DeleteConfigFile(void);
 
 /* FatFs API?????? */
-static const char * FR_Table[]= 
+//static const char * FR_Table[]= 
+const char * FR_Table[]= 
 {
 	"FR_OK?????",				                             /* (0) Succeeded */
 	"FR_DISK_ERR????????????",			                 /* (1) A hard error occurred in the low level disk I/O layer */
@@ -118,25 +118,25 @@ void get_cpuid(uint8_t *pdata)
 //char file3[] = "/sound/3.mp3";
 //char file4[] = "/sound/4.mp3";
 
-void mp3_par_init(void)
-{
-    MP3.playing = 0;
-    MP3.stopCount = 0;
-    MP3.VolumeChangeFlag = 0;
-    MP3.fileOpenFlag = 0;
-    MP3.fileChangeFlag = 0;
-    MP3.cycleFlag = 1;
-    MP3.stopFlag = 0;
-    MP3.dir = 0;
-    system_temp.timeUpdate = 1;    
-    MP3.CycleTime = RedCycleTime;
-    MP3.writeParFlag = 0;
-    MP3.ucMuteOn = 0;
-    MP3.lamp_chge_sound_flag = 0;
-    MP3.WorkMode = MODEA;
-    
-    MP3.Writingflag = 0;
-}
+//void mp3_par_init(void)
+//{
+//    MP3.playing = 0;
+//    MP3.stopCount = 0;
+//    MP3.VolumeChangeFlag = 0;
+//    MP3.fileOpenFlag = 0;
+//    MP3.fileChangeFlag = 0;
+//    MP3.cycleFlag = 1;
+//    MP3.stopFlag = 0;
+//    MP3.dir = 0;
+//    system_temp.timeUpdate = 1;    
+//    MP3.CycleTime = RedCycleTime;
+//    MP3.writeParFlag = 0;
+//    MP3.ucMuteOn = 0;
+//    MP3.lamp_chge_sound_flag = 0;
+//    MP3.WorkMode = MODEA;
+//    
+//    MP3.Writingflag = 0;
+//}
 
 void FileFormat(void)
 {
@@ -571,18 +571,18 @@ void ReadFileData(char *filename)
 //     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
 // };
 
-// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
-// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
-//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
-//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
-// 	0xaa, 0xcc, 0x00, 0x00,
-// };
-
 const uint8_t DefaultConfig[52]={	//Lee bien desde la app
 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+	0xaa, 0xcc, 0x00, 0x00,
 };
+
+// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
+// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
+//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
+//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+// };
 
 //static void CreateConfigFile(void)
 void CreateConfigFile(void)
@@ -800,6 +800,7 @@ void Load_Net_Parameters(uint8_t *pdata)
     Socket[2].DataState = 0;
 }
 
+
 void Load_Period_Parameters(uint8_t *pdata)
 {
 	memcpy(system_temp.TimeZone, pdata, 4);
@@ -807,223 +808,7 @@ void Load_Period_Parameters(uint8_t *pdata)
 	printf_fifo_hex(system_temp.TimeZone, 4);
 }
 
-/* Entrega bloques de 32 bytes al VS1053 cuando el decodificador solicita datos. */
-static uint8_t Mp3Pro(void)
-{
-	uint32_t bw;
-    FRESULT result;
-	
-	if (vs1053_ReqNewData())
-	{
-		result = f_read(&mfile, &fileBuf, 32, &bw);
-        if (result !=  FR_OK)
-        {
-            printf("failed to read File : %s\r\n", MP3.filename);
-            f_close(&mfile);
-            MP3.fileOpenFlag = 0;
-            PlayStart();
-            return 1;
-        }
-		if (bw <= 0)
-		{
-			return 1;
-		}
-		vs1053_PreWriteData();	
-		vs1053_WriteDatas((uint8_t*)fileBuf, 32);
-//		if(lamp_status == GS && gre_off == 1)
-//		{
-//			vs1053_WriteDatas((uint8_t*)zerobuf, 32);
-//		}
-//		else 
-//		{
-//			vs1053_WriteDatas((uint8_t*)fileBuf, 32);
-//		}
-	}
 
-	return 0;
-}
-
-void PlaySound(char *filename)
-{
-	/* Reinicia el decodificador, abre el archivo indicado y lo reproduce hasta finalizar. */
-	FRESULT result;
-    LED_Toggle();
-    vs1053_SoftReset();
- 	/* ????????? */
-	result = f_mount(&fs, "0:", 0);			/* Mount a logical drive */
-	if(result != FR_OK)
-	{
-		printf("????????????(%s)\r\n",  FR_Table[result]);
-	}
-
-    /* ???????? */
-    result = f_open(&mfile, filename, FA_OPEN_EXISTING | FA_READ);
-    if (result !=  FR_OK)
-    {
-      printf("??%s??????\r\n",filename);
-    }
-    else
-    {
-      printf("???????:%s\r\n",filename);
-    }
-
-    while(Mp3Pro() == 0)
-    {
-        //Delay(1);
-    }
-    /* ???????????*/
-    f_close(&mfile);
-    //vs1053_SoftReset();
-    LED_Toggle();
-}
-
-void PlayStart(void)
-{
-	/* Abre la pista seleccionada en MP3 y prepara la reproduccion asincrona. */
-	FRESULT result;
-    LED_Toggle();
-    vs1053_SoftReset();
- 	/* ????????? */
-	result = f_mount(&fs, "0:", 0);			/* Mount a logical drive */
-	if(result != FR_OK)
-	{
-		printf("????????????(%s)\r\n",  FR_Table[result]);
-	}
-
-    /* ???????? */
-    result = f_open(&mfile, MP3.filename, FA_OPEN_EXISTING | FA_READ);
-    if (result !=  FR_OK)
-    {
-        printf("??%s??????\r\n",MP3.filename);
-        return;
-    }
-    else
-    {
-        //printf("Now Play:%s!\r\n",MP3.filename);
-    }
-    MP3.fileOpenFlag = 1;
-}
-
-void Playing(void)
-{
-    if(MP3.fileOpenFlag && MP3.playing)
-    {
-        if(Mp3Pro())
-        {
-            if(MP3.cycleFlag)
-            {
-                if(MP3.lamp_chge_sound_flag == 1)
-                {
-                    MP3.lamp_chge_sound_flag = 0;
-                    if(lamp_status == RS)
-                    {
-                        if(MP3.WorkMode == MODEA)
-                        {
-                            MP3.dir = 1;
-                            memset(MP3.filename,0x00,13);
-                            get_filename(MP3.dir);
-                            MP3.fileChangeFlag = 1;
-                        }
-                        else MP3.dir = 1;
-                    }
-                    else if(lamp_status == GS)
-                    {
-						if(green_flash_sound_en)
-						{
-							if(gre_flash_flag == 0) 
-								MP3.dir = 4;
-							else 
-								MP3.dir = 3;
-						}
-						else 
-							MP3.dir = 3;
-                        memset(MP3.filename,0x00,13);
-                        get_filename(MP3.dir);
-                        MP3.fileChangeFlag = 1;
-                    }
-					else if(lamp_status == BS)
-					{
-						MP3.stopFlag = 1;
-//						MP3.dir = 3;
-//						memset(MP3.filename,0x00,13);
-//						get_filename(MP3.dir);
-//						MP3.fileChangeFlag = 1;
-					}
-                }
-                else
-                {
-                    f_lseek(&mfile, 0);
-                    MP3.playing = 0;
-					
-					MP3.stopCount = 1;
-					//MP3.playing = 1;
-					//PlayStart();
-                    //printf("Re:%s!\r\n",MP3.filename);
-                }
-            }
-            else
-            {
-                f_close(&mfile);
-                MP3.fileOpenFlag = 0;
-                MP3.playing = 0;
-                MP3.stopCount = 1;
-				
-				//MP3.playing = 1;
-				//PlayStart();
-                LED_Toggle();
-            }
-        }
-        else
-        {
-            MP3.playing = 1;
-            if(MP3.stopFlag)
-            {
-                MP3.stopFlag = 0;
-                MP3.cycleFlag = 0;
-                MP3.playing = 0;
-                f_close(&mfile);
-                MP3.fileOpenFlag = 0;
-                LED_Toggle();
-				
-				MP3.stopCount = 1;
-				//MP3.playing = 1;
-				//PlayStart();
-                printf("Stop Play:%s!\r\n",MP3.filename);
-            }
-        }
-    }
-}
-
-void fileChange(void)
-{
-    if(MP3.fileChangeFlag==1 && MP3.Writingflag==0)
-    {
-        MP3.fileChangeFlag = 0;
-        if(MP3.fileOpenFlag)
-        {
-            MP3.fileOpenFlag = 0;
-            f_close(&mfile); // funcion no definida pero cierra un fichero algo asi
-        }
-        PlayStart();
-        MP3.playing = 1;
-        MP3.cycleFlag = 1;
-        MP3.stopCount = 0;
-    }
-}
-
-void get_filename(uint8_t num)
-{
-    if(num == 0)
-        memcpy(MP3.filename,"001.mp3",7);
-    else if(num == 1)
-        memcpy(MP3.filename,"002.mp3",7);
-    else if(num == 2)
-        memcpy(MP3.filename,"003.mp3",7);
-    else if(num == 3)
-        memcpy(MP3.filename,"004.mp3",7);
-    else if(num == 4)
-        memcpy(MP3.filename,"005.mp3",7);
-}
 /* Crea los directorios de prueba usados para validar las operaciones de FatFS. */
 //static void CreateDir(void)
 void CreateDir(void)
@@ -1341,158 +1126,4 @@ void WriteFileTest(void)
 
 	
 	result  = f_mount(NULL, "0:", 0);
-}
-
-uint8_t clac_Volume(void)
-{
-	uint8_t value,i;
-	uint16_t day_by_mins;
-	uint16_t plan_by_mins;
-
-	day_by_mins = BCD_to_DEC(SYS_RTC->hour)*60+BCD_to_DEC(SYS_RTC->minute);
-	if((SYS_RTC->week==0)||(SYS_RTC->week==6))
-	{
-		for(i=0;i<6;i++)
-		{
-			plan_by_mins=BCD_to_DEC(Time_Volume[1][i][0])*60+BCD_to_DEC(Time_Volume[1][i][1]);
-			if(day_by_mins<plan_by_mins)
-			{
-				if(i==0) value=0;
-				else value=Time_Volume[1][i-1][2];
-				break;
-			}
-			else
-			{
-				if(i==5){value=0;break;}
-				else continue;
-			}
-		}
-	}
-	else
-	{
-		for(i=0;i<6;i++)
-		{
-			plan_by_mins=BCD_to_DEC(Time_Volume[0][i][0])*60+BCD_to_DEC(Time_Volume[0][i][1]);
-			if(day_by_mins<plan_by_mins)
-			{
-				if(i==0) value=0;
-				else value=Time_Volume[0][i-1][2];
-				break;
-			}
-			else
-			{
-				if(i==5){value=0;break;}
-				else continue;
-			}
-		}
-	}
-	if(value>0xe0) value = 184 + ((value-0xe0)*10);  //1-7   254
-    else value = 0;
-	return value;
-}
-
-extern uint8_t StartFlag;
-
-void CheckVolume(void)
-{
-    uint8_t Volume;
-    if(system_temp.timeUpdate)
-    {
-        system_temp.timeUpdate = 0;
-        RtcRead(SYS_RTC);
-		system_temp.seconds =  SYS_RTC->hour * 3600 + SYS_RTC->minute * 60 + SYS_RTC->second;
-		
-        Volume = clac_Volume();
-        if(MP3.VolumePeriod != Volume)
-        {
-            MP3.VolumePeriod = Volume;
-            MP3.VolumeChangeFlag = 1;
-			MP3.ucVolume = 1;//????????????1??????????? 20250219
-        }
-        //printf("VolumePeriod = %d\r\n", MP3.VolumePeriod);
-		//(rtc, 7); //Vino asi desde el original, no se que hace, lo comento para que compile sin warnings ya que RTC no tiene que ver con el volumen 
-    }
-    
-    if(ain.stab_state)
-    {
-        MP3.ucMuteOn = 1;
-        if(MP3.ucVolume != 0)
-        {
-            MP3.ucVolume = 0;
-            vs1053_SetVolume(MP3.ucVolume);
-        }
-    }
-    else
-    {
-        if(MP3.ucMuteOn)
-        {
-            MP3.ucMuteOn = 0;
-            if(MP3.fileOpenFlag && MP3.playing)
-            {
-                f_lseek(&mfile, 0);
-            }
-        }
-    }
-    
-    if(MP3.ucMuteOn)
-    {
-        if(MP3.ucVolume != 0)
-        {
-            MP3.ucVolume = 0;
-            vs1053_SetVolume(MP3.ucVolume);
-			PA_OFF();
-        }
-    }
-    else
-    {
-        if(StartFlag)
-        {
-            StartFlag = 0;
-            MP3.ucVolume = 0;
-            vs1053_SetVolume(MP3.ucVolume);
-			PA_ON();
-        }
-        else
-        {
-			static uint8_t gre_off_bk = 0;
-			if(lamp_status == GS && gre_off == 1)
-			{
-				if(gre_off != gre_off_bk)
-				{
-					gre_off_bk = gre_off;
-					if(green_flash_sound_en)
-					{
-						MP3.ucVolume = 0;
-						vs1053_SetVolume(MP3.ucVolume);
-					}
-				}
-			}
-			else 
-			{
-				gre_off_bk = 0;
-				if(MP3.ucVolume != MP3.VolumePeriod)
-				{
-					MP3.ucVolume = MP3.VolumePeriod;
-					vs1053_SetVolume(MP3.ucVolume);
-				}
-
-//				if(SW4())//???????
-//				{
-//					if(MP3.ucVolume != MP3.VolumePeriod)
-//					{
-//						MP3.ucVolume = MP3.VolumePeriod;
-//						vs1053_SetVolume(MP3.ucVolume);
-//					}
-//				}
-// Prueba deshabilitada para ajustar el volumen segun la entrada ambiental.
-//				{
-//					if(MP3.ucVolume != MP3.VolumeEnviron)
-//					{
-//						MP3.ucVolume = MP3.VolumeEnviron;
-//						vs1053_SetVolume(MP3.ucVolume);
-//					}
-//				}
-			}
-        }
-    }
 }
