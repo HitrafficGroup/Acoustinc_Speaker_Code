@@ -49,7 +49,7 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 	W5500_Initialization();
 
     bsp_InitIwdg(3000);
-	
+
 	nRF24L01ioConfig(); /* Deja el transceptor de radio en un estado conocido antes de recibir. */
 	SPI_RW_Reg(FLUSH_RX,0xff);
 	SPI_RW_Reg(FLUSH_TX,0xff);
@@ -157,6 +157,7 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 //printf(">>lamp_status %d \r\n", study_lamp_stab_state);
                 //printf(">>gre_flash_flag %d \r\n", gre_flash_flag);
                 ////
+                IWDG_Feed();
             }
             if(MP3.stopCount)
             {
