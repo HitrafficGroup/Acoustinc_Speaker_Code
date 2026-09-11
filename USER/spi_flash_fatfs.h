@@ -5,6 +5,7 @@
 #include "stm32f10x.h"
 #include "ff.h"                   /* Defines FATFS and FIL */
 #include "spi_flash_fatfs_mp3.h"  /* Defines MP3_T Header inclusion for MP3 module */
+#include "spi_flash_fatfs_config.h"
 
 #define BUF_SIZE				  (4096*4)		/* Define el tamano del buffer BUF_SIZE. */
 
@@ -51,6 +52,7 @@ uint8_t clac_Volume(void);
 
 /* Public function prototypes */
 void SPI_Flash_FatFS_Init(void);/* SPI Flash FatFS Function Prototypes */
+//static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
 void CreateNewFile(char *filename, uint8_t* data, uint16_t len);
 void AddFileData(char *filename, uint8_t* data, uint16_t len);
 void ReadFileData(char *filename);
@@ -61,36 +63,33 @@ void WriteFileTest(void);
 void FileFormat(void);
 void ViewRootDir(void);
 
-static void CreateNewFile(char *filename, uint8_t* data, uint16_t len);//
-
 void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len);
-
 void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len);
-
 void FileClose(void);
+void ReadIPConfigFile(void); //No Existe la funcion
 
 //void PlaySound(char *filename);
 //void PlayStart(void);
 //void Playing(void);
 
-void get_cpuid(uint8_t *pdata);
+//void get_cpuid(uint8_t *pdata);
 
 //void SYS_TEST(void);
-void Config(void);
+//void Config(void);
 //void CheckVolume(void);
 
-uint8_t ReadConfigFile(void);
-uint8_t ReadAndCheckConfigFile(void);
-void ReadIPConfigFile(void);
+//uint8_t ReadConfigFile(void);
+//uint8_t ReadAndCheckConfigFile(void);
+
 //uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize);
-void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len);
-void Load_Period_Parameters(uint8_t *pdata);
+//void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len);
+//void Load_Period_Parameters(uint8_t *pdata);
 
 //void fileChange(void);
 //void mp3_par_init(void);
 //void get_filename(uint8_t num);
 
-void CreateConfigFile (void);
-void DeleteConfigFile (void);
+//void CreateConfigFile (void);
+//void DeleteConfigFile (void);
 
 #endif /* __DEMO_SPI_FLASH_FATFS_H */

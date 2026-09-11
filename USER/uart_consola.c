@@ -116,16 +116,21 @@ void SYS_TEST(void)
                 printf("??S - MP3.dir = %d\r\n",MP3.dir);
                 break;
             case '+':
-                if(MP3.ucVolume <= 244)MP3.ucVolume += 10;
+                if(MP3.ucVolume <= 244)
+                    MP3.ucVolume += 10;
                 vs1053_SetVolume(MP3.ucVolume);
                 printf("+ Volume = %d\r\n", MP3.ucVolume);
                 break;
 			case 'M':
-                //if(MP3.ucVolume <= 244)MP3.ucVolume += 10;
+                printf("Volume = %d\r\n", MP3.ucVolume);
                 vs1053_SetVolume(244);
                 printf("MAX Volume = %d\r\n", MP3.ucVolume);
                 break;
+            case 'N':
+                printf("Volume Clac = %d\r\n", clac_Volume());
+                break;
             case '-':
+                printf("Volume = %d\r\n", MP3.ucVolume);
                 if(MP3.ucVolume >= 10)
 					MP3.ucVolume -= 10;
 					//MP3.ucVolume ++;
@@ -168,7 +173,7 @@ void SYS_TEST(void)
                 printf("%08x\r\n",SCB->CPUID);
                 //get_cpuid();
                 break;
-			case 'z':
+			case 'z': //Test inputs
                printf("==SWIN %d \r\n", (GPIOC->IDR & 0x000f));
 			   rin_test=((GPIOC->IDR & 0x2000)? 0:1);   		   //rin_test=((GPIOC->IDR & 0x2000));
 			   printf("==RIN  %x \r\n", rin_test);
@@ -198,7 +203,6 @@ void SYS_TEST(void)
 
 
 /* Private function implementation */
-
 static void DispMenu(void) /* Muestra por UART las opciones de prueba disponibles para el sistema de archivos. */
 {
 	printf("\r\n------------------------------------------------\r\n");

@@ -408,6 +408,11 @@
               <FileType>1</FileType>
               <FilePath>.\USER\spi_flash_fatfs_mp3.c</FilePath>
             </File>
+            <File>
+              <FileName>spi_flash_fatfs_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs_config.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
