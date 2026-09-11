@@ -536,9 +536,9 @@ void vs1053_SoftReset(void)
 #endif
 }
 
+
 void vs1053_SetVolume(uint8_t _ucVol)
 {
-
 	if (_ucVol == 0)
 	{
 		_ucVol = 254;
@@ -551,7 +551,6 @@ void vs1053_SetVolume(uint8_t _ucVol)
 	{
 		_ucVol = 254 - _ucVol;
 	}
-
 	vs1053_WriteCmd(SCI_VOL, (_ucVol << 8) | _ucVol);
 }
 
@@ -559,9 +558,6 @@ void vs1053_SetVolume(uint8_t _ucVol)
 void vs1053_SetBASS(int8_t _cHighAmp, uint16_t _usHighFreqCut, uint8_t _ucLowAmp, uint16_t _usLowFreqCut)
 {
 	uint16_t usValue;
-
-
-
 
 	if (_cHighAmp < -8)
 	{
@@ -573,7 +569,6 @@ void vs1053_SetBASS(int8_t _cHighAmp, uint16_t _usHighFreqCut, uint8_t _ucLowAmp
 	}
 	usValue = _cHighAmp << 12;
 
-
 	if (_usHighFreqCut < 1000)
 	{
 		_usHighFreqCut = 1000;
@@ -584,13 +579,11 @@ void vs1053_SetBASS(int8_t _cHighAmp, uint16_t _usHighFreqCut, uint8_t _ucLowAmp
 	}
 	usValue  += ((_usHighFreqCut / 1000) << 8);
 
-
 	if (_ucLowAmp > 15)
 	{
 		_ucLowAmp = 15;
 	}
 	usValue  += (_ucLowAmp << 4);
-
 
 	if (_usLowFreqCut < 20)
 	{
@@ -611,10 +604,7 @@ void ResetDecodeTime(void)
 	vs1053_WriteCmd(SCI_DECODE_TIME, 0x0000);
 }
 
-
-
 #if 0
-
 
 void VsRamTest(void)
 {

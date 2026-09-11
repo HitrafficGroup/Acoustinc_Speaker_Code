@@ -285,45 +285,79 @@ uint8_t clac_Volume(void)
 	uint16_t day_by_mins;
 	uint16_t plan_by_mins;
 
+    RtcRead(SYS_RTC);   //Actualiza variable SYS_RTC con reloj del sistema --PRUEBA llamada clac_Volume
 	day_by_mins = BCD_to_DEC(SYS_RTC->hour)*60+BCD_to_DEC(SYS_RTC->minute);
-	if((SYS_RTC->week==0)||(SYS_RTC->week==6))
+	if((SYS_RTC->week==0)||(SYS_RTC->week==6))  //Weekend Period (Sunday week==0 and Saturday week==6)
 	{
-		for(i=0;i<6;i++)
+		for(i=0;i<6;i++) //Recorre los 6 horarios para el fin de semana y determina el volumen correspondiente al horario actual.
 		{
-			plan_by_mins=BCD_to_DEC(Time_Volume[1][i][0])*60+BCD_to_DEC(Time_Volume[1][i][1]);
-			if(day_by_mins<plan_by_mins)
+			plan_by_mins=BCD_to_DEC(Time_Volume[1][i][0])*60+BCD_to_DEC(Time_Volume[1][i][1]); //
+			if(day_by_mins<plan_by_mins)    //Compara hora actual < con la de los horarios
 			{
-				if(i==0) value=0;
-				else value=Time_Volume[1][i-1][2];
+				if(i==0)
+                    value=0;
+				else
+                    value=Time_Volume[1][i-1][2];   //get Volumen 0 - 7
 				break;
 			}
-			else
+			else    //Compara hora actual > con la de los horarios
 			{
-				if(i==5){value=0;break;}
-				else continue;
+				if(i==5){
+                    value=0;
+                    break;
+                }
+				else
+                    continue;
 			}
 		}
 	}
-	else
+	else    //WeekDay Period (Monday week==1, Tuesday week==2, Wednesday week==3, Thursday week==4, Friday week==5)
 	{
-		for(i=0;i<6;i++)
+		for(i=0;i<6;i++) //Recorre los 6 horarios para el dia de semana y determina el volumen correspondiente al horario actual.
 		{
 			plan_by_mins=BCD_to_DEC(Time_Volume[0][i][0])*60+BCD_to_DEC(Time_Volume[0][i][1]);
-			if(day_by_mins<plan_by_mins)
+            //printf("i = %d - PLANmin = %d - VAL = [%d][0x%02X] \r\n", i, plan_by_mins, Time_Volume[0][i][2], Time_Volume[0][i][2]);
+			if(day_by_mins<plan_by_mins)    //Compara hora actual < con la de los horario
 			{
-				if(i==0) value=0;
-				else value=Time_Volume[0][i-1][2];
+				if(i==0)
+                    value=0;
+				else
+                    value=Time_Volume[0][i-1][2];   //get Volumen 0 - 7
 				break;
 			}
-			else
+            else        //Compara hora actual > con la de los horarios
 			{
-				if(i==5){value=0;break;}
-				else continue;
+				if(i==5){
+                    value=0;
+                    break;
+                }
+				else
+                    continue;
 			}
 		}
 	}
-	if(value>0xe0) value = 184 + ((value-0xe0)*10);  //1-7   254
-    else value = 0;
+	if(value>0xe0)
+        //value = 184 + ((value-0xe0)*10);//Original  //1-7   254
+        if(value==0xe1) //Reestructuracion de volumen
+            value=195;
+        else if(value==0xe2)
+            value=205;
+        else if(value==0xe3)
+            value=215;
+        else if(value==0xe4)
+            value=225;
+        else if(value==0xe5)
+            value=235;
+        else if(value==0xe6)
+            value=245;
+        else if(value==0xe7)
+            value=255;
+        else
+            value=255;
+    else
+        value = 0;
+    printf("DAYmin = %d \r\n", day_by_mins); //Muestra hora actual en minutos
+    printf("#PLAN = %d - PLANmin = %d - VOL = %d \r\n",(i-1) , plan_by_mins, value); //Muestra PLAN seleccionado, PLAN en minutos y VOLUMEN
 	return value;
 }
 
@@ -348,7 +382,6 @@ void CheckVolume(void)
         //printf("VolumePeriod = %d\r\n", MP3.VolumePeriod);
 		//(rtc, 7); //Vino asi desde el original, no se que hace, lo comento para que compile sin warnings ya que RTC no tiene que ver con el volumen 
     }
-    
     if(ain.stab_state)
     {
         MP3.ucMuteOn = 1;
@@ -369,7 +402,6 @@ void CheckVolume(void)
             }
         }
     }
-    
     if(MP3.ucMuteOn)
     {
         if(MP3.ucVolume != 0)
@@ -411,7 +443,6 @@ void CheckVolume(void)
 					MP3.ucVolume = MP3.VolumePeriod;
 					vs1053_SetVolume(MP3.ucVolume);
 				}
-
 //				if(SW4())//???????
 //				{
 //					if(MP3.ucVolume != MP3.VolumePeriod)
@@ -420,8 +451,7 @@ void CheckVolume(void)
 //						vs1053_SetVolume(MP3.ucVolume);
 //					}
 //				}
-// Prueba deshabilitada para ajustar el volumen segun la entrada ambiental.
-//				{
+//				{   // Prueba deshabilitada para ajustar el volumen segun la entrada ambiental.
 //					if(MP3.ucVolume != MP3.VolumeEnviron)
 //					{
 //						MP3.ucVolume = MP3.VolumeEnviron;

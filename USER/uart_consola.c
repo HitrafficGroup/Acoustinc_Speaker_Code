@@ -21,6 +21,9 @@ int ain_test;
 /* Private function prototypes */
 static void DispMenu(void);
 
+static uint8_t day, slot;//para visualizacion TIME_VOLUME MATRIX
+static const char *day_labels[2] = {"Weekday (Index 0)", "Weekend (Index 1)"};//para visualizacion TIME_VOLUME MATRIX
+
 /* Public function implementation */
 
 void SYS_TEST(void)
@@ -28,8 +31,7 @@ void SYS_TEST(void)
 	uint8_t cmd;
     if(UartGetChar(&cmd))
     {
-        //cmd = 'C';
-        switch(cmd)
+        switch(cmd)//cmd = 'C';
         {
             case '0':
                 printf("??0 - FileFormat??\r\n"); //Borra Config.ino and Audios
@@ -74,10 +76,6 @@ void SYS_TEST(void)
                 printf("??9 - vs1053_ReadChipID??\r\n");
                 vs1053_ReadChipID();
                 break;
-            case 'a':
-                printf("??a - PlaySound??\r\n");
-                PlaySound(sysfile0);
-                break;
             case 'A':
                 printf("??A - PlaySound??\r\n");
                 PlaySound("001.mp3");//PlaySound("001.MP3");
@@ -100,34 +98,40 @@ void SYS_TEST(void)
                 break;
             case 'F':
                 printf("??F - PlaySound??\r\n");
-                PlaySound("001.WAV");
+                PlaySound(sysfile0);
                 break;
             case 'G':
-                printf("??G - PlaySound??\r\n");
-                PlaySound("002.WAV");
+                printf("??a - PlaySound??\r\n");
+                PlaySound("001.WAV");
                 break;
             case 'H':
-                printf("??H - PlaySound??\r\n");
+                printf("??b - PlaySound??\r\n");
+                PlaySound("002.WAV");
+                break;
+            case 'I':
+                printf("??c - PlaySound??\r\n");
                 memset(MP3.filename,0x00,13);
                 memcpy(MP3.filename,"002.MP3",7);
                 PlayStart();
                 break;
-            case 'S':
-                printf("??S - MP3.dir = %d\r\n",MP3.dir);
+            case 'J':
+                printf("??d - MP3.dir = %d\r\n",MP3.dir);
                 break;
             case '+':
+                printf("Volume = %d\r\n", MP3.ucVolume);
                 if(MP3.ucVolume <= 244)
                     MP3.ucVolume += 10;
                 vs1053_SetVolume(MP3.ucVolume);
-                printf("+ Volume = %d\r\n", MP3.ucVolume);
+                printf("??+ Volume = %d\r\n", MP3.ucVolume);
                 break;
-			case 'M':
+			case 'K'://Volumen MAXIMO
                 printf("Volume = %d\r\n", MP3.ucVolume);
-                vs1053_SetVolume(244);
-                printf("MAX Volume = %d\r\n", MP3.ucVolume);
+                MP3.ucVolume = 255;
+                vs1053_SetVolume(MP3.ucVolume);
+                printf("??G - MAX Volume = %d\r\n", MP3.ucVolume);
                 break;
-            case 'N':
-                printf("Volume Clac = %d\r\n", clac_Volume());
+            case 'L'://Muestra el volumen actual
+                printf("??H - Volume Clac = %d\r\n", clac_Volume());
                 break;
             case '-':
                 printf("Volume = %d\r\n", MP3.ucVolume);
@@ -135,20 +139,45 @@ void SYS_TEST(void)
 					MP3.ucVolume -= 10;
 					//MP3.ucVolume ++;
                 vs1053_SetVolume(MP3.ucVolume);
-                printf("- Volume = %d\r\n", MP3.ucVolume);
+                printf("??- - Volume = %d\r\n", MP3.ucVolume);
                 break;
-			case 'Y':////////////////// Deshabilitado start
-				printf("??Y - TestSignal ????????\r\n");
+			case 'M'://Test del modulo vs1053  //////////////// Deshabilitado start
+				printf("??I - TestSignal ????????\r\n");
 				vs1053_TestSine();
 				vs1053_TestSine();
 				vs1053_TestSine();
 				vs1053_TestSine();
 				break;
-			case 'Q':
-				printf("??Q - TestSineExit ???????????\r\n");
+			case 'N'://Test del modulo vs1053 FIN
+				printf("??J - TestSineExit ???????????\r\n");
 				vs1053_TestSineExit();
 				break;
-			case 'W':	//Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
+            case 'a'://Lee los horarios H:m y Volumen
+					printf("\r\n=================== TIME_VOLUME MATRIX ===================\r\n");/////Muestra como se han cargado los valores de Time_Volume desde Config.ini
+                    for (day = 0; day < 2; day++)
+                    {
+                        printf("\r\n--- %s ---\r\n", day_labels[day]);
+                        printf("Slot | Hour (BCD/DEC) | Min (BCD/DEC) | Vol Byte (Hex/Dec)\r\n");
+                        printf("----------------------------------------------------------\r\n");
+                        for (slot = 0; slot < 6; slot++)
+                        {
+                            uint8_t raw_hour = Time_Volume[day][slot][0];
+                            uint8_t raw_min  = Time_Volume[day][slot][1];
+                            uint8_t raw_vol  = Time_Volume[day][slot][2];
+                            printf("  %d  |   0x%02X (%02d)    |   0x%02X (%02d)   |   0x%02X (%3d)\r\n",
+                                slot,
+                                raw_hour, BCD_to_DEC(raw_hour),
+                                raw_min,  BCD_to_DEC(raw_min),
+                                raw_vol,  raw_vol);
+                        }
+                    }
+                    printf("\r\n==========================================================\r\n\r\n");
+				break;
+            case 'b': //Muestra los bytes TimeZone
+                //printf("system_temp.TimeZone = %d \r\n", system_temp.TimeZone); //Imprime en Decimal los 4 bytes de TimeZone
+                printf_fifo_hex(system_temp.TimeZone, 4); //Imprime en Hexa los 4 bytes de TimeZone
+                break;
+			case 'c':	//Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
 				SYS_RTC->second  = 0x00;
 				SYS_RTC->minute  = 0x21;
 				SYS_RTC->hour    = 0x15;
@@ -158,40 +187,67 @@ void SYS_TEST(void)
 				SYS_RTC->year    = 0x20;
 				RtcWrite(SYS_RTC);
 				break;////////////////// Deshabilitado END
-            case 'T':
-                printf("??T - ???????\r\n");
+            case 'd': //Leer hora RTC
+                printf("??Q - ???????\r\n");
                 RtcRead(SYS_RTC);
                 printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
                 printf("%08x\r\n",SCB->CPUID);
                 //get_cpuid();
                 break;////////
-			case 'U':
-                printf("??U - ???????\r\n");
-				Auto_adjust_time();
+			case 'e': //Lee hora del GPS
+                printf("??R - ???????\r\n");
+                printf("system_temp.sync_with_gps_flag: %d\r\n", system_temp.sync_with_gps_flag);//Bandera indica se puede actualizar desde GPS
+                printf("GPS UTC: %d-%d-%d %d:%d:%d\r\n", system_temp.Gps.utc.year, system_temp.Gps.utc.month, system_temp.Gps.utc.day, system_temp.Gps.utc.hour, system_temp.Gps.utc.minute, system_temp.Gps.utc.second);
+                //printf("GPS LUT: %d, %d, %d \r\n", &system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone); //system_temp.seconds, system_temp.gps_seconds
+                printf("GPS LOCAL: system_temp.Gps.local.second = ");
+                printf_fifo_hex(&system_temp.Gps.local.second, 7);
+                //printf("GPS LUT: %s, %s, %s \r\n", &system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone);
+                break;
+            case 'f': //Sincroniza hora RTC con el GPS
+                printf("??S - ???????\r\n");
+				Auto_adjust_time(); //Sincroniza hora con el GPS
                 RtcRead(SYS_RTC);
                 printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
                 printf("%08x\r\n",SCB->CPUID);
                 //get_cpuid();
                 break;
-			case 'z': //Test inputs
-               printf("==SWIN %d \r\n", (GPIOC->IDR & 0x000f));
-			   rin_test=((GPIOC->IDR & 0x2000)? 0:1);   		   //rin_test=((GPIOC->IDR & 0x2000));
-			   printf("==RIN  %x \r\n", rin_test);
-			   gin_test=((GPIOC->IDR & 0x4000)? 0:1);			   //gin_test=((GPIOC->IDR & 0x4000));
-			   printf("==GIN  %x \r\n", gin_test);
-			   ain_test=((GPIOC->IDR & 0x8000)? 0:1);			   //ain_test=((GPIOC->IDR & 0x8000));
-			   printf("==AIN  %x \r\n", ain_test);
+			case 'V': //Test inputs estables
+                printf("??V - STABLE INPUTS Y R G\r\n");
+                printf("> AMAR ST %d \r\n", ain.stab_state); //Imprimir estado AIN estable
+                printf("> ROJO ST %d \r\n", lamp_state[0]); //Imprimir estados rojo estable
+                printf("> VERD ST %d \r\n", lamp_state[1]); //Imprimir estados verde estable
+
+                if(lamp_status == RS)//YO Imprimir estados BS = 0, RS = 1, GS = 2)
+                    printf("> LS=RS >LCF %x \r\n", lamp_chge_flag);//Imprimir estados
+                else if(lamp_status == GS)
+				    printf("> LS=GS >LCF %x \r\n", lamp_chge_flag);//Imprimir estados
+				else if(lamp_status == BS)
+                    printf("> LS=BS >LCF %x \r\n", lamp_chge_flag);//Imprimir estados
+                printf("> gre_flash_flag %d \r\n", gre_flash_flag);//Imprimir estados
+                //study_mode_filterAC_DC
+                //printf(">>lamp_state[0] %d \r\n", display_data[1] );
+                //printf(">>lamp_status %d \r\n", study_lamp_stab_state);
                break;
-			case 'b':
-			   printf("==DR1 ?Toggle \r\n");
+            case 'W': //Test inputs actuales
+            printf("??W - INPUTS valor actual\r\n");
+               printf("SWIN %d \r\n", (GPIOC->IDR & 0x000f));
+			   rin_test=((GPIOC->IDR & 0x2000)? 0:1);   		   //rin_test=((GPIOC->IDR & 0x2000));
+			   printf("> RIN  %x \r\n", rin_test);
+			   gin_test=((GPIOC->IDR & 0x4000)? 0:1);			   //gin_test=((GPIOC->IDR & 0x4000));
+			   printf("> GIN  %x \r\n", gin_test);
+			   ain_test=((GPIOC->IDR & 0x8000)? 0:1);			   //ain_test=((GPIOC->IDR & 0x8000));
+			   printf("> AIN  %x \r\n", ain_test);
+               break;
+			case 'X':
+			   printf("??i - DR1 ?Toggle \r\n");
                DR1_Toggle();
                break;
-			case 'n':
-			   printf("==DR2 ?Toggle \r\n");
+			case 'Y':
+			   printf("??j - DR2 ?Toggle \r\n");
                DR2_Toggle();
                break;
-			case 'm':
-			   printf("==DR3 ?Toggle \r\n");
+			case 'Z':
+			   printf("??k - DR3 ?Toggle \r\n");
                DR3_Toggle();
                break;			////////
             default:
@@ -215,5 +271,5 @@ static void DispMenu(void) /* Muestra por UART las opciones de prueba disponible
 	printf("4 - ??????\r\n");
 	printf("5 - ??????????\r\n");
 	printf("6 - ??????????????\r\n");
-  printf("7 - ????WAV????\r\n");
+    printf("7 - ????WAV????\r\n");
 }

@@ -1,9 +1,6 @@
 
 
-
 #include "stm32f10x.h"
-
-
 
 static uint8_t g_TxBuf1[UART1_TX_BUF_SIZE];
 static uint8_t g_RxBuf1[UART1_RX_BUF_SIZE];
@@ -21,7 +18,6 @@ uint8_t UartGetChar(uint8_t *_pByte);
 static void Uart1IRQ(void);
 static void ConfigUartNVIC(void);
 
-
 #define DMA_BUFFER_SIZE	2048
 uint8_t dma_usart2_rx_buffer[DMA_BUFFER_SIZE];
 volatile uint16_t rx_length = 0;
@@ -30,8 +26,6 @@ void DMA_Configuration(void)
 {
 	DMA_InitTypeDef DMA_InitStructure;
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-	
-
 
     DMA_DeInit(DMA1_Channel6);
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
@@ -60,7 +54,6 @@ void bsp_InitUart(void)
 }
 
 
-
 void UartClearTxFifo(void)
 {
 	g_tUart1.usTxWrite = 0;
@@ -77,12 +70,8 @@ void UartClearRxFifo(void)
 }
 
 
-
-
 //                             0   1   2   3   4   5   6   7   8   9  10  11  12
 const uint8_t DayMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-
 
 uint8_t Is_Leap_Year(uint16_t year)
 {
@@ -224,7 +213,6 @@ void rtcConvert(uint8_t* prtc_bcd, uint8_t* prtc_dec)
 }
 
 
-
 void Gps_ReciveNew(uint16_t RxCount)
 {
     if(strncmp((char*)(&Uart2Gps.pRxBuf[3]), "GGA", 3) == 0)
@@ -241,18 +229,18 @@ void Gps_ReciveNew(uint16_t RxCount)
             char tmp[10];
             //$GNGGA,073741.000,2243.0486,N,11348.3295,E,1,09,1.6,18.8,M,0.0,M,,*44
             sscanf((char*)Uart2Gps.pRxBuf,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", tmp, system_temp.Gps.time_str, system_temp.Gps.Latitude, system_temp.Gps.NS, system_temp.Gps.Longitude, system_temp.Gps.EW);
-            /* 
-            sscanf(OP.Gps.Latitude+2,"%f", &fLat);
-            fLat /= 60;
-            fLat += (OP.Gps.Latitude[0] - '0')*10 + (OP.Gps.Latitude[1] - '0');
             
-            sscanf(OP.Gps.Longitude+3,"%f", &fLng);
-            fLng /= 60;
-            fLng += (OP.Gps.Longitude[0] - '0')*100 + (OP.Gps.Longitude[1] - '0')*10 + (OP.Gps.Longitude[2] - '0');
-            printf("Lng,Lat:%.06f,%.06f\n", fLng, fLat);
-            */
+            // sscanf(OP.Gps.Latitude+2,"%f", &fLat);
+            // fLat /= 60;
+            // fLat += (OP.Gps.Latitude[0] - '0')*10 + (OP.Gps.Latitude[1] - '0');
+            
+            // sscanf(OP.Gps.Longitude+3,"%f", &fLng);
+            // fLng /= 60;
+            // fLng += (OP.Gps.Longitude[0] - '0')*100 + (OP.Gps.Longitude[1] - '0')*10 + (OP.Gps.Longitude[2] - '0');
+            // printf("Lng,Lat:%.06f,%.06f\n", fLng, fLat);
+            
 			#if DEBUG > 8
-				printf("Time : %s\n", system_temp.Gps.time_str);
+				printf("Time : %s -system_temp.Gps.time_str- \n", system_temp.Gps.time_str);
 				printf("ns   : %s\n", system_temp.Gps.NS);
 				printf("ew   : %s\n", system_temp.Gps.EW);
 				printf("Lat  : %s\n", system_temp.Gps.Latitude);
@@ -274,10 +262,9 @@ void Gps_ReciveNew(uint16_t RxCount)
             int n;
             char tmp[10];
             //$GNZDA,073741.000,22,11,2018,00,00*45
-            if(sscanf((char*)Uart2Gps.pRxBuf,"%[^,],%[^,],%[^,],%[^,],%[^,]", tmp,
-               system_temp.Gps.time_str, system_temp.Gps.day_str, system_temp.Gps.month_str, system_temp.Gps.year_str)==5)
+            if(sscanf((char*)Uart2Gps.pRxBuf,"%[^,],%[^,],%[^,],%[^,],%[^,]", tmp, system_temp.Gps.time_str, system_temp.Gps.day_str, system_temp.Gps.month_str, system_temp.Gps.year_str)==5)
             {
-                //2022/01/07 035457.000
+                //2022/01/07 035457.000  //String to int
                 sscanf(system_temp.Gps.year_str+2,"%2d", &n);    system_temp.Gps.utc.year = n;
                 sscanf(system_temp.Gps.month_str,"%2d", &n);     system_temp.Gps.utc.month = n;
                 sscanf(system_temp.Gps.day_str,"%2d", &n);       system_temp.Gps.utc.day = n;
@@ -287,7 +274,9 @@ void Gps_ReciveNew(uint16_t RxCount)
                 
                 utc_to_local(&system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone);
                 #if DEBUG > 8
+				printf("GPS LOCAL: system_temp.Gps.local.second = ");
                 printf_fifo_hex(&system_temp.Gps.local.second, 7);
+				printf("\r\n");
                 #endif
                 if(system_temp.Gps.utc.second >= 2 && system_temp.seconds >= 2)
                 {
@@ -346,7 +335,6 @@ void Init_Uart1(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 
-
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 
@@ -380,19 +368,16 @@ void Init_Uart2(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
 
 	USART_InitStructure.USART_BaudRate = UART2_BAUD;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -402,16 +387,13 @@ void Init_Uart2(void)
 	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	USART_Init(USART2, &USART_InitStructure);
 
-
 	USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);
 	USART_ITConfig(USART2, USART_IT_IDLE, ENABLE);
 
 	USART_Cmd(USART2, ENABLE);
 
-
 	USART_ClearFlag(USART2, USART_FLAG_TC);
 }
-
 
 
 static void InitHardUart(void)
@@ -433,7 +415,6 @@ static void ConfigUartNVIC(void)
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 	
-
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -490,11 +471,9 @@ uint8_t UartGetChar(uint8_t *_pByte)
 {
 	uint16_t usCount;
 
-
 	DISABLE_INT();
 	usCount = g_tUart1.usRxCount;
 	ENABLE_INT();
-
 
 	//if (_g_tUart1.usRxRead == usRxWrite)
 	if (usCount == 0)
@@ -504,7 +483,6 @@ uint8_t UartGetChar(uint8_t *_pByte)
 	else
 	{
 		*_pByte = g_tUart1.pRxBuf[g_tUart1.usRxRead];
-
 
 		DISABLE_INT();
 		if (++g_tUart1.usRxRead >= g_tUart1.usRxBufSize)
@@ -583,10 +561,8 @@ static void Uart1IRQ(void)
 
 static void GpsIRQ(void)
 {
-
 //	if(USART_GetITStatus(Uart2Gps.uart, USART_IT_RXNE) != RESET)
 //	{
-
 //		uint8_t ch;
 //		
 //		ch = USART_ReceiveData(Uart2Gps.uart);
@@ -597,12 +573,10 @@ static void GpsIRQ(void)
 //        }
 //		Uart2Gps.pRxBuf[Uart2Gps.usRxWrite] = ch;
 //        Uart2Gps.usRxWrite++;
-//        
 //		if(Uart2Gps.usRxCount < Uart2Gps.usRxBufSize)
 //		{
 //			Uart2Gps.usRxCount++;
 //		}
-//        
 //        //Uart2Gps is for GPS, and if GPS get a packet end code then we analysis it; 
 //        if(ch == '\n')//0x0a
 //		{
@@ -652,8 +626,6 @@ static void GpsIRQ(void)
 				}
 			}
         }
-		
-
         DMA_Cmd(DMA1_Channel6, DISABLE);
         DMA_SetCurrDataCounter(DMA1_Channel6, DMA_BUFFER_SIZE);
         DMA_Cmd(DMA1_Channel6, ENABLE);
@@ -664,10 +636,7 @@ static void GpsIRQ(void)
 	{
 		if (Uart2Gps.usTxCount == 0)
 		{
-
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TXE, DISABLE);
-
-
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, ENABLE);
 		}
 		else
@@ -686,10 +655,7 @@ static void GpsIRQ(void)
 	{
 		if (Uart2Gps.usTxCount == 0)
 		{
-
 			USART_ITConfig(Uart2Gps.uart, USART_IT_TC, DISABLE);
-
-
 			if (Uart2Gps.SendOver)
 			{
 				Uart2Gps.SendOver();
@@ -697,8 +663,6 @@ static void GpsIRQ(void)
 		}
 		else
 		{
-
-
 			USART_SendData(Uart2Gps.uart, Uart2Gps.pTxBuf[Uart2Gps.usTxRead]);
 			if (++Uart2Gps.usTxRead >= Uart2Gps.usTxBufSize)
 			{
@@ -707,17 +671,11 @@ static void GpsIRQ(void)
 			Uart2Gps.usTxCount--;
 		}
 	}
-	
 //	if(USART_GetITStatus(Uart2Gps.uart, USART_FLAG_ORE) != RESET)
 //	{
 //		USART_ReceiveData(Uart2Gps.uart);
 //		//USART_ClearFlag(Uart2Gps.uart, USART_FLAG_ORE);
 //	}
-
-
-
-
-
 	if ((Uart2Gps.uart->SR & (USART_FLAG_PE|USART_FLAG_NE|USART_IT_FE|USART_FLAG_ORE)) != (uint16_t)RESET)
 	{
 		//USART_ClearFlag(_pUart->uart, USART_FLAG_ORE);
@@ -744,7 +702,6 @@ void printf_fifo_hex(uint8_t* tx, uint8_t len)
     }
     printf("\n");
 }
-
 
 
 int fputc(int ch, FILE *f)

@@ -82,20 +82,19 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 MP3.writeParFlag = 0;
                 RtcWrite((RtcType*)Par);
 				
-                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������
+                WriteConfigFile(&Par[7], 12, 40);//дʱ��+ʱ������ //DATA, pos, lon
                 //Config();
                 if(ReadConfigFile())//�������ļ��ɹ�
                     Load_Period_Parameters(&FileBuf[12]); 
                 system_temp.timeUpdate = 1;
                 MP3.fileChangeFlag = 1;
             }
-			
             if((reg1ms_count%10)==0) 
 			{
-				CheckVolume();
+                //printf("reg1ms_count \r\n"); //Prueba
+				CheckVolume(); //Volumen de audio segun horarios hora y periodo de tiempo
 				IWDG_Feed();
 			}
-			
             if(lamp_chge_flag)  /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
             {
                 lamp_chge_flag = 0;
@@ -141,22 +140,22 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 IWDG_Feed();
                 LED_Toggle();
 
-                ////YO imprimir
+                // ////YO imprimir START
                 printf("> AMAR ST %d \r\n", ain.stab_state); //YO Imprimir estado AIN estable
                 printf("> ROJO ST %d \r\n", lamp_state[0]); //YO Imprimir estados rojo estable
                 printf("> VERD ST %d \r\n", lamp_state[1]); //YO Imprimir estados verde estable
-                if(lamp_status == RS)//YO Imprimir estados BS = 0, RS = 1, GS = 2)
-                    printf("> LS=RS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
-                else if(lamp_status == GS)
-				    printf("> LS=GS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
-				else if(lamp_status == BS)
-                    printf("> LS=BS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
-                printf("> gre_flash_flag %d \r\n", gre_flash_flag);//YO Imprimir estados
-                //study_mode_filterAC_DC
-                //printf(">>lamp_state[0] %d \r\n", display_data[1] );
-                //printf(">>lamp_status %d \r\n", study_lamp_stab_state);
-                //printf(">>gre_flash_flag %d \r\n", gre_flash_flag);
-                ////
+                // if(lamp_status == RS)//YO Imprimir estados BS = 0, RS = 1, GS = 2)
+                //     printf("> LS=RS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+                // else if(lamp_status == GS)
+				//     printf("> LS=GS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+				// else if(lamp_status == BS)
+                //     printf("> LS=BS >LCF %x \r\n", lamp_chge_flag);//YO Imprimir estados
+                // printf("> gre_flash_flag %d \r\n", gre_flash_flag);//YO Imprimir estados
+                // //study_mode_filterAC_DC
+                // //printf(">>lamp_state[0] %d \r\n", display_data[1] );
+                // //printf(">>lamp_status %d \r\n", study_lamp_stab_state);
+                // //printf(">>gre_flash_flag %d \r\n", gre_flash_flag);
+                // ////YO imprimir END
             }
             if(MP3.stopCount)
             {
@@ -174,7 +173,6 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
             }
             SocketProcess();    /* Atiende red, panel luminoso y pruebas periodicas del sistema. */
 			flash_panel_control();
-			
             SYS_TEST();
         }
         Playing();  /* La reproduccion debe atenderse continuamente, incluso entre ticks. */

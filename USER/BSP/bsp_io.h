@@ -9,17 +9,12 @@
 #define STUDY_MODE              0   // Define el modo de operacion STUDY_MODE.
 #define FIRST_RED_LAMP_VALID    1
 /***********************************************************************************/
-#define FILTER_ON_TIME          6
+#define FILTER_ON_TIME          6	// Normal vino con 6, pero para pruebas de funcionamiento se ha cambiado
 #define FILTER_OFF_TIME         21
 #define DEVIATION_TIME          300
 #define AHEAD_END_TIME          2 
 #define LOST_DELAY_TIME         3
 /***********************************************************************************/
-
-
-
-
-
 #define LongCycleTime       30000
 #define RedCycleTime        800//
 #define GreCycleTime        3//10
@@ -55,8 +50,8 @@
 #define GPS_OFF()       GPIO_ResetBits(GPIOA,GPIO_Pin_0)
 #define PPS_IN()   		(GPIOA->IDR & 0x0002)
 
-#define PA_ON()       	GPIO_SetBits(GPIOA,GPIO_Pin_11)
-#define PA_OFF()     	GPIO_ResetBits(GPIOA,GPIO_Pin_11)
+#define PA_ON()       	GPIO_SetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia ON
+#define PA_OFF()     	GPIO_ResetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia OFF
 
 typedef struct
 {
@@ -88,15 +83,14 @@ typedef struct  //Variables para guardar los datos de GPS obtenidos
 	char Speed[8];
 }GpsType;
 
-
 typedef struct
 {
     uint8_t data;
 	uint8_t timeUpdate;
 	
-	uint32_t            seconds;
-    uint32_t            gps_seconds;
-	uint32_t		gps1ms;
+	uint32_t seconds;
+    uint32_t gps_seconds;
+	uint32_t gps1ms;
 	GpsType	Gps;
 	uint8_t gps_flag;
 	uint8_t gps_count;
@@ -106,12 +100,10 @@ typedef struct
 	uint16_t pps_1ms;
 	uint16_t pps_count;
 
-	
-	RtcType		rtc_bcd;
-	RtcType		rtc_dec;
+	RtcType	rtc_bcd;
+	RtcType	rtc_dec;
 	uint8_t TimeZone[4];
 }SYSTEM_TEMP_TypeDef;
-
 
 typedef struct
 {
@@ -124,8 +116,6 @@ typedef struct
     uint16_t previous_study_counter;    /*  */
     uint8_t data;
 }FLASHER_TypeDef;
-
-
 
 extern SYSTEM_TEMP_TypeDef system_temp;
 extern uint8_t spi2_busy_flag;

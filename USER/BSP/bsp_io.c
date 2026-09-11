@@ -4,11 +4,11 @@ uint8_t spi2_busy_flag = 0;
 uint8_t rf_int_flag = 0;
 SYSTEM_TEMP_TypeDef system_temp;
 
-#define SW1_3()       (GPIOC->IDR & 0x000f) //Read Switch
+#define SW1_3()       (GPIOC->IDR & 0x000f) //Read 4bit Switch
 
-#define RIN()	((GPIOC->IDR & 0x2000)? 0:1)	//#define RIN()	(GPIOC->IDR & 0x2000)
-#define GIN()   ((GPIOC->IDR & 0x4000)? 0:1)	//#define GIN()  (GPIOC->IDR & 0x4000)
-#define AIN()   ((GPIOC->IDR & 0x8000)? 0:1)	
+#define RIN()	((GPIOC->IDR & 0x2000)? 0:1)	//#define RIN()	(GPIOC->IDR & 0x2000)	// 0:1
+#define GIN()   ((GPIOC->IDR & 0x4000)? 0:1)	//#define GIN() (GPIOC->IDR & 0x4000)	// 0:1
+#define AIN()   ((GPIOC->IDR & 0x8000)? 0:1)	//#define AIN() ((GPIOC->IDR & 0x8000)? 0:1)
 
 #define GET_MUTE_STATE()   (GPIOC->IDR & 0x8000)
 
@@ -248,6 +248,7 @@ void workmodejudge(void)
 
 void ain_filterAC_DC(void)
 {
+	DR2_Toggle();//Solo pruebas
     ain.temp_state = AIN();
     if(ain.stab_state != ain.temp_state)
     {
@@ -593,7 +594,7 @@ void flash_panel_control(void)//1ms
 	}
 }
 
-void Auto_adjust_time(void)
+void Auto_adjust_time(void) //Actualiza el RTC con la hora GPS
 {
     if(system_temp.sync_with_gps_flag)//wcxmask
     {

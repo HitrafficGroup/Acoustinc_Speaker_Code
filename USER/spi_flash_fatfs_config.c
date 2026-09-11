@@ -70,7 +70,6 @@ void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len)
 
     f_lseek(&file, pos);
     
-	
 	result = f_write(&file, data, len, &bw);
     
     if (result == FR_OK && bw == len)
@@ -85,7 +84,6 @@ void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len)
 	/* ??????*/
 	f_close(&file);
 
-	
 	result  = f_mount(NULL, "0:", 0);
 }
 
@@ -94,7 +92,20 @@ void WriteConfigFile(uint8_t* data, uint8_t pos,uint8_t len)
 
 // const uint8_t DefaultConfig[52]={
 // 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
-// 	0x01, 0x00, 0x70, 0x80,
+// 	0x01, 0x00, 0x70, 0x80, //4 China Timezone (UTC+8) in 4 bytes
+//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
+//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+// };
+
+// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
+// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
+//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
+//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
+// 	0xaa, 0xcc, 0x00, 0x00,
+// };
+
+// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
+// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
 //     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
 //     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
 // };
@@ -103,14 +114,8 @@ const uint8_t DefaultConfig[52]={	//Lee bien desde la app
 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
-	0xaa, 0xcc, 0x00, 0x00,
+    0x00, 0x00, 0x46, 0x50, //4 Ecuador Timezone (UTC-5) in 4 bytes
 };
-
-// const uint8_t DefaultConfig[52]={	//Lee bien desde la app
-// 	192,168, 1,172,     192,168, 1, 1,      255,255,255, 0,//12 IP: Local IP Address (192.168.1.172), 192, 168, 1, 1: Default Gateway (192.168.1.1), 255, 255, 255, 0: Subnet Mask (255.255.255.0).
-//     0x00,0x00,0xe7,	    0x09,0x00,0xe7,		0x13,0x00,0xe7,		0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//???????   18
-//     0x00,0x00,0xe7,		0x09,0x00,0xe7,     0x13,0x00,0xe7,	    0x16,0x00,0xe7,		0x21,0x00,0xe7,		0x23,0x59,0xe7,//??????   18
-// };
 
 //static void CreateConfigFile(void)
 void CreateConfigFile(void)
@@ -202,7 +207,7 @@ uint8_t ReadConfigFile(void)
         printf("\r\n/sys/Config.ini ??????? : \r\n");
         for(i=0;i<bw;i++)
         {
-            printf("%02x ",FileBuf[i]);
+            printf("%02x ",FileBuf[i]); //Print primera linea de Config.ini en Hexa 
         }
         printf("\r\n");
     }
@@ -236,45 +241,45 @@ uint8_t ReadAndCheckConfigFile(void)
 
 void DeleteConfigFile(void) //YO revisar y programar bien
 {
-//	char ConfigFile[] = "/sys/Config.ini";
-	char ConfigFileDir[] = "/sys";
+// //	char ConfigFile[] = "/sys/Config.ini";
+// 	char ConfigFileDir[] = "/sys";
 
-	/* Elimina archivos y directorios de prueba, comprobando cada resultado de FatFS. */
-	FRESULT result;
-//	char FileName[13];
-//	uint8_t i;
+// 	/* Elimina archivos y directorios de prueba, comprobando cada resultado de FatFS. */
+// 	FRESULT result;
+// //	char FileName[13];
+// //	uint8_t i;
 
- 	/* ????????? */
-	result = f_mount(&fs, "0:", 0);			/* Mount a logical drive */
-	if (result != FR_OK)
-	{
-		printf("Unidad Montada (%s)\r\n",  FR_Table[result]);
-	}
+//  	/* ????????? */
+// 	result = f_mount(&fs, "0:", 0);			/* Mount a logical drive */
+// 	if (result != FR_OK)
+// 	{
+// 		printf("Unidad Montada (%s)\r\n",  FR_Table[result]);
+// 	}
 
-	#if 0
-	/* ???????? */
-	result = f_opendir(&DirInf, "/"); /* ??????????????????????? */
-	if (result != FR_OK)
-	{
-		printf("????????(%s)\r\n",  FR_Table[result]);
-		return;
-	}
-	#endif
+// 	#if 0
+// 	/* ???????? */
+// 	result = f_opendir(&DirInf, "/"); /* ??????????????????????? */
+// 	if (result != FR_OK)
+// 	{
+// 		printf("????????(%s)\r\n",  FR_Table[result]);
+// 		return;
+// 	}
+// 	#endif
 
-	/* ?????/Dir1 ?????????????????????????)??????????????????*/
-	result = f_unlink(ConfigFileDir);
-	if (result == FR_OK)
-	{
-		printf("FR_OK ?????Dir1???\r\n");
-	}
-	else if (result == FR_NO_FILE)
-	{
-		printf("FR_NO_FILE ??锟斤拷?????????? :%s\r\n", "/Dir1");
-	}
-	else
-	{
-		printf("ELSE_FR ???Dir1???(??????? = %s) ?????????????\r\n",  FR_Table[result]);
-	}
+// 	/* ?????/Dir1 ?????????????????????????)??????????????????*/
+// 	result = f_unlink(ConfigFileDir);
+// 	if (result == FR_OK)
+// 	{
+// 		printf("FR_OK ?????Dir1???\r\n");
+// 	}
+// 	else if (result == FR_NO_FILE)
+// 	{
+// 		printf("FR_NO_FILE ??锟斤拷?????????? :%s\r\n", "/Dir1");
+// 	}
+// 	else
+// 	{
+// 		printf("ELSE_FR ???Dir1???(??????? = %s) ?????????????\r\n",  FR_Table[result]);
+// 	}
 
 }
 
@@ -335,7 +340,34 @@ void Load_Net_Parameters(uint8_t *pdata)
 
 void Load_Period_Parameters(uint8_t *pdata)
 {
-	memcpy(system_temp.TimeZone, pdata, 4);
-    memcpy(Time_Volume, pdata+4, 36);
-	printf_fifo_hex(system_temp.TimeZone, 4);
+	// uint8_t day, slot;//para visualizacion
+	// const char *day_labels[2] = {"Weekday (Index 0)", "Weekend (Index 1)"};//para visualizacion
+	
+	memcpy(Time_Volume, pdata, 36);//copia de pdata [Config.ini] los primeros 36 bytes	CHECK//	memcpy(Time_Volume, pdata+4, 36);
+    memcpy(system_temp.TimeZone, pdata+36, 4); //memcpy(system_temp.TimeZone, pdata, 4); Toma los 4 bytes de TimeZone desde pdata [Config.ini] y los copia en system_temp.TimeZone
+	
+    // printf("system_temp.TimeZone = %d \r\n", system_temp.TimeZone); //Imprime en Decimal los 4 bytes de TimeZone
+	// printf_fifo_hex(system_temp.TimeZone, 4); //Imprime en Hexa los 4 bytes de TimeZone
+	// /////Muestra como se han cargado los valores de Time_Volume desde Config.ini
+	// printf("\r\n=================== TIME_VOLUME MATRIX ===================\r\n");
+    // for (day = 0; day < 2; day++)
+    // {
+    //     printf("\r\n--- %s ---\r\n", day_labels[day]);
+    //     printf("Slot | Hour (BCD/DEC) | Min (BCD/DEC) | Vol Byte (Hex/Dec)\r\n");
+    //     printf("----------------------------------------------------------\r\n");
+
+    //     for (slot = 0; slot < 6; slot++)
+    //     {
+    //         uint8_t raw_hour = Time_Volume[day][slot][0];
+    //         uint8_t raw_min  = Time_Volume[day][slot][1];
+    //         uint8_t raw_vol  = Time_Volume[day][slot][2];
+
+    //         printf("  %d  |   0x%02X (%02d)    |   0x%02X (%02d)   |   0x%02X (%3d)\r\n",
+    //                slot,
+    //                raw_hour, BCD_to_DEC(raw_hour),
+    //                raw_min,  BCD_to_DEC(raw_min),
+    //                raw_vol,  raw_vol);
+    //     }
+    // }
+    // printf("\r\n==========================================================\r\n\r\n"); // //////
 }

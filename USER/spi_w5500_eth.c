@@ -106,7 +106,13 @@ uint8_t ReceiveProcess(uint8_t *rdata, uint8_t reSize)
             }
             else if(pack->operaType == 0x02)
             {
-                memcpy(Par, &pack->data, 47);
+                memcpy(Par, &pack->data, 43);// memcpy(Par, &pack->data, 47);
+
+                Par[43] = 0x00; //0x00, 0x00, 0x46, 0x50, //4 Ecuador Timezone (UTC-5) in 4 bytes
+                Par[44] = 0x00;
+                Par[45] = 0x46;
+                Par[46] = 0x50;
+                
                 MP3.writeParFlag = 1;
                 return 2;//Recibe SET OK
             }
@@ -236,11 +242,14 @@ void Process_Socket_Data(SOCKET s)
             Tx_Buffer[21] = 0x00;
             RtcRead(SYS_RTC);//lee 7 bytes
             memcpy(&Tx_Buffer[22], rtc, 7); //22-28
-			memcpy(&Tx_Buffer[29], system_temp.TimeZone, 4); //29-32
-            memcpy(&Tx_Buffer[33], Time_Volume, 36); //33-64                //29-64
+			// memcpy(&Tx_Buffer[29], system_temp.TimeZone, 4); //29-32
+            // memcpy(&Tx_Buffer[33], Time_Volume, 36); //33-64                //29-64
+            memcpy(&Tx_Buffer[29], Time_Volume, 36); //33-64                //29-64
             Tx_Buffer[65] = 0xaa;//Tx_Buffer[69] = 0xaa;
-            Tx_Buffer[66] = 0xcc;//Tx_Buffer[70] = 0xcc;
+            Tx_Buffer[66] = 0xcc;//Tx_Buffer[70] = 0xcc;            
+            
             Write_SOCK_Data_Buffer(s, Tx_Buffer, 67);//Write_SOCK_Data_Buffer(s, Tx_Buffer, 71);
+
             LED_Toggle();
 			printf_fifo_hex(system_temp.TimeZone, 4);
         }
