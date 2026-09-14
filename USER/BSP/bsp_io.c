@@ -594,18 +594,6 @@ void flash_panel_control(void)//1ms
 	}
 }
 
-void Auto_adjust_time(void) //Actualiza el RTC con la hora GPS
-{
-    if(system_temp.sync_with_gps_flag)//wcxmask
-    {
-        RtcWrite(&system_temp.Gps.local);
-		system_temp.timeUpdate = 1;
-        system_temp.sync_with_gps_flag = 0;
-        #if DEBUG > 2
-        printf("sync_with_gps, Seconds = %d, gps_seconds = %d\n", system_temp.seconds, system_temp.gps_seconds);
-        #endif
-    }
-}
 
 void pps_irq_init(void)
 {

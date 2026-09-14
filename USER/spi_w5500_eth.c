@@ -242,7 +242,7 @@ void Process_Socket_Data(SOCKET s)
             Tx_Buffer[21] = 0x00;
             RtcRead(SYS_RTC);//lee 7 bytes
             memcpy(&Tx_Buffer[22], rtc, 7); //22-28
-			// memcpy(&Tx_Buffer[29], system_temp.TimeZone, 4); //29-32
+			// memcpy(&Tx_Buffer[29], system_temp.TimeZone, 4); //29-32 Deshabilitado, TimeZone estara fijo en Config.ini
             // memcpy(&Tx_Buffer[33], Time_Volume, 36); //33-64                //29-64
             memcpy(&Tx_Buffer[29], Time_Volume, 36); //33-64                //29-64
             Tx_Buffer[65] = 0xaa;//Tx_Buffer[69] = 0xaa;

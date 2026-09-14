@@ -5,6 +5,7 @@
 
 #include "spi_w5500_eth.h"
 #include "uart_consola.h"
+#include "uart_fifo_gps.h"
 
 __IO uint8_t reg1ms_flag; /* Marca generada cada milisegundo por SysTick. */
 __IO uint8_t ten_mm_counter; /* Cuenta los milisegundos que forman una ventana de 10 ms. */
@@ -139,6 +140,8 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
 				system_temp.seconds++;
                 IWDG_Feed();
                 LED_Toggle();
+
+                auto_adjust_time_periodically(); //Actualiza el RTC con la hora GPS cada cierto tiempo si la bandera de sincronización está activa
 
                 // ////YO imprimir START
                 printf("> AMAR ST %d \r\n", ain.stab_state); //YO Imprimir estado AIN estable

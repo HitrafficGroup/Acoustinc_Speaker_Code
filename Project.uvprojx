@@ -413,6 +413,11 @@
               <FileType>1</FileType>
               <FilePath>.\USER\spi_flash_fatfs_config.c</FilePath>
             </File>
+            <File>
+              <FileName>uart_fifo_gps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\uart_fifo_gps.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -141,7 +141,7 @@ void study_mode_time_calculation(void);//10ms yici
 void workmodejudge(void);
 void flash_panel_control(void);
 
-void Auto_adjust_time(void);
+//void Auto_adjust_time(void);
 
 void pps_irq_init(void);
 

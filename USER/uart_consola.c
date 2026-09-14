@@ -5,6 +5,7 @@
 #include "spi_w5500_eth.h"    /* Ensures access to MP3, fileTrans, and other external definitions */
 #include "spi_flash_fatfs.h"  /* Resolves FATFS file operation warnings */
 #include "bsp_vs1053b.h"           /* Replace with the actual header that contains PlaySound() */
+#include "uart_fifo_gps.h"
 
 /* Global test variables moved from original file */
 char sysfile0[] = "/sys/0.mp3";
