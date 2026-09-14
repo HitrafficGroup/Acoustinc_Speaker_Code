@@ -314,7 +314,7 @@
           <Cads>
             <interw>1</interw>
             <Optim>1</Optim>
-            <oTime>0</oTime>
+            <oTime>1</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
             <Strict>0</Strict>
@@ -322,14 +322,14 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>0</wLevel>
+            <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>0</v6Lang>
-            <v6LangP>0</v6LangP>
+            <v6Lang>3</v6Lang>
+            <v6LangP>3</v6LangP>
             <vShortEn>0</vShortEn>
             <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
@@ -389,6 +389,26 @@
               <FilePath>.\USER\main.c</FilePath>
             </File>
             <File>
+              <FileName>io_functions.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\io_functions.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_fatfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_fatfs_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_fatfs_mp3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\spi_flash_fatfs_mp3.c</FilePath>
+            </File>
+            <File>
               <FileName>spi_w5500_eth.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\spi_w5500_eth.c</FilePath>
@@ -397,21 +417,6 @@
               <FileName>uart_consola.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\uart_consola.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi_flash_fatfs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\spi_flash_fatfs.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi_flash_fatfs_mp3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\spi_flash_fatfs_mp3.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi_flash_fatfs_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\spi_flash_fatfs_config.c</FilePath>
             </File>
             <File>
               <FileName>uart_fifo_gps.c</FileName>
@@ -704,9 +709,14 @@
           <GroupName>BSP</GroupName>
           <Files>
             <File>
-              <FileName>bsp_io.c</FileName>
+              <FileName>bsp_24L01.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\USER\BSP\bsp_io.c</FilePath>
+              <FilePath>.\USER\BSP\bsp_24L01.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\BSP\bsp_adc.c</FilePath>
             </File>
             <File>
               <FileName>bsp_i2c.c</FileName>
@@ -714,9 +724,14 @@
               <FilePath>.\USER\BSP\bsp_i2c.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_uart_fifo.c</FileName>
+              <FileName>bsp_io.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\USER\BSP\bsp_uart_fifo.c</FilePath>
+              <FilePath>.\USER\BSP\bsp_io.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\BSP\bsp_iwdg.c</FilePath>
             </File>
             <File>
               <FileName>bsp_spi_bus.c</FileName>
@@ -729,6 +744,11 @@
               <FilePath>.\USER\BSP\bsp_spi_flash.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_uart_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\BSP\bsp_uart_fifo.c</FilePath>
+            </File>
+            <File>
               <FileName>bsp_vs1053b.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\BSP\bsp_vs1053b.c</FilePath>
@@ -737,21 +757,6 @@
               <FileName>bsp_w5500.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USER\BSP\bsp_w5500.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\BSP\bsp_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\BSP\bsp_iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_24L01.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\BSP\bsp_24L01.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -765,8 +770,8 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0" condition="ARMv6_7_8-M Device">
+        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/>
         <targetInfos>
           <targetInfo name="Project"/>
         </targetInfos>

@@ -155,25 +155,22 @@ void Gps_ReciveNew(uint16_t RxCount)
         if(strstr((char*)Uart2Gps.pRxBuf, ",,,,,"))
         {
 			system_temp.gps_flag = 0;
-            if(DEBUG > 8)printf("Place the GPS to open area\n");
+            if(DEBUG > 8)
+                printf("Place the GPS to open area\n"); //Esta enviando 
             return;
         }
         else
         {
             //float fLat,fLng;
-            char tmp[10];
-            //$GNGGA,073741.000,2243.0486,N,11348.3295,E,1,09,1.6,18.8,M,0.0,M,,*44
+            char tmp[10];            //$GNGGA,073741.000,2243.0486,N,11348.3295,E,1,09,1.6,18.8,M,0.0,M,,*44
             sscanf((char*)Uart2Gps.pRxBuf,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", tmp, system_temp.Gps.time_str, system_temp.Gps.Latitude, system_temp.Gps.NS, system_temp.Gps.Longitude, system_temp.Gps.EW);
-            
             // sscanf(OP.Gps.Latitude+2,"%f", &fLat);
             // fLat /= 60;
             // fLat += (OP.Gps.Latitude[0] - '0')*10 + (OP.Gps.Latitude[1] - '0');
-            
             // sscanf(OP.Gps.Longitude+3,"%f", &fLng);
             // fLng /= 60;
             // fLng += (OP.Gps.Longitude[0] - '0')*100 + (OP.Gps.Longitude[1] - '0')*10 + (OP.Gps.Longitude[2] - '0');
             // printf("Lng,Lat:%.06f,%.06f\n", fLng, fLat);
-            
 			#if DEBUG > 8
 				printf("Time : %s -system_temp.Gps.time_str- \n", system_temp.Gps.time_str);
 				printf("ns   : %s\n", system_temp.Gps.NS);

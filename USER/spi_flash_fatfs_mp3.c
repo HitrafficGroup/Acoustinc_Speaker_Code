@@ -1,4 +1,5 @@
 #include "spi_flash_fatfs_mp3.h"
+#include "io_functions.h"  /* Add this include */
 #include "spi_flash_fatfs.h"
 #include "stm32f10x.h"
 #include "ff.h"
@@ -9,6 +10,7 @@
 
 /* Global MP3 Variable Definition */
 MP3_T MP3;
+uint8_t green_flash_sound_en = 0;
 
 /* File handle and buffer dedicated to MP3 operations */
 FIL mfile;

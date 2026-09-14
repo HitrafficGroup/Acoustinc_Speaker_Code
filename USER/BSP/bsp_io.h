@@ -1,30 +1,27 @@
 #ifndef __BSP_IO_H
 #define __BSP_IO_H
-#include <stdint.h>
+//#include <stdint.h>
 
 #define DEBUG 9
 
-#define green_flash_sound_en	0
-/***********************************************************************************/
-#define STUDY_MODE              0   // Define el modo de operacion STUDY_MODE.
-#define FIRST_RED_LAMP_VALID    1
-/***********************************************************************************/
-#define FILTER_ON_TIME          6	// Normal vino con 6, pero para pruebas de funcionamiento se ha cambiado
-#define FILTER_OFF_TIME         21
-#define DEVIATION_TIME          300
-#define AHEAD_END_TIME          2 
-#define LOST_DELAY_TIME         3
-/***********************************************************************************/
-#define LongCycleTime       30000
-#define RedCycleTime        800//
-#define GreCycleTime        3//10
-#define GreFlashCycleTime   3//800 3
+/* Moved from bsp_io.c */
+//#define SW4()   		(GPIOC->IDR & 0x0008)
+#define SW1_3()	(GPIOC->IDR & 0x000f)	//Read 4bit Switch
+#define RIN()	((GPIOC->IDR & 0x2000)? 0:1)	//#define RIN()	(GPIOC->IDR & 0x2000)	// 0:1
+#define GIN()   ((GPIOC->IDR & 0x4000)? 0:1)	//#define GIN() (GPIOC->IDR & 0x4000)	// 0:1
+#define AIN()   ((GPIOC->IDR & 0x8000)? 0:1)	//#define AIN() ((GPIOC->IDR & 0x8000)? 0:1)
+#define GET_MUTE_STATE()   (GPIOC->IDR & 0x8000)
+#define GET_LAMP_STATE()   ((GPIOC->IDR>>13) & 0x0003)
 
-#define BS  0
-#define RS  1
-#define GS  2
+#define GPS_ON()        GPIO_SetBits(GPIOA,GPIO_Pin_0)   //salida que controla pin para encender o apagar modulo GPS
+#define GPS_OFF()       GPIO_ResetBits(GPIOA,GPIO_Pin_0)
+#define PPS_IN()   		(GPIOA->IDR & 0x0002)
 
-#define SW4()   		(GPIOC->IDR & 0x0008)
+#define PA_ON()       	GPIO_SetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia ON
+#define PA_OFF()     	GPIO_ResetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia OFF
+
+#define ADC_ON()        GPIO_ResetBits(GPIOA,GPIO_Pin_12)
+#define ADC_OFF()       GPIO_SetBits(GPIOA,GPIO_Pin_12)
 
 #define LED_ON()        GPIO_ResetBits(GPIOA,GPIO_Pin_15)
 #define LED_OFF()       GPIO_SetBits(GPIOA,GPIO_Pin_15)
@@ -40,18 +37,20 @@
 #define DR3_ON()       	GPIO_SetBits(GPIOC,GPIO_Pin_12)
 #define DR3_Toggle()    GPIOC->ODR ^= GPIO_Pin_12
 
-#define ADC_ON()        GPIO_ResetBits(GPIOA,GPIO_Pin_12)
-#define ADC_OFF()       GPIO_SetBits(GPIOA,GPIO_Pin_12)
-
+/////////////////////////////////
 #define RELAY_OFF()     GPIO_ResetBits(GPIOB,GPIO_Pin_9)
 #define RELAY_ON()      GPIO_SetBits(GPIOB,GPIO_Pin_9)
 
-#define GPS_ON()        GPIO_SetBits(GPIOA,GPIO_Pin_0)   //salida que controla pin para encender o apagar modulo GPS
-#define GPS_OFF()       GPIO_ResetBits(GPIOA,GPIO_Pin_0)
-#define PPS_IN()   		(GPIOA->IDR & 0x0002)
+//#define Out1_OFF()		GPIO_ResetBits(GPIOB,GPIO_Pin_11)
+//#define Out1_ON()		GPIO_SetBits(GPIOB,GPIO_Pin_11)
+//#define Out1_Toggle()	GPIOB->ODR ^= GPIO_Pin_11
+//#define Out2_OFF()		GPIO_ResetBits(GPIOB,GPIO_Pin_15)
+//#define Out2_ON()		GPIO_SetBits(GPIOB,GPIO_Pin_15
+//#define Out2_Toggle()	GPIOB->ODR ^= GPIO_Pin_15
+//#define Out3_OFF()		GPIO_ResetBits(GPIOB,GPIO_Pin_12)
+//#define Out3_ON()		GPIO_SetBits(GPIOB,GPIO_Pin_12)
+//#define Out3_Toggle()	GPIOB->ODR ^= GPIO_Pin_12
 
-#define PA_ON()       	GPIO_SetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia ON
-#define PA_OFF()     	GPIO_ResetBits(GPIOA,GPIO_Pin_11) //Amplificador de potencia OFF
 
 typedef struct
 {
@@ -81,7 +80,7 @@ typedef struct  //Variables para guardar los datos de GPS obtenidos
     char numSv[4];
 	char Altitude[4];
 	char Speed[8];
-}GpsType;
+}GpsType; //revisar a donde moverla
 
 typedef struct
 {
@@ -103,7 +102,7 @@ typedef struct
 	RtcType	rtc_bcd;
 	RtcType	rtc_dec;
 	uint8_t TimeZone[4];
-}SYSTEM_TEMP_TypeDef;
+}SYSTEM_TEMP_TypeDef; //Revisar si debe estar qui
 
 typedef struct
 {
@@ -115,34 +114,15 @@ typedef struct
     uint16_t current_study_counter;     /*  */
     uint16_t previous_study_counter;    /*  */
     uint8_t data;
-}FLASHER_TypeDef;
+}FLASHER_TypeDef; //revisar si debe estar aqui
+
 
 extern SYSTEM_TEMP_TypeDef system_temp;
 extern uint8_t spi2_busy_flag;
 extern uint8_t rf_int_flag;
 
-extern IO_TypeDef xin;
-extern IO_TypeDef ain;
-extern uint8_t lamp_state[2];
-extern uint8_t lamp_status;
-extern uint16_t lamp_chge_flag;
-extern uint8_t gre_flash_flag;
-extern uint8_t gre_off;
-
-uint16_t get_dir(void);
 
 void bsp_GpioInit(void);
-
-void down_time_display(void);
-void ain_filterAC_DC(void);
-void filterAC_DC(void);
-void study_mode_filterAC_DC(void);
-void study_mode_time_calculation(void);//10ms yici
-void workmodejudge(void);
-void flash_panel_control(void);
-
-//void Auto_adjust_time(void);
-
 void pps_irq_init(void);
 
 #endif 

@@ -3,9 +3,11 @@
 #include "usb_hw.h"
 #include "usb_pwr.h"
 
+#include "io_functions.h"
 #include "spi_w5500_eth.h"
 #include "uart_consola.h"
 #include "uart_fifo_gps.h"
+
 
 __IO uint8_t reg1ms_flag; /* Marca generada cada milisegundo por SysTick. */
 __IO uint8_t ten_mm_counter; /* Cuenta los milisegundos que forman una ventana de 10 ms. */

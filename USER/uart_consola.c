@@ -1,7 +1,8 @@
 #include "uart_consola.h"
 #include <stdio.h>
 #include <string.h>
-#include "ff.h"               
+#include "ff.h"
+#include "io_functions.h"  /* Add this include */
 #include "spi_w5500_eth.h"    /* Ensures access to MP3, fileTrans, and other external definitions */
 #include "spi_flash_fatfs.h"  /* Resolves FATFS file operation warnings */
 #include "bsp_vs1053b.h"           /* Replace with the actual header that contains PlaySound() */
@@ -102,25 +103,25 @@ void SYS_TEST(void)
                 PlaySound(sysfile0);
                 break;
             case 'G':
-                printf("??a - PlaySound??\r\n");
+                printf("??G - PlaySound??\r\n");
                 PlaySound("001.WAV");
                 break;
             case 'H':
-                printf("??b - PlaySound??\r\n");
+                printf("??H - PlaySound??\r\n");
                 PlaySound("002.WAV");
                 break;
             case 'I':
-                printf("??c - PlaySound??\r\n");
+                printf("??I - PlaySound??\r\n");
                 memset(MP3.filename,0x00,13);
                 memcpy(MP3.filename,"002.MP3",7);
                 PlayStart();
                 break;
             case 'J':
-                printf("??d - MP3.dir = %d\r\n",MP3.dir);
+                printf("??J - MP3.dir = %d\r\n",MP3.dir);
                 break;
             case '+':
                 printf("Volume = %d\r\n", MP3.ucVolume);
-                if(MP3.ucVolume <= 244)
+                if(MP3.ucVolume <= 255) //MP3.ucVolume <= 244
                     MP3.ucVolume += 10;
                 vs1053_SetVolume(MP3.ucVolume);
                 printf("??+ Volume = %d\r\n", MP3.ucVolume);
@@ -129,10 +130,10 @@ void SYS_TEST(void)
                 printf("Volume = %d\r\n", MP3.ucVolume);
                 MP3.ucVolume = 255;
                 vs1053_SetVolume(MP3.ucVolume);
-                printf("??G - MAX Volume = %d\r\n", MP3.ucVolume);
+                printf("??K - MAX Volume = %d\r\n", MP3.ucVolume);
                 break;
             case 'L'://Muestra el volumen actual
-                printf("??H - Volume Clac = %d\r\n", clac_Volume());
+                printf("??L - Volume Clac = %d\r\n", clac_Volume());
                 break;
             case '-':
                 printf("Volume = %d\r\n", MP3.ucVolume);
@@ -140,21 +141,21 @@ void SYS_TEST(void)
 					MP3.ucVolume -= 10;
 					//MP3.ucVolume ++;
                 vs1053_SetVolume(MP3.ucVolume);
-                printf("??- - Volume = %d\r\n", MP3.ucVolume);
+                printf("??- Volume = %d\r\n", MP3.ucVolume);
                 break;
 			case 'M'://Test del modulo vs1053  //////////////// Deshabilitado start
-				printf("??I - TestSignal ????????\r\n");
+				printf("??M - TestSignal ????????\r\n");
 				vs1053_TestSine();
 				vs1053_TestSine();
 				vs1053_TestSine();
 				vs1053_TestSine();
 				break;
 			case 'N'://Test del modulo vs1053 FIN
-				printf("??J - TestSineExit ???????????\r\n");
+				printf("??N - TestSineExit ???????????\r\n");
 				vs1053_TestSineExit();
 				break;
             case 'a'://Lee los horarios H:m y Volumen
-					printf("\r\n=================== TIME_VOLUME MATRIX ===================\r\n");/////Muestra como se han cargado los valores de Time_Volume desde Config.ini
+					printf("\r\n??a - ??????????? TIME_VOLUME MATRIX ===================\r\n");/////Muestra como se han cargado los valores de Time_Volume desde Config.ini
                     for (day = 0; day < 2; day++)
                     {
                         printf("\r\n--- %s ---\r\n", day_labels[day]);
@@ -175,10 +176,11 @@ void SYS_TEST(void)
                     printf("\r\n==========================================================\r\n\r\n");
 				break;
             case 'b': //Muestra los bytes TimeZone
-                //printf("system_temp.TimeZone = %d \r\n", system_temp.TimeZone); //Imprime en Decimal los 4 bytes de TimeZone
-                printf_fifo_hex(system_temp.TimeZone, 4); //Imprime en Hexa los 4 bytes de TimeZone
+                printf("??b - TimeZone ???????????\r\n");
+                printf_fifo_hex(system_temp.TimeZone, 4); //Imprime en Hexa los 4 bytes de TimeZone //printf("system_temp.TimeZone = %d \r\n", system_temp.TimeZone); //Imprime en Decimal los 4 bytes de TimeZone
                 break;
 			case 'c':	//Prueba deshabilitada para fijar manualmente la fecha y hora del RTC.
+                printf("??c - Fijar fecha y hora del RTC\r\n");
 				SYS_RTC->second  = 0x00;
 				SYS_RTC->minute  = 0x21;
 				SYS_RTC->hour    = 0x15;
@@ -189,23 +191,22 @@ void SYS_TEST(void)
 				RtcWrite(SYS_RTC);
 				break;////////////////// Deshabilitado END
             case 'd': //Leer hora RTC
-                printf("??Q - ???????\r\n");
+                printf("??d - Lee RTC ???????\r\n");
                 RtcRead(SYS_RTC);
                 printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
                 printf("%08x\r\n",SCB->CPUID);
                 //get_cpuid();
                 break;////////
-			case 'e': //Lee hora del GPS
-                printf("??R - ???????\r\n");
-                printf("system_temp.sync_with_gps_flag: %d\r\n", system_temp.sync_with_gps_flag);//Bandera indica se puede actualizar desde GPS
+			case 'e': //Lee GPS
+                printf("??e - Lee GPS ???????\r\n");
+                printf("1.system_temp.gps_flag: %d\r\n",system_temp.gps_flag);//Bandera muestra que el gps esta funcionando OK
+                printf("2.system_temp.sync_with_gps_flag: %d\r\n", system_temp.sync_with_gps_flag);//Bandera indica se puede actualizar desde GPS
                 printf("GPS UTC: %d-%d-%d %d:%d:%d\r\n", system_temp.Gps.utc.year, system_temp.Gps.utc.month, system_temp.Gps.utc.day, system_temp.Gps.utc.hour, system_temp.Gps.utc.minute, system_temp.Gps.utc.second);
-                //printf("GPS LUT: %d, %d, %d \r\n", &system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone); //system_temp.seconds, system_temp.gps_seconds
-                printf("GPS LOCAL: system_temp.Gps.local.second = ");
+                printf("GPS LOCAL: system_temp.Gps.local.second = ");   //printf("GPS LUT: %d, %d, %d \r\n", &system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone); //system_temp.seconds, system_temp.gps_seconds
                 printf_fifo_hex(&system_temp.Gps.local.second, 7);
-                //printf("GPS LUT: %s, %s, %s \r\n", &system_temp.Gps.local, &system_temp.Gps.utc, system_temp.TimeZone);
                 break;
             case 'f': //Sincroniza hora RTC con el GPS
-                printf("??S - ???????\r\n");
+                printf("??f - Sincroniza RTC con GPS ???????\r\n");
 				Auto_adjust_time(); //Sincroniza hora con el GPS
                 RtcRead(SYS_RTC);
                 printf("20%02x-%02x-%02x %02x %02x:%02x:%02x\r\n",SYS_RTC->year,SYS_RTC->month,SYS_RTC->day,SYS_RTC->week,SYS_RTC->hour,SYS_RTC->minute,SYS_RTC->second);
@@ -240,15 +241,15 @@ void SYS_TEST(void)
 			   printf("> AIN  %x \r\n", ain_test);
                break;
 			case 'X':
-			   printf("??i - DR1 ?Toggle \r\n");
+			   printf("??X - DR1 ?Toggle \r\n");
                DR1_Toggle();
                break;
 			case 'Y':
-			   printf("??j - DR2 ?Toggle \r\n");
+			   printf("??Y - DR2 ?Toggle \r\n");
                DR2_Toggle();
                break;
 			case 'Z':
-			   printf("??k - DR3 ?Toggle \r\n");
+			   printf("??Z - DR3 ?Toggle \r\n");
                DR3_Toggle();
                break;			////////
             default:
