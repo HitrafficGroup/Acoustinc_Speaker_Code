@@ -24,7 +24,6 @@ void nRF24L01ioConfig(void)//LCD initial IO.
 }
 
 
-
 u8 SPI_Read(u8 reg)
 {
 	u8 reg_val;	
@@ -34,9 +33,6 @@ u8 SPI_Read(u8 reg)
 	nRF24L01_CSN_H;               
 	return(reg_val);
 }
-   
-
-
 
 
 u8 SPI_RW_Reg(u8 reg, u8 value)
@@ -48,9 +44,6 @@ u8 SPI_RW_Reg(u8 reg, u8 value)
 	nRF24L01_CSN_H;                // CSN high again	
 	return(status);            // return nRF24L01 status uchar
 }
-
-
-
 
 
 u8 SPI_Read_Buf(u8 reg, u8 *pBuf,u8 nchars)
@@ -65,8 +58,6 @@ u8 SPI_Read_Buf(u8 reg, u8 *pBuf,u8 nchars)
 }
 
 
-
-
 u8 SPI_Write_Buf(u8 reg, u8 *pBuf, u8 nchars)
 {
 	u8 status,uchar_ctr;	
@@ -77,7 +68,6 @@ u8 SPI_Write_Buf(u8 reg, u8 *pBuf, u8 nchars)
 	nRF24L01_CSN_H;           
 	return(status);    // 
 }
-
 
 
 u8 nRF24L01_RxPacket(u8* rx_buf)
@@ -93,8 +83,6 @@ u8 nRF24L01_RxPacket(u8* rx_buf)
 	}
 	return 1;
 }
-
-
 
 
 u8 nRF24L01_TxPacket(u8 * tx_buf)
@@ -121,12 +109,14 @@ u8 nRF24L01_TxPacket(u8 * tx_buf)
 	return 0xff;
 }
 
+
 void RX_Mode(void)
 {
 	nRF24L01_CE_L;	
 	SPI_RW_Reg(RFWRITE_REG + CONFIG, 0x0f);   	     // Set PWR_UP bit, enable CRC(2 bytes) & Prim:RX. RX_DR enabled..
   	nRF24L01_CE_H;
 }
+
 
 void TX_Mode(void)
 {
@@ -135,12 +125,12 @@ void TX_Mode(void)
 	nRF24L01_CE_H;
 }
 
+
 void rf24l01_irq_init(void)  
 {
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-
   	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource12);
 
   	EXTI_InitStructure.EXTI_Line = EXTI_Line12;
@@ -150,7 +140,6 @@ void rf24l01_irq_init(void)
 
   	EXTI_Init(&EXTI_InitStructure);
 	
-
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//
@@ -162,6 +151,7 @@ void rf24l01_irq_init(void)
   	NVIC_Init(&NVIC_InitStructure);
 }
 
+
 void rf24l01_rx_process(void)
 {
 	uint8_t rf_buf[32];
@@ -170,6 +160,7 @@ void rf24l01_rx_process(void)
 		printf_fifo_hex(rf_buf, 32);
 	}
 }
+
 
 void EXTI15_10_IRQHandler(void) //genera interrupcion para cuando recibe un dato por radio frecuencia
 {

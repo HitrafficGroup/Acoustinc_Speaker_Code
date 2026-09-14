@@ -1,5 +1,4 @@
 
-
 #include "stm32f10x.h" 
 /*
 		PB13/SPI1_SCK
@@ -20,17 +19,12 @@
 #define VS1053_DS_0()	GPIOC->BRR = GPIO_Pin_7
 #define VS1053_DS_1()	GPIOC->BSRR = GPIO_Pin_7
 
-
-
-
-
 /* VS1053_DREQ = PA8 */
 #define VS1053_IS_BUSY()	((GPIOA->IDR & GPIO_Pin_8) == 0)
 
 #define DUMMY_BYTE    0xFF
 
 //uint8_t vs1053ram[5]={0,0,0,0,250};
-
 
 //const uint16_t plugin[605] = { /* Compressed plugin */
 //  0x0007, 0x0001, 0x8300, 0x0006, 0x01f2, 0xb080, 0x0024, 0x0007, /*    0 */
@@ -111,32 +105,26 @@
 //  0x2a00, 0x190e, 0x000a, 0x0001, 0x0300,
 //};
 
-
 void vs1053_IO_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
-
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA,&GPIO_InitStructure);
 
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOC,&GPIO_InitStructure);	
 
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOC,&GPIO_InitStructure);	
-
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -145,7 +133,6 @@ void vs1053_IO_Init(void)
     VS1053_RST_1();
 	VS1053_CS_1();
 	VS1053_DS_1();
-
 }
 
 
@@ -162,7 +149,6 @@ static void vs1053_SetCS(uint8_t _level)
 		spi2_busy_flag = 0;
 	}
 }
-
 
 
 static void vs1053_SetDS(uint8_t _level)
@@ -224,6 +210,7 @@ void vs1053_WriteData(uint8_t _ucData)
 	vs1053_SetDS(1);
 }
 
+
 void vs1053_WriteDatas(uint8_t *databuf, uint8_t n)
 {
 	vs1053_SetDS(0);
@@ -239,12 +226,10 @@ uint16_t vs1053_ReadReg(uint8_t _ucAddr)
 {
 	uint16_t usTemp;
 
-
 	if (vs1053_WaitTimeOut())
 	{
 		return 0;
 	}
-
 	vs1053_SetCS(0);
 	
 	Spi2_SendByte(VS_READ_COMMAND);
@@ -265,7 +250,6 @@ uint8_t vs1053_ReadChipID(void)
 	usStatus = vs1053_ReadReg(SCI_STATUS);
 	usStatus = ((usStatus >> 4) & 0x000F);
     
-
     switch (usStatus)
     {
         case VS1001:    pModel = "VS1001";      break;
@@ -281,14 +265,12 @@ uint8_t vs1053_ReadChipID(void)
     return usStatus;
 }
 
+
 void vs1053_HardInit(void)
 {
-
     VS_HD_Reset();
     //vs1053_SoftReset();
-    vs1053_ReadChipID();    
-
-
+    vs1053_ReadChipID();
 }
 
 uint8_t VS_HD_Reset(void)
@@ -310,7 +292,6 @@ uint8_t VS_HD_Reset(void)
 }
 
 
-
 uint8_t vs1053_WaitTimeOut(void)
 {
 	uint32_t i;
@@ -327,18 +308,15 @@ uint8_t vs1053_WaitTimeOut(void)
 	{
 		return 1;
 	}
-
 	return 0;
 }
 
 //void LoadUserPatch(void)
 //{
 //	int i = 0;
-
 //	while (i < sizeof(plugin) / sizeof(plugin[0]))
 //	{
 //		unsigned short addr, n, val;
-
 //		addr = plugin[i++];
 //		n = plugin[i++];
 //		if (n & 0x8000U)
@@ -361,7 +339,6 @@ uint8_t vs1053_WaitTimeOut(void)
 //			}
 //		}
 //	}
-
 //	if (vs1053_WaitTimeOut())
 //	{
 //		return;
@@ -374,7 +351,6 @@ uint8_t vs1053_TestRam(void)
 	uint16_t usRegValue;
 
  	vs1053_WriteCmd(SCI_MODE, 0x0820);	
-
 
 	if (vs1053_WaitTimeOut())
 	{
@@ -393,7 +369,6 @@ uint8_t vs1053_TestRam(void)
 	Spi2_SendByte(0x00);
 	
 	vs1053_SetDS(1);
-
 
 	if (vs1053_WaitTimeOut())
 	{
@@ -415,18 +390,14 @@ uint8_t vs1053_TestRam(void)
 
 void vs1053_TestSine(void)
 {
-	
-
 	vs1053_WriteCmd(0x0b,0x2020);	  	
  	vs1053_WriteCmd(SCI_MODE, 0x0820);	
-
 
 	if (vs1053_WaitTimeOut())
 	{
 		return;
 	}
 
- 	
 	vs1053_SetDS(0);
 	Spi2_SendByte(0x53);
 	Spi2_SendByte(0xef);
@@ -437,7 +408,6 @@ void vs1053_TestSine(void)
 	Spi2_SendByte(0x00);
 	Spi2_SendByte(0x00);
 	vs1053_SetDS(1);
-
 
 //    vs1053_SetDS(0);
 //	Spi2_SendByte(0x45);
@@ -453,7 +423,6 @@ void vs1053_TestSine(void)
 
 void vs1053_TestSineExit(void)
 {
-	
     vs1053_SetDS(0);
 	Spi2_SendByte(0x45);
 	Spi2_SendByte(0x78);
@@ -496,9 +465,7 @@ void vs1053_SoftReset(void)
 	retry = 0;
 	while(vs1053_ReadReg(SCI_MODE) != 0x0804)
 	{
-		
 		vs1053_WriteCmd(SCI_MODE, 0x0804);
-
 
         while(VS1053_IS_BUSY()==RESET);
         if (retry++>5)
@@ -516,7 +483,6 @@ void vs1053_SoftReset(void)
 
 	ResetDecodeTime();
 
-
     VS1053_DS_0();
 	vs1053_WriteByte(0xFF);
 	vs1053_WriteByte(0xFF);
@@ -526,10 +492,6 @@ void vs1053_SoftReset(void)
 #else
 	/* Set clock register, doubler etc. */
 	vs1053_WriteCmd(SCI_CLOCKF, 0xC000);
-
-
-
-
 
     while(VS1053_IS_BUSY()==RESET);
     //LoadUserPatch();
@@ -633,6 +595,7 @@ void VsRamTest(void)
 //FOR MIDI HEAD0 :other info HEAD1:0X4D54
 //FOR WMA HEAD0 :data speed HEAD1:0X574D
 //FOR MP3 HEAD0 :data speed HEAD1:ID
+
 
 const uint16_t bitrate[2][16]=
 {

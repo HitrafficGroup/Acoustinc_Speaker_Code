@@ -3,18 +3,18 @@
         {
             "name": "Project",
             "includePath": [
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\STM32_USB-FS-Device_Driver\\inc",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\CMSIS",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\FatFS",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\USER\\usb_mass",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\USER\\BSP",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\USER",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\STM32_USB-FS-Device_Driver\\inc",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\CMSIS",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\FatFS",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\USER\\usb_mass",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\USER\\BSP",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\USER",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\CMSIS\\startup\\arm",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
-                "c:\\Users\\angel\\OneDrive\\Desktop\\test\\Acoustinc_Speaker_Code\\Libraries\\STM32_USB-FS-Device_Driver\\src"
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\CMSIS\\startup\\arm",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
+                "c:\\Users\\angel\\OneDrive\\Desktop\\Acoustic Speaker\\FW\\Acoustic_Speaker_Code\\Libraries\\STM32_USB-FS-Device_Driver\\src"
             ],
             "defines": [
                 "STM32F10X_HD",

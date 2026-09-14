@@ -36,9 +36,7 @@ void bsp_InitSpiFlash(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-
 
 	SF_CS_HIGH();
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -62,7 +60,6 @@ void sf_EraseSector(uint32_t _uiSectorAddr)
 {
 	sf_WriteEnable();								
 
-
 	SF_CS_LOW();
 	Spi1_SendByte(CMD_SE);
 	Spi1_SendByte((_uiSectorAddr & 0xFF0000) >> 16);
@@ -77,7 +74,6 @@ void sf_EraseSector(uint32_t _uiSectorAddr)
 void sf_EraseChip(void)
 {
 	sf_WriteEnable();								
-
 
 	SF_CS_LOW();
 	Spi1_SendByte(CMD_BE);
@@ -112,8 +108,6 @@ void sf_PageWrite(uint8_t * _pBuf, uint32_t _uiWriteAddr, uint16_t _usSize)
 
 		_uiWriteAddr += 256;
 	}
-
-
 	SF_CS_LOW();
 	Spi1_SendByte(CMD_DISWR);
 	SF_CS_HIGH();
@@ -124,12 +118,10 @@ void sf_PageWrite(uint8_t * _pBuf, uint32_t _uiWriteAddr, uint16_t _usSize)
 
 void sf_ReadBuffer(uint8_t * _pBuf, uint32_t _uiReadAddr, uint32_t _uiSize)
 {
-
 	if ((_uiSize == 0) ||(_uiReadAddr + _uiSize) > g_tSF.TotalSize)
 	{
 		return;
 	}
-
 
 	SF_CS_LOW();
 	Spi1_SendByte(CMD_READ);
@@ -148,7 +140,6 @@ static uint8_t sf_CmpData(uint32_t _uiSrcAddr, uint8_t *_ucpTar, uint32_t _uiSiz
 {
 	uint8_t ucValue;
 
-
 	if ((_uiSrcAddr + _uiSize) > g_tSF.TotalSize)
 	{
 		return 1;
@@ -166,7 +157,6 @@ static uint8_t sf_CmpData(uint32_t _uiSrcAddr, uint8_t *_ucpTar, uint32_t _uiSiz
 	Spi1_SendByte(_uiSrcAddr & 0xFF);
 	while (_uiSize--)
 	{
-
 		ucValue = Spi1_SendByte(DUMMY_BYTE);
 		if (*_ucpTar++ != ucValue)
 		{
@@ -184,13 +174,10 @@ static uint8_t sf_NeedErase(uint8_t * _ucpOldBuf, uint8_t *_ucpNewBuf, uint16_t 
 	uint16_t i;
 	uint8_t ucOld;
 
-
-
 	for (i = 0; i < _usLen; i++)
 	{
 		ucOld = *_ucpOldBuf++;
 		ucOld = ~ucOld;
-
 
 		if ((ucOld & (*_ucpNewBuf++)) != 0)
 		{
@@ -209,32 +196,26 @@ static uint8_t sf_AutoWritePage(uint8_t *_ucpSrc, uint32_t _uiWrAddr, uint16_t _
 	uint8_t ucNeedErase;
 	uint8_t cRet;
 
-
 	if (_usWrLen == 0)
 	{
 		return 1;
 	}
-
 
 	if (_uiWrAddr >= g_tSF.TotalSize)
 	{
 		return 0;
 	}
 
-
 	if (_usWrLen > g_tSF.PageSize)
 	{
 		return 0;
 	}
 
-	
 	sf_ReadBuffer(s_spiBuf, _uiWrAddr, _usWrLen);
 	if (memcmp(s_spiBuf, _ucpSrc, _usWrLen) == 0)
 	{
 		return 1;
 	}
-
-
 
 	ucNeedErase = 0;
 	if (sf_NeedErase(s_spiBuf, _ucpSrc, _usWrLen))
@@ -253,25 +234,20 @@ static uint8_t sf_AutoWritePage(uint8_t *_ucpSrc, uint32_t _uiWrAddr, uint16_t _
 	}
 	else
 	{
-		
 		sf_ReadBuffer(s_spiBuf, uiFirstAddr, g_tSF.PageSize);
-
 
 		i = _uiWrAddr & (g_tSF.PageSize - 1);
 		memcpy(&s_spiBuf[i], _ucpSrc, _usWrLen);
 	}
 
-
 	cRet = 0;
 	for (i = 0; i < 3; i++)
 	{
-
 		if (ucNeedErase == 1)
 		{
 			sf_EraseSector(uiFirstAddr);		
 		}
 
-		
 		sf_PageWrite(s_spiBuf, uiFirstAddr, g_tSF.PageSize);
 
 		if (sf_CmpData(_uiWrAddr, _ucpSrc, _usWrLen) == 0)
@@ -286,12 +262,9 @@ static uint8_t sf_AutoWritePage(uint8_t *_ucpSrc, uint32_t _uiWrAddr, uint16_t _
 				cRet = 1;
 				break;
 			}
-
-
 			for (j = 0; j < 10000; j++);
 		}
 	}
-
 	return cRet;
 }
 
@@ -383,7 +356,6 @@ uint8_t sf_WriteBuffer(uint8_t* _pBuf, uint32_t _uiWriteAddr, uint16_t _usWriteS
 				_uiWriteAddr +=  g_tSF.PageSize;
 				_pBuf += g_tSF.PageSize;
 			}
-
 			if(NumOfSingle != 0)
 			{
 				if (sf_AutoWritePage(_pBuf, _uiWriteAddr, NumOfSingle) == 0)
@@ -417,7 +389,6 @@ uint32_t sf_ReadID(void)
 
 void sf_ReadInfo(void)
 {
-	
     g_tSF.ChipID = sf_ReadID();	
     if(Debug) printf("ChipID = %x \n",g_tSF.ChipID);
 
@@ -485,11 +456,9 @@ static void sf_WriteStatus(uint8_t _ucValue)
 {
 	if (g_tSF.ChipID == SST25VF016B_ID)
 	{
-
 		SF_CS_LOW();
 		Spi1_SendByte(CMD_EWRSR);
 		SF_CS_HIGH();
-
 
 		SF_CS_LOW();
 		Spi1_SendByte(CMD_WRSR);

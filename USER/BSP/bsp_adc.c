@@ -39,7 +39,6 @@ void ADC_Configuration(void)
 	/* Configura o consulta la conversion del ADC. */
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_55Cycles5);
 
-
 	ADC_DMACmd(ADC1, ENABLE);
 
 	/* Configura o consulta la conversion del ADC. */
@@ -66,8 +65,6 @@ void ADC_Inits(void)
 }
 
 
-
-
 void Adc1Pro(void)
 {
 	uint16_t temp = ADC_GetConversionValue(ADC1);
@@ -76,22 +73,9 @@ void Adc1Pro(void)
 }
 
 
-
-
-
-
-
-
-
-
-
-
 uint16_t GetADC(uint8_t n)
 {
 	uint16_t ret;
-
-
-
 
 	__set_PRIMASK(1);
 
@@ -103,10 +87,8 @@ uint16_t GetADC(uint8_t n)
 }
 
 
-
 #define ADC1_DR_Address    ((u32)0x40012400+0x4c)
 short int ADC_ConvertedValue[4];
-
 
 static void ADC1_GPIO_Config(void)
 {
@@ -123,6 +105,7 @@ static void ADC1_GPIO_Config(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
+
 
 /* Configura o consulta la conversion del ADC. */
 static void ADC1_Mode_Config(void)
@@ -185,6 +168,7 @@ static void ADC1_Mode_Config(void)
 	/* Configura o consulta la conversion del ADC. */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
+
 
 /* Configura o consulta la conversion del ADC. */
 void ADC1_Init(void)

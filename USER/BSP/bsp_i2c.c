@@ -8,12 +8,12 @@ void RtcFreqConfig(void);
 uint8_t rtc[7];
 RtcType* SYS_RTC;
 
+
 void bsp_Init_RTCIRQ(void)  
 {
     EXTI_InitTypeDef EXTI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
     
-
   	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB,GPIO_PinSource5);
 
   	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
@@ -23,7 +23,6 @@ void bsp_Init_RTCIRQ(void)
 
   	EXTI_Init(&EXTI_InitStructure);
 	
-
   	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
 
   	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02;	
@@ -40,7 +39,6 @@ void bsp_InitI2C(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;   
     I2C_InitTypeDef I2C_InitStructure;   
-
     
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1,ENABLE);
@@ -94,6 +92,7 @@ void RTC_WriteReg(uint8_t slave_addr, uint8_t WriteRegAddr, uint8_t WriteValue)
     while((I2C1->CR1 & TIM_CR1_CKD_1) == TIM_CR1_CKD_1);
 }
 
+
 uint8_t RTC_BufferRead(uint8_t slave_addr, uint8_t DataAddress, uint8_t* pBuffer, uint8_t NumByteToRead) 
 {
     while(I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY));  
@@ -133,6 +132,7 @@ uint8_t RTC_BufferRead(uint8_t slave_addr, uint8_t DataAddress, uint8_t* pBuffer
     return 1;
 }
 
+
 uint8_t RTC_BufferWrite(uint8_t slave_addr, uint8_t DataAddress, uint8_t* pBuffer, uint8_t NumByteToWrite)
 {
     I2C_GenerateSTART(I2C1, ENABLE);
@@ -157,21 +157,25 @@ uint8_t RTC_BufferWrite(uint8_t slave_addr, uint8_t DataAddress, uint8_t* pBuffe
     return 0;
 }
 
+
 void RTC_WriteEnable(void)
 {
     RTC_WriteReg(ISL1208_ADDR, SR_Reg, 0x10);
 }
+
 
 void RTC_WriteDisable(void)
 {
     RTC_WriteReg(ISL1208_ADDR, SR_Reg, 0x00);
 }
 
+
 void RtcRead(RtcType* Time)
 {
 	RTC_BufferRead(ISL1208_ADDR, 0x00, (uint8_t*)Time, 0x07);
     Time->hour &=0x7f;
 }
+
 
 void RtcWrite(RtcType* Time)
 {
@@ -180,6 +184,7 @@ void RtcWrite(RtcType* Time)
     RTC_BufferWrite(ISL1208_ADDR, 0x00, (uint8_t*)Time, 0x07);
 	RTC_WriteDisable();
 }
+
 
 void RtcIrqConfig(void)
 {
@@ -193,10 +198,12 @@ void RtcIrqConfig(void)
     RTC_WriteReg(ISL1208_ADDR, INT_Reg, 0xC0);      //
 }
 
+
 void RtcFreqConfig(void)
 {
     RTC_WriteReg(ISL1208_ADDR, INT_Reg, 0x0A);
 }
+
 
 void EXTI9_5_IRQHandler(void)
 {
@@ -209,5 +216,3 @@ void EXTI9_5_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line5);
     }
 }
-
-

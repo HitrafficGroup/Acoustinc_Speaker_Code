@@ -458,10 +458,12 @@ void USART1_IRQHandler(void)
     Uart1IRQ();
 }
 
+
 void USART2_IRQHandler(void)
 {
     GpsIRQ();
 }
+
 
 void printf_fifo_hex(uint8_t* tx, uint8_t len)
 {

@@ -1,5 +1,4 @@
 
-
 #include "stm32f10x.h"
 
 
@@ -16,12 +15,8 @@
 #define W5500_INT		GPIO_Pin_0
 #define W5500_INT_PORT	GPIOB
 
-
-
-
 NET             Net;
 SOCKET_TYPE     Socket[8];
-
 
 unsigned char Rx_Buffer[2048];
 unsigned char Tx_Buffer[2048];
@@ -36,28 +31,23 @@ void W5500_GPIO_Config(void)
     
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 	
-
 	GPIO_InitStructure.GPIO_Pin  = W5500_RST;
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(W5500_RST_PORT, &GPIO_InitStructure);
 	W5500_RST_Clr();
 	
-
 	GPIO_InitStructure.GPIO_Pin  = W5500_INT;
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(W5500_INT_PORT, &GPIO_InitStructure);
     
-
 	GPIO_InitStructure.GPIO_Pin = W5500_SCS;
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
 	GPIO_Init(W5500_SCS_PORT, &GPIO_InitStructure);
     W5500_SCS_Set();
 }
-
-
 
 
 void W5500_Initialization(void)
@@ -356,8 +346,6 @@ void W5500_Hardware_Reset(void)
 	Delay(50);
 	W5500_RST_Set();
 	Delay(200);
-    
-
 }
 
 
@@ -368,35 +356,21 @@ void W5500_Init(void)
 	Write_W5500_1Byte(MR, RST);
 	Delay(10);
 
-
-
 	Write_W5500_nByte(GAR, Net.Gateway_IP, 4);
-			
-
 
 	Write_W5500_nByte(SUBR,Net.Sub_Mask,4);		
-	
-
-
 
 	Write_W5500_nByte(SHAR,Net.Phy_Addr,6);		
 
-
-
 	Write_W5500_nByte(SIPR,Net.IP_Addr,4);		
 	
-
 	for(i=0;i<8;i++)
 	{
 		Write_W5500_SOCK_1Byte(i, Sn_RXBUF_SIZE, 0x02);//Socket Rx memory size=2k
 		Write_W5500_SOCK_1Byte(i, Sn_TXBUF_SIZE, 0x02);//Socket Tx mempry size=2k
 	}
 
-
-
 	Write_W5500_2Byte(RTR_R, 0x07d0);
-
-
 
 	Write_W5500_1Byte(RCR_R,8);
 }
@@ -409,7 +383,6 @@ unsigned char Detect_Gateway(SOCKET s)
 	ip_adde[1] = Net.IP_Addr[1]+1;
 	ip_adde[2] = Net.IP_Addr[2]+1;
 	ip_adde[3] = Net.IP_Addr[3]+1;
-
 
 	Write_W5500_SOCK_4Byte(s,Sn_DIPR,ip_adde);
 	Write_W5500_SOCK_1Byte(s,Sn_MR,MR_TCP);
@@ -458,7 +431,6 @@ void Socket_Init(SOCKET s)
 
         Write_W5500_SOCK_4Byte(s, Sn_DIPR, Socket[s].DestIP);	
     }
-
 //    {
 //        if(Socket_Listen(s) == NET_TRUE)
 //            Socket[s].State = S_INIT;
@@ -502,10 +474,6 @@ unsigned char Socket_Listen(SOCKET s)
 	}
 
 	return NET_TRUE;
-
-
-
-
 }
 
 
@@ -521,10 +489,6 @@ unsigned char Socket_UDP(SOCKET s)
 	}
 	else
 		return NET_TRUE;
-
-
-
-
 }
 
 
@@ -542,7 +506,6 @@ IntDispose:
 			Write_W5500_SOCK_1Byte(n,Sn_IR, SnIR_REG);
 			if(SnIR_REG & IR_CON)
 			{
-
 				Socket[n].State |= S_CONN;
 			}
 			if(SnIR_REG & IR_DISCON)
@@ -554,17 +517,14 @@ IntDispose:
 			}
 			if(SnIR_REG & IR_SEND_OK)
 			{
-
 				Socket[n].DataState |= S_TRANSMITOK;
 			}
 			if(SnIR_REG & IR_RECV)
 			{
-
 				Socket[n].DataState |= S_RECEIVE;
 			}
 			if(SnIR_REG & IR_TIMEOUT)
 			{
-
 				Write_W5500_SOCK_1Byte(n,Sn_CR,CLOSE);
                 Socket_Init(n);
                 Socket[n].State = 0;
@@ -574,4 +534,3 @@ IntDispose:
 	if(Read_W5500_1Byte(SIR) != 0) 
 		goto IntDispose;
 }
-
