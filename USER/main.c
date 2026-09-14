@@ -21,13 +21,12 @@ void Delay(__IO uint32_t nTime);
 //void SocketProcess(void);
 
 int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador cooperativo. */
-    
-//    if(FLASH_GetReadOutProtectionStatus() != SET)
-//    {
-//        FLASH_Unlock();
-//        FLASH_ReadOutProtection(ENABLE);
-//        FLASH_Lock();
-//    }
+    // if(FLASH_GetReadOutProtectionStatus() != SET)
+    // {
+    //     FLASH_Unlock();
+    //     FLASH_ReadOutProtection(ENABLE);
+    //     FLASH_Lock();
+    // }
     
     SysTick_Init(); /* Inicializacion de reloj de sistema y perifericos de la aplicacion. */
     bsp_GpioInit();
@@ -42,8 +41,8 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
     W5500_GPIO_Config(); //Puerto de comunicacion 
     
     bsp_InitSpi2Bus();
-    mp3_par_init(); 
-    vs1053_HardInit(); 
+    mp3_par_init();
+    vs1053_HardInit();
     
     Config();
     CheckVolume();
@@ -92,32 +91,26 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 system_temp.timeUpdate = 1;
                 MP3.fileChangeFlag = 1;
             }
-            if((reg1ms_count%10)==0) 
-			{
+            if((reg1ms_count%10)==0){
                 //printf("reg1ms_count \r\n"); //Prueba
 				CheckVolume(); //Volumen de audio segun horarios hora y periodo de tiempo
 				IWDG_Feed();
 			}
-            if(lamp_chge_flag)  /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
-            {
+            if(lamp_chge_flag){  /* Al cambiar el estado de las luces selecciona el audio correspondiente. */
                 lamp_chge_flag = 0;
-//                if(MP3.fileOpenFlag == 0)
-//                {
+//                if(MP3.fileOpenFlag == 0){
 //                    memset(MP3.filename,0x00,13);
 //                    (MP3.dir);
 //                    MP3.fileChangeFlag = 1;
 //                }
-                if(lamp_status == RS)
-                {
+                if(lamp_status == RS){
                     MP3.dir = 0;//MP3.dir = 2;
                 }
-                else if(lamp_status == GS)
-				{
+                else if(lamp_status == GS){
 					//if(gre_flash_flag == 0) MP3.dir = 3; else MP3.dir = 4;
 					MP3.dir = 2;
 				}
-				else if(lamp_status == BS)
-				{
+				else if(lamp_status == BS){
 					MP3.stopFlag = 1;
 				}
                 memset(MP3.filename,0x00,13);
@@ -126,14 +119,11 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 MP3.lamp_chge_sound_flag = 1;
             }
             fileChange();   /* Aplica los cambios pendientes de archivo y reproduce el aviso necesario. */
-            if(++reg1ms_count >= 1000) //Cada 1 segundo
-            {
+            if(++reg1ms_count >= 1000){ //Cada 1 segundo
                 reg1ms_count = 0;
 				MP3.WorkMode = MODEA;
-                if(fileTrans.timeCount)
-                {
-                    if(++fileTrans.timeCount >= 5)
-                    {
+                if(fileTrans.timeCount){
+                    if(++fileTrans.timeCount >= 5){
                         fileTrans.timeCount = 0;
                         MP3.Writingflag = 0;
                         MP3.fileChangeFlag = 1;
@@ -162,13 +152,10 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
                 // //printf(">>gre_flash_flag %d \r\n", gre_flash_flag);
                 // ////YO imprimir END
             }
-            if(MP3.stopCount)
-            {
-                if(++MP3.stopCount >= 5)
-                {
+            if(MP3.stopCount){
+                if(++MP3.stopCount >= 5){
                     MP3.stopCount = 0;
-                    if(MP3.cycleFlag)
-                    {
+                    if(MP3.cycleFlag){
                         if(MP3.fileOpenFlag)
                             MP3.playing = 1;
                         else
@@ -181,10 +168,8 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
             SYS_TEST();
         }
         Playing();  /* La reproduccion debe atenderse continuamente, incluso entre ticks. */
-		if(spi2_busy_flag == 0)
-		{
-			if(rf_int_flag == 1)    /* Procesa los paquetes de radio cuando SPI2 no esta ocupado. */
-			{
+		if(spi2_busy_flag == 0){
+			if(rf_int_flag == 1){    /* Procesa los paquetes de radio cuando SPI2 no esta ocupado. */
 				rf_int_flag = 0;
 				rf24l01_rx_process(); //funcion que debe procesar informacion que llega por radio frecuencia
 				//printf("/");
@@ -194,7 +179,6 @@ int main(void){ /* Inicializa todos los perifericos y ejecuta el planificador co
     }
 }
 
-static void SysTick_Init(void)  /* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
-{
+static void SysTick_Init(void){  /* Configura SysTick a 1 kHz para generar la base de tiempo del firmware. */
     while(SysTick_Config(SystemCoreClock / 1000));
 }

@@ -24,8 +24,8 @@ FIL file;
 //FIL mfile;
 
 uint8_t *bufptr;
-/* Define la constante TEST_FILE_LEN utilizada por este modulo. */
-#define TEST_FILE_LEN			(2*1024*1024)	/* ??????????????? */
+
+#define TEST_FILE_LEN			(2*1024*1024)	/* ??????????????? *//* Define la constante TEST_FILE_LEN utilizada por este modulo. */
 
 //(4096*1) ???21S
 //(4096*2) ???24S
@@ -67,6 +67,7 @@ void WriteFileTest(void);
 //void CreateConfigFile(void);
 //void DeleteConfigFile(void);
 
+
 /* FatFs API?????? */
 //static const char * FR_Table[]= 
 const char * FR_Table[]= 
@@ -101,25 +102,6 @@ const char * FR_Table[]=
 //char file3[] = "/sound/3.mp3";
 //char file4[] = "/sound/4.mp3";
 
-//void mp3_par_init(void)
-//{
-//    MP3.playing = 0;
-//    MP3.stopCount = 0;
-//    MP3.VolumeChangeFlag = 0;
-//    MP3.fileOpenFlag = 0;
-//    MP3.fileChangeFlag = 0;
-//    MP3.cycleFlag = 1;
-//    MP3.stopFlag = 0;
-//    MP3.dir = 0;
-//    system_temp.timeUpdate = 1;    
-//    MP3.CycleTime = RedCycleTime;
-//    MP3.writeParFlag = 0;
-//    MP3.ucMuteOn = 0;
-//    MP3.lamp_chge_sound_flag = 0;
-//    MP3.WorkMode = MODEA;
-//    
-//    MP3.Writingflag = 0;
-//}
 
 void FileFormat(void)
 {
@@ -137,7 +119,6 @@ void FileFormat(void)
 		printf("???????????? (%s)\r\n", FR_Table[result]);
 	}
 	
-	
 	result = f_mkfs("0:",0,4096);
 	if (result != FR_OK)
 	{
@@ -148,7 +129,6 @@ void FileFormat(void)
 		printf("???????? (%s)\r\n", FR_Table[result]);
 	}
 
-	
 	result  = f_mount(NULL, "0:", 0);
 	if (result != FR_OK)
 	{
@@ -243,7 +223,6 @@ void ViewRootDir(void)
 			continue;
 		}
 
-		
 		if (FileInf.fattrib & AM_DIR)
 		{
 			printf("??(0x%02d)  ", FileInf.fattrib);
@@ -252,7 +231,6 @@ void ViewRootDir(void)
 		{
 			printf("???(0x%02d)  ", FileInf.fattrib);
 		}
-
 		
 		printf(" %10d", (int)FileInf.fsize);
 		printf("  %s |", FileInf.fname);	        /* ??????? */
@@ -299,7 +277,6 @@ void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
 	/* ????? */
 	result = f_open(&file, filename, FA_CREATE_ALWAYS | FA_WRITE);
     
-	
 	result = f_write(&file, data, len, &bw);
 	if (result == FR_OK)
 	{
@@ -312,7 +289,6 @@ void CreateNewFile(char *filename, uint8_t* data, uint16_t len)
 
 	/* ??????*/
 	f_close(&file);
-
 	
 	result  = f_mount(NULL, "0:", 0);
 }
@@ -344,7 +320,6 @@ void CreateNewFileWithNotClose(char *filename, uint8_t* data, uint16_t len)
 	/* ????? */
 	result = f_open(&file, filename, FA_CREATE_ALWAYS | FA_WRITE);
     
-	
 	result = f_write(&file, data, len, &bw);
 	if (result == FR_OK)
 	{
@@ -390,7 +365,6 @@ void AddFileData(char *filename, uint8_t* data, uint16_t len)
 
     f_lseek(&file, file.fsize);
     
-	
 	result = f_write(&file, data, len, &bw);
     
     if(Debug) 
@@ -408,7 +382,6 @@ void AddFileData(char *filename, uint8_t* data, uint16_t len)
 	/* ??????*/
 	f_close(&file);
 
-	
 	result  = f_mount(NULL, "0:", 0);
 }
 
@@ -418,7 +391,6 @@ void FileClose(void)
 {
 	/* ??????*/
 	f_close(&file);
-
 	
     f_mount(NULL, "0:", 0);
 }
@@ -430,7 +402,6 @@ void AddFileDataInClearMode(char *filename, uint8_t* data, uint16_t len)
 	FRESULT result;
 	uint32_t bw;
 
-	
 	result = f_write(&file, data, len, &bw);
     
     if(Debug) 
@@ -490,7 +461,6 @@ void ReadFileData(char *filename)
 	/* ??????*/
 	f_close(&file);
 
-	
 	result  = f_mount(NULL, "0:", 0);
 }
 
@@ -556,7 +526,6 @@ void CreateDir(void)
 		printf("f_mkdir Dir1_1 ??? (%s)\r\n",  FR_Table[result]);
 		return;
 	}
-
 	
 	result  = f_mount(NULL, "0:", 0);
 }
@@ -680,8 +649,6 @@ void DeleteDirFile(void)
 			printf("???%s??????(??????? = %d) ?????????????\r\n", FileName, result);
 		}
 	}
-
-	
 	result  = f_mount(NULL, "0:", 0);
 }
 
@@ -723,7 +690,6 @@ void WriteFileTest(void)
 	/* ????? */
 	sprintf(TestFileName, "Speed%02d.txt", s_ucTestSn++);		
 	result = f_open(&file, TestFileName, FA_CREATE_ALWAYS | FA_WRITE);
-
 	
 	printf("???锟斤拷???%s %dKB ...\r\n", TestFileName, TEST_FILE_LEN / 1024);
 	runtime1 = 10;//wcx bsp_GetRunTime();	/* ???????????? */
@@ -754,7 +720,6 @@ void WriteFileTest(void)
 			(TEST_FILE_LEN * 1000) / timelen,
 			((TEST_FILE_LEN / 1024) * 1000) / timelen);
 	}
-
 	f_close(&file);		/* ??????*/
     
 	/* ???????????? */
@@ -811,6 +776,5 @@ void WriteFileTest(void)
 	/* ??????*/
 	f_close(&file);
 
-	
 	result  = f_mount(NULL, "0:", 0);
 }
